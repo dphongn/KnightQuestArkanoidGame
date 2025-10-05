@@ -1,37 +1,58 @@
-gitignore
+# ========================
 # IntelliJ IDEA
+# ========================
 .idea/
 *.iml
 out/
-target/
 
-# Eclipse
+# ========================
+# Eclipse (nếu có dùng)
+# ========================
 .classpath
 .project
 .settings/
 
-# Maven
+# ========================
+# Maven / Gradle
+# ========================
 target/
+build/
+*.class
+
+# Maven backup files
 pom.xml.tag
 pom.xml.releaseBackup
 pom.xml.versionsBackup
 
-# Save files
+# ========================
+# Game save files
+# ========================
 saves/
-!saves/.gitkeep
+!saves/.gitkeep   # giữ lại folder rỗng
 
+# ========================
 # Logs
+# ========================
 logs/
 !logs/.gitkeep
 *.log
 
+# ========================
 # Database
+# ========================
 *.db
+database/config.properties   # file config nhạy cảm, không push
 
-# OS
+# Nếu bạn muốn giữ folder database trống
+!database/.gitkeep
+
+# ========================
+# OS files
+# ========================
 .DS_Store
 Thumbs.db
 
-# Sensitive
-database/config.properties
+# ========================
+# Sensitive / API keys
+# ========================
 src/main/resources/api-keys.properties
