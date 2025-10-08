@@ -7,22 +7,41 @@ public abstract class GameObject {
     protected double x, y, width, height;
     protected boolean active = true;
 
+    /**
+     * Basic contructor for all objects.
+     */
     public GameObject(double x, double y, double width, double height) {
         this.x = x; this.y = y;
         this.width = width; this.height = height;
     }
 
+    /**
+     * Update the object between 2 frames.
+     */
     public abstract void update(double deltaTime);
+
+    /**
+     * Draw according to the object.
+     */
     public abstract void render(GraphicsContext gc);
 
+    /**
+     * Returns the bounding rectangle of the object.
+     */
     public Rectangle2D getBounds() {
         return new Rectangle2D(x, y, width, height);
     }
 
+    /**
+     * Check if 2 objects interact.
+     */
     public boolean intersects(GameObject other) {
         return getBounds().intersects(other.getBounds());
     }
 
+    /**
+     * Getter and Setter.
+     */
     public double getX() {
         return x;
     }
