@@ -60,4 +60,10 @@ public abstract class GameObject {
     public void setActive(boolean active) {
         this.active = active;
     }
+    public double getWidth() {
+        return width;
+    }
+    public double getHeight() {
+        return height;
+    }
 }
