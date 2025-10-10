@@ -120,6 +120,20 @@
             <version>4.12.0</version>
         </dependency>
 
+        <!-- Jackson for FXGL -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+        </dependency>
+
         <!-- JUnit -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -177,7 +191,7 @@
                         <id>default-cli</id>
                         <configuration>
                             <mainClass>
-                                com.knightquest.arkanoid.knightquestarkanoid/com.knightquest.arkanoid.HelloApplication
+                                com.knightquest.arkanoid.knightquestarkanoid/com.knightquest.arkanoid.Main
                             </mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>
