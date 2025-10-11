@@ -1,10 +1,18 @@
 package com.knightquest.arkanoid.controller;
 
-import com.knightquest.arkanoid.model.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import com.knightquest.arkanoid.model.Ball;
+import com.knightquest.arkanoid.model.Paddle;
 import com.knightquest.arkanoid.model.brick.Brick;
 import com.knightquest.arkanoid.model.brick.NormalBrick;
-import java.util.*;
-import static com.knightquest.arkanoid.util.Constants.*;
+import static com.knightquest.arkanoid.util.Constants.BRICK_HEIGHT;
+import static com.knightquest.arkanoid.util.Constants.BRICK_WIDTH;
+import static com.knightquest.arkanoid.util.Constants.INITIAL_LIVES;
+import static com.knightquest.arkanoid.util.Constants.PADDLE_WIDTH;
+import static com.knightquest.arkanoid.util.Constants.SCREEN_WIDTH;
 
 public class GameManager {
     private static GameManager instance;
@@ -13,6 +21,7 @@ public class GameManager {
     private Ball ball;
     private List<Brick> bricks;
     private int score, lives;
+    private CollisionHandler collisionHandler;
 
     private GameManager() {
         initGame();
@@ -31,6 +40,7 @@ public class GameManager {
         bricks = new ArrayList<>();
         lives = INITIAL_LIVES;
         score = 0;
+        collisionHandler = new CollisionHandler(this);
 
         // Create brick (10 x 5)
         for (int row = 0; row < 5; row++) {
@@ -48,22 +58,18 @@ public class GameManager {
         paddle.update(deltaTime);
         ball.update(deltaTime);
 
-        // Interact ball - paddle
-        if (ball.intersects(paddle)) {
-            ball.bounceVertical();
-        }
+        // Use CollisionHandler for more precise collision detection
+        collisionHandler.checkBallWallCollision(ball);
+        collisionHandler.checkBallPaddleCollision(ball, paddle);
+        collisionHandler.checkBallBrickCollision(ball, bricks);
 
-        // Interact ball - brick
+        // Remove destroyed bricks and update score
         Iterator<Brick> iter = bricks.iterator();
         while (iter.hasNext()) {
             Brick brick = iter.next();
-            if (ball.intersects(brick)) {
-                brick.takeHit();
-                ball.bounceVertical();
+            if (brick.isDestroyed()) {
+                iter.remove();
                 score += 10;
-                if (brick.isDestroyed()) {
-                    iter.remove();
-                }
             }
         }
 
@@ -71,9 +77,19 @@ public class GameManager {
         if (ball.isFallenOff()) {
             lives--;
             if (lives > 0) {
-                ball = new Ball(SCREEN_WIDTH/2, 500);
+                resetBall();
             }
         }
+
+        // Win condition
+        if (bricks.isEmpty()) {
+            // Player wins - could add level progression here
+            initGame(); // For now, restart the game
+        }
+    }
+
+    private void resetBall() {
+        ball = new Ball(SCREEN_WIDTH/2, 500);
     }
 
     // Getters
