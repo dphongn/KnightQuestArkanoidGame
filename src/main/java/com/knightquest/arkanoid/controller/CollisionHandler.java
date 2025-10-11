@@ -1,12 +1,15 @@
 package com.knightquest.arkanoid.controller;
 
-import com.knightquest.arkanoid.model.*;
-import com.knightquest.arkanoid.model.brick.Brick;
-import javafx.geometry.Rectangle2D;
 import java.util.Iterator;
 import java.util.List;
+
+import com.knightquest.arkanoid.model.Ball;
 import com.knightquest.arkanoid.model.GameObject;
+import com.knightquest.arkanoid.model.Paddle;
+import com.knightquest.arkanoid.model.brick.Brick;
 import static com.knightquest.arkanoid.util.Constants.SCREEN_WIDTH;
+
+import javafx.geometry.Rectangle2D;
 
 public class CollisionHandler {
     private GameManager gameManager;
@@ -16,16 +19,36 @@ public class CollisionHandler {
     }
 
     /**
-     * Check and handle collision between ball and paddle
+     * Check and handle collision between ball and paddle with angle variation
      */
     public void checkBallPaddleCollision(Ball ball, Paddle paddle) {
         if (!isColliding(ball, paddle)) {
             return;
         }
 
-        ball.bounceVertical();
-
+        // Position ball above paddle to prevent sticking
         ball.setY(paddle.getY() - ball.getHeight());
+
+        // Calculate where ball hit the paddle (0 = left edge, 1 = right edge)
+        double ballCenterX = ball.getX() + ball.getWidth() / 2;
+        double hitPosition = (ballCenterX - paddle.getX()) / paddle.getWidth();
+
+        // Clamp hit position to prevent extreme angles
+        hitPosition = Math.max(0.1, Math.min(0.9, hitPosition));
+
+        // Calculate new angle based on hit position
+        // Center hit (0.5) = straight up, edges = angled
+        double angleVariation = (hitPosition - 0.5) * 2.0; // Range: -1 to 1
+        double baseSpeed = ball.getSpeed();
+
+        // New velocity with angle variation
+        ball.setDx(angleVariation * baseSpeed * 0.8); // Horizontal component
+        ball.setDy(-Math.abs(ball.getDy())); // Always bounce upward
+
+        // Ensure minimum vertical speed
+        if (Math.abs(ball.getDy()) < baseSpeed * 0.5) {
+            ball.setDy(-baseSpeed * 0.7);
+        }
 
         //SoundManager.play("paddle_hit");
     }
@@ -78,22 +101,22 @@ public class CollisionHandler {
     /**
      * Check and handle collisions between the ball and the walls
      */
-   public void checkBallWallCollision(Ball ball) {
-       if (ball.getX() <= 0) {
-           ball.setX(0);
-           ball.bounceHorizontal();
-       }
+    public void checkBallWallCollision(Ball ball) {
+        if (ball.getX() <= 0) {
+            ball.setX(0);
+            ball.bounceHorizontal();
+        }
 
-       if (ball.getX() + ball.getWidth() >= SCREEN_WIDTH) {
-           ball.setX(SCREEN_WIDTH - ball.getWidth());
-           ball.bounceHorizontal();
-       }
+        if (ball.getX() + ball.getWidth() >= SCREEN_WIDTH) {
+            ball.setX(SCREEN_WIDTH - ball.getWidth());
+            ball.bounceHorizontal();
+        }
 
-       if (ball.getY() <= 0) {
-           ball.setY(0);
-           ball.bounceVertical();
-       }
-   }
+        if (ball.getY() <= 0) {
+            ball.setY(0);
+            ball.bounceVertical();
+        }
+    }
 
 
     /**
