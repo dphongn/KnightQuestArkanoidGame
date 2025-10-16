@@ -1,6 +1,7 @@
 package com.knightquest.arkanoid.model.brick;
 
 import com.knightquest.arkanoid.model.GameObject;
+import com.knightquest.arkanoid.model.powerup.PowerUp;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 

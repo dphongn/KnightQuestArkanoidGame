@@ -1,5 +1,6 @@
 package com.knightquest.arkanoid.model.brick;
 
+import com.knightquest.arkanoid.model.powerup.PowerUp;
 import javafx.scene.paint.Color;
 
 public class NormalBrick extends Brick {
