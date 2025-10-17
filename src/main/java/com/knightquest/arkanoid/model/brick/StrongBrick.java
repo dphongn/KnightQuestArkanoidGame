@@ -4,8 +4,8 @@ import com.knightquest.arkanoid.model.powerup.PowerUp;
 import javafx.scene.paint.Color;
 
 public class StrongBrick extends Brick {
-    public StrongBrick(double x, double y, double width, double height) {
-        super(x, y, width, height, 2);
+    public StrongBrick(double x, double y, double width, double height, int hitPoints) {
+        super(x, y, width, height, hitPoints);
         this.color = Color.BLUE;
         this.type = BrickType.STRONG;
     }
