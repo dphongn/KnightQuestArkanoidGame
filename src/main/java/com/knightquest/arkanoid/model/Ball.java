@@ -38,6 +38,7 @@ public class Ball extends MovableObject {
         double minSpeed = BALL_SPEED * 0.3;
         if (Math.abs(getDx()) < minSpeed) setDx(Math.signum(getDx()) * minSpeed);
         if (Math.abs(getDy()) < minSpeed) setDy(Math.signum(getDy()) * minSpeed);
+
     }
 
     @Override
@@ -77,5 +78,9 @@ public class Ball extends MovableObject {
     public void multiplySpeed(double multipitier) {
         setDx(getDx() * multipitier);
         setDy(getDy() * multipitier);
+    }
+
+    public void setFallenOff(boolean fallenOff) {
+        this.fallenOff = fallenOff;
     }
 }
