@@ -5,14 +5,19 @@ import javafx.scene.paint.Color;
 
 public class UnbreakableBrick extends Brick {
     public UnbreakableBrick(double x, double y, double width, double height) {
-        super(x, y, width, height, 1);
+        super(x, y, width, height, Integer.MAX_VALUE);
         this.color = Color.GRAY;
         this.type = BrickType.UNBREAKABLE;
     }
 
     @Override
     public void takeHit() {
-        // UnbreakableBrick can not take damage.
+        // Unbreakable - no damage taken
+    }
+
+    @Override
+    public boolean isDestroyed() {
+        return false;
     }
 
     @Override
