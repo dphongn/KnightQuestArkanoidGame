@@ -14,6 +14,7 @@ public class StrongBrick extends Brick {
     public StrongBrick(double x, double y, double width, double height) {
         super(x, y, width, height, INITIAL_HP);
         this.color = colorStages[0];
+        this.type = BrickType.STRONG;
     }
 
     @Override
