@@ -1,6 +1,5 @@
 package com.knightquest.arkanoid.model.brick;
 
-import com.knightquest.arkanoid.model.powerup.PowerUp;
 import javafx.scene.paint.Color;
 
 public class StrongBrick extends Brick {
@@ -27,10 +26,5 @@ public class StrongBrick extends Brick {
         if (hitPoints > 0 && hitPoints <= INITIAL_HP) {
             this.color = colorStages[INITIAL_HP - hitPoints];
         }
-    }
-
-    @Override
-    public PowerUp onDestroyed() {
-        return null;
     }
 }

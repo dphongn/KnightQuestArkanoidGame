@@ -1,6 +1,5 @@
 package com.knightquest.arkanoid.model.brick;
 
-import com.knightquest.arkanoid.model.powerup.PowerUp;
 import javafx.scene.paint.Color;
 
 public class UnbreakableBrick extends Brick {
@@ -18,11 +17,6 @@ public class UnbreakableBrick extends Brick {
     @Override
     public boolean isDestroyed() {
         return false;
-    }
-
-    @Override
-    public PowerUp onDestroyed() {
-        return null;
     }
 }
 

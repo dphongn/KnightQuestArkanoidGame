@@ -1,6 +1,5 @@
 package com.knightquest.arkanoid.model.brick;
 
-import com.knightquest.arkanoid.model.powerup.PowerUp;
 import javafx.scene.paint.Color;
 
 public class NormalBrick extends Brick {
@@ -8,10 +7,5 @@ public class NormalBrick extends Brick {
         super(x, y, width, height, 1);
         this.color = Color.GREEN;
         this.type = BrickType.NORMAL;
-    }
-
-    @Override
-    public PowerUp onDestroyed() {
-        return null;
     }
 }

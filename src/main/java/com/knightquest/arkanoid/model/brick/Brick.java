@@ -1,7 +1,6 @@
 package com.knightquest.arkanoid.model.brick;
 
 import com.knightquest.arkanoid.model.GameObject;
-import com.knightquest.arkanoid.model.powerup.PowerUp;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
@@ -51,6 +50,4 @@ public abstract class Brick extends GameObject {
     public BrickType getType() {
         return type;
     }
-
-    public abstract PowerUp onDestroyed();
 }
