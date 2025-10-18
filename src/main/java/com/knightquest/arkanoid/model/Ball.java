@@ -54,4 +54,8 @@ public class Ball extends MovableObject {
     public boolean isFallenOff() {
         return y > SCREEN_HEIGHT;
     }
+
+    public double getRadius() {
+        return radius;
+    }
 }
