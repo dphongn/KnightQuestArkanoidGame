@@ -4,18 +4,27 @@ import com.knightquest.arkanoid.model.powerup.PowerUp;
 import javafx.scene.paint.Color;
 
 public class StrongBrick extends Brick {
-    public StrongBrick(double x, double y, double width, double height, int hitPoints) {
-        super(x, y, width, height, hitPoints);
-        this.color = Color.BLUE;
-        this.type = BrickType.STRONG;
+    private static final int INITIAL_HP = 3;
+    private static final Color[] colorStages = {
+            Color.DARKBLUE,
+            Color.BLUE,
+            Color.LIGHTBLUE
+    };
+
+    public StrongBrick(double x, double y, double width, double height) {
+        super(x, y, width, height, INITIAL_HP);
+        this.color = colorStages[0];
     }
 
     @Override
     public void takeHit() {
         super.takeHit();
-        if (hitPoints == 1 && active) {
-            this.type = BrickType.NORMAL;
-            this.color = Color.GREEN;
+        updateColor();
+    }
+
+    public void updateColor() {
+        if (hitPoints > 0 && hitPoints <= INITIAL_HP) {
+            this.color = colorStages[INITIAL_HP - hitPoints];
         }
     }
 
