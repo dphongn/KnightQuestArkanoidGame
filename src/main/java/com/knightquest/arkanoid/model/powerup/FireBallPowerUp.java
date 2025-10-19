@@ -44,7 +44,7 @@ public class FireBallPowerUp extends PowerUp {
     }
 
     @Override
-    public void render(GraphicsContext gc) {
+    public void renderIcon(GraphicsContext gc) {
         //Draw fire ball
         gc.setFill(Color.ORANGE);
         gc.fillOval(x + 9, y + 9, 12, 12);
