@@ -65,35 +65,37 @@ public class CollisionHandler {
                 continue;
             }
 
-            double ballCenterX = ball.getX() + ball.getWidth() / 2;
-            double ballCenterY = ball.getY() + ball.getHeight() / 2;
-            double brickCenterX = brick.getX() + brick.getWidth() / 2;
-            double brickCenterY = brick.getY() + brick.getHeight() / 2;
+            if (!ball.isOnFire() && !ball.isPiercing()) {
+                double ballCenterX = ball.getX() + ball.getWidth() / 2;
+                double ballCenterY = ball.getY() + ball.getHeight() / 2;
+                double brickCenterX = brick.getX() + brick.getWidth() / 2;
+                double brickCenterY = brick.getY() + brick.getHeight() / 2;
 
-            double dx = ballCenterX - brickCenterX;
-            double dy = ballCenterY - brickCenterY;
+                double dx = ballCenterX - brickCenterX;
+                double dy = ballCenterY - brickCenterY;
 
-            double overlapX = (brick.getWidth() + ball.getWidth()) / 2 - Math.abs(dx);
-            double overlapY = (brick.getHeight() + ball.getHeight()) / 2 - Math.abs(dy);
+                double overlapX = (brick.getWidth() + ball.getWidth()) / 2 - Math.abs(dx);
+                double overlapY = (brick.getHeight() + ball.getHeight()) / 2 - Math.abs(dy);
 
-            if (overlapX < overlapY) {
-                ball.bounceHorizontal();
-                if (dx > 0) {
+                if (overlapX < overlapY) {
+                     ball.bounceHorizontal();
+                    if (dx > 0) {
                     ball.setX(brickCenterX + brick.getWidth() / 2);
-                } else {
+                     } else {
                     ball.setX(brickCenterX - brick.getWidth() / 2 - ball.getWidth());
-                }
-            } else {
-                ball.bounceVertical();
-                if (dy > 0) {
-                    ball.setY(brickCenterY + brick.getHeight() / 2);
+                    }
                 } else {
+                    ball.bounceVertical();
+                    if (dy > 0) {
+                    ball.setY(brickCenterY + brick.getHeight() / 2);
+                    } else {
                     ball.setY(brickCenterY - brick.getHeight() / 2 - ball.getHeight());
+                    }
                 }
-            }
             handleBrickDestruction(brick);
             //SoundManager.play("brick_hit");
-
+            
+            }
             break;
         }
     }
