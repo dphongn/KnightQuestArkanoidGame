@@ -59,28 +59,7 @@ public class Ball extends MovableObject {
         return y > SCREEN_HEIGHT;
     }
 
-    public void setOnFire(boolean onFire) {
-        this.onFire = onFire;
-    }
-
-    public boolean isOnFire() {
-        return onFire;
-    }
-
-    public void setPiercing(boolean piercing) {
-        this.piercing = piercing;
-    }
-
-    public boolean isPiercing() {
-        return piercing;
-    }
-
-    public void multiplySpeed(double multipitier) {
-        setDx(getDx() * multipitier);
-        setDy(getDy() * multipitier);
-    }
-
-    public void setFallenOff(boolean fallenOff) {
-        this.fallenOff = fallenOff;
+    public double getRadius() {
+        return radius;
     }
 }
