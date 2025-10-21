@@ -11,7 +11,7 @@ import javafx.scene.text.Font;
 /**
  * MenuState handles the main menu of the game.
  */
-public class MenuState {
+public class MenuState extends GameState {
     private int selectedOption = 0;
     private final String[] menuOptions = {"Start Game", "Exit"};
     private double animationTimer = 0;
@@ -110,7 +110,7 @@ public class MenuState {
         switch(selectedOption) {
             case 0:// Start Game
                 gameManager.resetGame();
-                gameManager.changeState(new PlayState(gameManager));
+                gameManager.changeState(new PlayingState(gameManager));
                 break;
             case 1:// Exit
                 System.exit(0);
