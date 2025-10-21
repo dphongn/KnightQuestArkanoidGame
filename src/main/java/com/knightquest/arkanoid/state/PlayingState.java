@@ -85,7 +85,7 @@ public class PlayingState extends GameState {
     public void render(GraphicsContext gc) {
         // Clear screen
         gc.setFill(Color.rgb(15 ,15 ,25));
-        gc.fillRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
+        gc.fillRect(0. 0. gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
 
         //Draw bricks
         for (Brick brick : gameManager.getBricks()) {

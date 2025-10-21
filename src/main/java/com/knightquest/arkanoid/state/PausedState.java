@@ -77,7 +77,7 @@ public class PausedState extends  GameState {
         double height = gc.getCanvas().getHeight();
 
         // Semi-transparent overlay
-        gc.setFill(Color.rgb(0, 0, 0, 0.7));
+        gc.setFill(Color.rgb(0, 0, 0, 0.7);
         gc.fillRect(0, 0, width, height);
         double centerX = width / 2;
         double centerY = height / 2;
@@ -85,7 +85,7 @@ public class PausedState extends  GameState {
         // Draw pause box background
         double boxWidth = 400;
         double boxHeight = 300;
-        gc.setFill(Color.rgb(30, 30, 40));
+        gc.setFill(Color.rgb(30, 30, 40);
         gc.fillRect(centerX - boxWidth / 2, startY - boxHeight / 2, boxWidth, boxHeight);
 
         //Draw pause box border
@@ -140,7 +140,7 @@ public class PausedState extends  GameState {
     }
     private void rendeGameBackground(GraphicsContext gc) {
         // Render frozen game state as background
-        gc.setFill(Color.rgb(15, 15, 25));
+        gc.setFill(Color.rgb(15, 15, 25);
         gc.fillRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
 
         //Draw bricks

@@ -7,6 +7,7 @@ import javafx.scene.paint.Color;
 public abstract class Brick extends GameObject {
     protected int hitPoints; //HP of brick
     protected Color color;
+    protected BrickType type;
 
     /**
      * Basic contructor for every brick.
@@ -44,5 +45,9 @@ public abstract class Brick extends GameObject {
      */
     public boolean isDestroyed() {
         return !active;
+    }
+
+    public BrickType getType() {
+        return type;
     }
 }

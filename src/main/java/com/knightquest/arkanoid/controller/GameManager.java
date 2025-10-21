@@ -18,6 +18,7 @@ public class GameManager {
     private static GameManager instance;
 
     private Paddle paddle;
+    private List<Ball> balls;
     private Ball ball;
     private List<Brick> bricks;
     private int score, lives;
@@ -107,5 +108,22 @@ public class GameManager {
     }
     public int getLives() {
         return lives;
+    }
+
+    public List<Ball> getBalls() {
+        return balls;
+    }
+
+    public void addBall(Ball ball) {
+        if (balls == null) {
+            balls = new ArrayList<>();
+        }
+        balls.add(ball);
+    }
+
+    public void removeBall(Ball ball) {
+        if (balls != null) {
+            balls.remove(ball);
+        }
     }
 }

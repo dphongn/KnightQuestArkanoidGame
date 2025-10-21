@@ -9,6 +9,9 @@ import javafx.scene.paint.Color;
 
 public class Ball extends MovableObject {
     private double radius;
+    private boolean onFire;
+    private boolean fallenOff;
+    private boolean piercing;
 
     /**
      * Contructor from GameObject.
@@ -35,6 +38,7 @@ public class Ball extends MovableObject {
         double minSpeed = BALL_SPEED * 0.3;
         if (Math.abs(getDx()) < minSpeed) setDx(Math.signum(getDx()) * minSpeed);
         if (Math.abs(getDy()) < minSpeed) setDy(Math.signum(getDy()) * minSpeed);
+
     }
 
     @Override
@@ -53,5 +57,9 @@ public class Ball extends MovableObject {
 
     public boolean isFallenOff() {
         return y > SCREEN_HEIGHT;
+    }
+
+    public double getRadius() {
+        return radius;
     }
 }
