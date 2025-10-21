@@ -62,4 +62,13 @@ public class Ball extends MovableObject {
     public double getRadius() {
         return radius;
     }
+
+    public void setPiercing(boolean b) {
+    }
+
+    public void multiplySpeed(double speedMultiplier) {
+    }
+
+    public void setOnFire(boolean b) {
+    }
 }
