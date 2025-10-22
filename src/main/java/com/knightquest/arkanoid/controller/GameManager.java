@@ -4,15 +4,21 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.knightquest.arkanoid.factory.LevelFactory;
+import com.knightquest.arkanoid.level.Level;
 import com.knightquest.arkanoid.model.Ball;
 import com.knightquest.arkanoid.model.Paddle;
 import com.knightquest.arkanoid.model.brick.Brick;
-import com.knightquest.arkanoid.model.brick.NormalBrick;
+import com.knightquest.arkanoid.state.GameState;
+import com.knightquest.arkanoid.state.GameStateManager;
 import static com.knightquest.arkanoid.util.Constants.BRICK_HEIGHT;
 import static com.knightquest.arkanoid.util.Constants.BRICK_WIDTH;
 import static com.knightquest.arkanoid.util.Constants.INITIAL_LIVES;
 import static com.knightquest.arkanoid.util.Constants.PADDLE_WIDTH;
 import static com.knightquest.arkanoid.util.Constants.SCREEN_WIDTH;
+
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.KeyEvent;
 
 public class GameManager {
     private static GameManager instance;
@@ -24,8 +30,17 @@ public class GameManager {
     private int score, lives;
     private CollisionHandler collisionHandler;
 
+    // Level system
+    private int currentLevelNumber = 1;
+    private Level currentLevel;
+
+    // State management
+    private GameStateManager gameStateManager;
+
     private GameManager() {
         initGame();
+        gameStateManager = new GameStateManager(this);
+        gameStateManager.initialize(); // Start with initial state
     }
 
     public static GameManager getInstance() {
@@ -38,28 +53,35 @@ public class GameManager {
     private void initGame() {
         paddle = new Paddle(SCREEN_WIDTH/2 - PADDLE_WIDTH/2, 550);
         ball = new Ball(SCREEN_WIDTH/2, 500);
-        bricks = new ArrayList<>();
         lives = INITIAL_LIVES;
         score = 0;
         collisionHandler = new CollisionHandler(this);
 
-        // Create brick (10 x 5)
-        for (int row = 0; row < 5; row++) {
-            for (int col = 0; col < 10; col++) {
-                bricks.add(new NormalBrick(
-                        col * (BRICK_WIDTH + 5) + 50,
-                        row * (BRICK_HEIGHT + 5) + 50,
-                        BRICK_WIDTH, BRICK_HEIGHT
-                ));
-            }
-        }
+        // Load first level
+        loadLevel(1);
     }
 
-    public void update(double deltaTime) {
+    private void loadLevel(int levelNumber) {
+        currentLevelNumber = levelNumber;
+        currentLevel = LevelFactory.createLevel(levelNumber);
+        // Get bricks from level
+        bricks = currentLevel.getBricks();
+
+        // Print level info to console
+        System.out.println("Loaded Level " + levelNumber);
+
+    }
+
+    /**
+     * Update game logic.
+     * @param deltaTime
+     */
+
+    public void updateGameLogic(double deltaTime) {
         paddle.update(deltaTime);
         ball.update(deltaTime);
 
-        // Use CollisionHandler for more precise collision detection
+        // Check collisions
         collisionHandler.checkBallWallCollision(ball);
         collisionHandler.checkBallPaddleCollision(ball, paddle);
         collisionHandler.checkBallBrickCollision(ball, bricks);
@@ -81,16 +103,60 @@ public class GameManager {
                 resetBall();
             }
         }
+    }
 
-        // Win condition
-        if (bricks.isEmpty()) {
-            // Player wins - could add level progression here
-            initGame(); // For now, restart the game
-        }
+    // Update game state
+    public void update(double deltaTime) {
+        gameStateManager.update(deltaTime);
+    }
+
+    // Handle input
+    public void handleInput(KeyEvent event) {
+        gameStateManager.handleInput(event);
+    }
+
+    // Render game
+    public void render(GraphicsContext gc) {
+        gameStateManager.render(gc);
+    }
+
+    public void changeState(GameState newState) {
+        gameStateManager.changeState(newState);
     }
 
     private void resetBall() {
         ball = new Ball(SCREEN_WIDTH/2, 500);
+    }
+
+    // Restart level
+    public void restartLevel() {
+        loadLevel(currentLevelNumber);
+        resetBall();
+    }
+
+    // Reset game to level 1
+    public void resetGame() {
+        currentLevelNumber = 1;
+        lives = INITIAL_LIVES;
+        score = 0;
+        loadLevel(1);
+        resetBall();
+    }
+
+    // Advance to next level
+    public void nextLevel() {
+        if (currentLevelNumber < LevelFactory.getTotalLevels()) {
+            loadLevel(currentLevelNumber + 1);
+            resetBall();
+        }
+        else {
+            // All levels completed - victory!
+            System.out.println("========================================");
+            System.out.println("🎉 CONGRATULATIONS! 🎉");
+            System.out.println("You have completed all " + LevelFactory.getTotalLevels() + " levels!");
+            System.out.println("Final Score: " + score);
+            System.out.println("========================================");
+        }
     }
 
     // Getters
@@ -108,6 +174,15 @@ public class GameManager {
     }
     public int getLives() {
         return lives;
+    }
+
+    // Level info
+    public int getCurrentLevelNumber() {
+        return currentLevelNumber;
+    }
+
+    public String getCurrentLevelName() {
+        return currentLevel != null ? LevelFactory.getLevelName(currentLevelNumber) : "Unknown";
     }
 
     public List<Ball> getBalls() {
