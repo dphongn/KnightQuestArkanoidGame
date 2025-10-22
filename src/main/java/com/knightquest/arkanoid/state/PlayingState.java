@@ -34,11 +34,12 @@ public class PlayingState extends GameState {
     public void update(double deltaTime) {
         // Update paddle movement based on key presses
         Paddle paddle = gameManager.getPaddle();
-        if (leftPressed) {
+        if (leftPressed && !rightPressed) {
             paddle.moveLeft();
-        }
-        if (rightPressed) {
+        } else if (rightPressed && !leftPressed) {
             paddle.moveRight();
+        } else {
+            paddle.stop(); // Stop when no keys pressed or both pressed
         }
         // Update game logic
         gameManager.updateGameLogic(deltaTime);
