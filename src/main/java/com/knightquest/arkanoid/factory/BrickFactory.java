@@ -24,6 +24,7 @@ public class BrickFactory   {
             case EXPLOSIVE -> new ExplosiveBrick(x, y, width, height);
             case PRISONER -> new PrisonerBrick(x, y, width, height);
             case STRONG ->  new StrongBrick(x, y, width, height);
+            default -> null;
         };
     }
 
