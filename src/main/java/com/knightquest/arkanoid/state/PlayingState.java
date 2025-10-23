@@ -146,6 +146,7 @@ public class PlayingState extends GameState {
 
     private void handleLevelComplete() {
         System.out.println("Level Complete");
-        gameManager.nextLevel();
+        // Transition to LevelCompleteState
+        changeState(new LevelCompleteState(gameManager));
     }
 }
