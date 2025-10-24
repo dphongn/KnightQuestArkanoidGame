@@ -5,6 +5,10 @@ import com.knightquest.arkanoid.model.Paddle;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
+/**
+ * Base class for all PowerUps in the game.
+ */
+
 public abstract class PowerUp extends GameObject {
     protected PowerUpType type;
     protected double duration;
@@ -22,11 +26,27 @@ public abstract class PowerUp extends GameObject {
 
     @Override
     public void update(double deltaTime) {
+        if (!active) return;
         y += dy * deltaTime;
 
+        // Check if PowerUp has fallen off the screen
         if (y > 600) {
             setActive(false);
         }
+    }
+
+    /**
+     * Check if the PowerUp has fallen off the bottom of the screen.
+     */
+    public boolean hasFallenOff(double screenHeight) {
+        return y > screenHeight;
+    }
+
+    /**
+     * Check intersection with the paddle for collection.
+     */
+    public boolean intersects(Paddle paddle) {
+        return getBounds().intersects(paddle.getBounds());
     }
 
     @Override
