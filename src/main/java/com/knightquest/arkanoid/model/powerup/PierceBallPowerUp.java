@@ -20,7 +20,7 @@ public class PierceBallPowerUp extends PowerUp {
         GameManager gm = GameManager.getInstance();
         Ball ball = gm.getBall();
         if (ball != null) {
-            ball.setMovementStrategy(new PierceMovementStratrgy(ball.getMovementStrategy()));
+            ball.setMovementStrategy(new PierceMovementStratrgy());
             ball.setPiercing(true);
         }
 
