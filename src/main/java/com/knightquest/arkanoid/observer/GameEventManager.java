@@ -16,10 +16,12 @@ public class GameEventManager {
         this.listeners = new ArrayList<>();
     }
 
+
+
     /**
      * Registers a new game event listener.
      */
-    public void registerListener(GameEventListener listener) {
+    public void addListener(GameEventListener listener) {
         if (!listeners.contains(listener)) {
             listeners.add(listener);
         }
