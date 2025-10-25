@@ -77,21 +77,6 @@ public class Ball extends MovableObject {
         return onFire;
     }
 
-    public void setOnFire(boolean onFire) {
-        this.onFire = onFire;
-        System.err.println("onFire: " + onFire);
-    }
-
-    public boolean isPiercing() {
-        return piercing;
-    }
-
-    public void setPiercing(boolean piercing) {
-        this.piercing = piercing;
-        System.err.println("piercing: " + piercing);
-    }
-
-
     public void bounceVertical() {
         setDy(-getDy());
     }
@@ -106,6 +91,33 @@ public class Ball extends MovableObject {
 
     public double getRadius() {
         return radius;
+    }
+
+    public double getSpeed() {
+        return Math.sqrt(getDx() * getDx() + getDy() * getDy());
+    }
+
+    public MovementStrategy getMovementStrategy() {
+        return movementStrategy;
+    }
+
+    public void setMovementStrategy(MovementStrategy movementStrategy) {
+        this.movementStrategy = movementStrategy;
+        System.out.println("Ball movement strategy set to: " + movementStrategy.getClass().getSimpleName());
+    }
+
+    public void setOnFire(boolean onFire) {
+        this.onFire = onFire;
+        System.err.println("onFire: " + onFire);
+    }
+
+    public boolean isPiercing() {
+        return piercing;
+    }
+
+    public void setPiercing(boolean piercing) {
+        this.piercing = piercing;
+        System.err.println("piercing: " + piercing);
     }
 
     public void multiplySpeed(double speedMultiplier) {
