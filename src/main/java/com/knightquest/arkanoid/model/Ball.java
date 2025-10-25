@@ -4,14 +4,20 @@ import static com.knightquest.arkanoid.util.Constants.BALL_RADIUS;
 import static com.knightquest.arkanoid.util.Constants.BALL_SPEED;
 import static com.knightquest.arkanoid.util.Constants.SCREEN_HEIGHT;
 
+import com.knightquest.arkanoid.strategy.MovementStrategy;
+import com.knightquest.arkanoid.strategy.NormalMovementStrategy;
+import com.knightquest.arkanoid.strategy.PierceMovementStratrgy;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 public class Ball extends MovableObject {
     private double radius;
-    private boolean onFire;
+    private MovementStrategy movementStrategy;
+
+
+    private boolean onFire = false;
     private boolean fallenOff;
-    private boolean piercing;
+    private boolean piercing = false;
 
     /**
      * Contructor from GameObject.
@@ -19,6 +25,7 @@ public class Ball extends MovableObject {
     public Ball(double x, double y) {
         super(x, y, BALL_RADIUS * 2, BALL_RADIUS * 2);
         this.radius = BALL_RADIUS;
+        this.movementStrategy = new NormalMovementStrategy();
         setVelocity(200, -BALL_SPEED); //up right
     }
 
@@ -43,9 +50,47 @@ public class Ball extends MovableObject {
 
     @Override
     public void render(GraphicsContext gc) {
-        gc.setFill(Color.RED);
-        gc.fillOval(x, y, width, height);
+        if (onFire) {
+            // Fire Ball effect - orange glow
+            gc.setFill(Color.rgb(255, 100, 0, 0.5));
+            gc.fillOval(x - 4, y - 4, width + 8, height + 8);
+            gc.setFill(Color.ORANGE);
+            gc.fillOval(x, y, width, height);
+            gc.setFill(Color.YELLOW);
+            gc.fillOval(x + 3, y + 3, width - 6, height - 6);
+        } else if (piercing) {
+            // Pierce Ball effect - white with cyan aura
+            gc.setFill(Color.rgb(0, 255, 255, 0.5));
+            gc.fillOval(x - 3, y - 3, width + 6, height + 6);
+            gc.setFill(Color.WHITE);
+            gc.fillOval(x, y, width, height);
+        }
+        else {
+            // Normal ball
+            gc.setFill(Color.RED);
+            gc.fillOval(x, y, width, height);
+        }
+
     }
+
+    public boolean isOnFire() {
+        return onFire;
+    }
+
+    public void setOnFire(boolean onFire) {
+        this.onFire = onFire;
+        System.err.println("onFire: " + onFire);
+    }
+
+    public boolean isPiercing() {
+        return piercing;
+    }
+
+    public void setPiercing(boolean piercing) {
+        this.piercing = piercing;
+        System.err.println("piercing: " + piercing);
+    }
+
 
     public void bounceVertical() {
         setDy(-getDy());
@@ -63,12 +108,8 @@ public class Ball extends MovableObject {
         return radius;
     }
 
-    public void setPiercing(boolean b) {
-    }
-
     public void multiplySpeed(double speedMultiplier) {
     }
 
-    public void setOnFire(boolean b) {
-    }
+
 }
