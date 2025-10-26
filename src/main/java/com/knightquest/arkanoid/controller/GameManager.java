@@ -6,9 +6,12 @@ import java.util.List;
 
 import com.knightquest.arkanoid.factory.LevelFactory;
 import com.knightquest.arkanoid.level.Level;
+import  com.knightquest.arkanoid.manager.PowerUpManager;
 import com.knightquest.arkanoid.model.Ball;
 import com.knightquest.arkanoid.model.Paddle;
 import com.knightquest.arkanoid.model.brick.Brick;
+import com.knightquest.arkanoid.observer.GameEventListener;
+import com.knightquest.arkanoid.observer.GameEventManager;
 import com.knightquest.arkanoid.state.GameState;
 import com.knightquest.arkanoid.state.GameStateManager;
 import static com.knightquest.arkanoid.util.Constants.BRICK_HEIGHT;
@@ -30,8 +33,14 @@ public class GameManager {
     private int score, lives;
     private CollisionHandler collisionHandler;
 
+    // Event manager
+    private GameEventManager eventManager;
+
+    // Power-up manager
+    private PowerUpManager powerUpManager;
+
     // Level system
-    private int currentLevelNumber = 1;
+    private int currentLevelNumber = 3;
     private Level currentLevel;
 
     // State management
@@ -55,7 +64,15 @@ public class GameManager {
         ball = new Ball(SCREEN_WIDTH/2, 500);
         lives = INITIAL_LIVES;
         score = 0;
-        collisionHandler = new CollisionHandler(this);
+
+        eventManager = new GameEventManager();
+        System.out.println("GameEventManager initialized.");
+
+        // Power-up manager
+        powerUpManager = new PowerUpManager(this, eventManager);
+        System.out.println("PowerUpManager initialized.");
+
+        collisionHandler = new CollisionHandler(this, eventManager);
 
         // Load first level
         loadLevel(1);
@@ -81,6 +98,9 @@ public class GameManager {
         paddle.update(deltaTime);
         ball.update(deltaTime);
 
+        // Update power-ups system
+        powerUpManager.update(deltaTime, paddle);
+
         // Check collisions
         collisionHandler.checkBallWallCollision(ball);
         collisionHandler.checkBallPaddleCollision(ball, paddle);
@@ -93,15 +113,24 @@ public class GameManager {
             if (brick.isDestroyed()) {
                 iter.remove();
                 score += 10;
+                eventManager.notifyScoreChanged(score); // Observer Pattern: notify score change
+
             }
         }
 
         // Ball out
         if (ball.isFallenOff()) {
             lives--;
+            eventManager.notifyLifeLost(lives);
             if (lives > 0) {
                 resetBall();
+            } else {
+                eventManager.notifyGameOver(false, score);
             }
+        }
+
+        if (bricks.isEmpty()) {
+            eventManager.notifyLevelCompleted(currentLevelNumber, score);
         }
     }
 
@@ -126,20 +155,24 @@ public class GameManager {
 
     private void resetBall() {
         ball = new Ball(SCREEN_WIDTH/2, 500);
+        // Clear active power-ups
+        powerUpManager.clearAll(paddle);
     }
 
     // Restart level
     public void restartLevel() {
         loadLevel(currentLevelNumber);
         resetBall();
+        // Clear active power-ups
+        powerUpManager.clearAll(paddle);
     }
 
     // Reset game to level 1
     public void resetGame() {
-        currentLevelNumber = 1;
+        currentLevelNumber = 3;
         lives = INITIAL_LIVES;
         score = 0;
-        loadLevel(1);
+        loadLevel(3);
         resetBall();
     }
 
@@ -183,6 +216,10 @@ public class GameManager {
 
     public String getCurrentLevelName() {
         return currentLevel != null ? LevelFactory.getLevelName(currentLevelNumber) : "Unknown";
+    }
+
+    public PowerUpManager getPowerUpManager() {
+        return powerUpManager;
     }
 
     public List<Ball> getBalls() {
