@@ -1,6 +1,7 @@
 package com.knightquest.arkanoid.model.brick;
 
 import com.knightquest.arkanoid.model.GameObject;
+import com.knightquest.arkanoid.model.powerup.PowerUpType;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
@@ -8,6 +9,8 @@ public abstract class Brick extends GameObject {
     protected int hitPoints; //HP of brick
     protected Color color;
     protected BrickType type;
+    protected PowerUpType powerUpType;
+    protected double dropChance = 0.3; // Chance to drop power-up upon destruction
 
     /**
      * Basic contructor for every brick.
@@ -50,4 +53,29 @@ public abstract class Brick extends GameObject {
     public BrickType getType() {
         return type;
     }
+
+    public PowerUpType getPowerUpDrop() {
+        if (powerUpType != null && Math.random() <= dropChance) {
+            return powerUpType;
+        }
+        return null;
+    }
+
+    public void setPowerUpDrop(PowerUpType type) {
+        this.powerUpType = type;
+    }
+
+    public void setDropChance(double chance) {
+        this.dropChance = Math.max(0.0, Math.min(1, chance));
+    }
+
+    public int getHealth() {
+        return hitPoints;
+    }
+
+    public void destroy() {
+        hitPoints = 0;
+        active = false;
+    }
+
 }
