@@ -7,15 +7,19 @@ import com.knightquest.arkanoid.model.Ball;
 import com.knightquest.arkanoid.model.GameObject;
 import com.knightquest.arkanoid.model.Paddle;
 import com.knightquest.arkanoid.model.brick.Brick;
+import com.knightquest.arkanoid.model.powerup.PowerUpType;
+import com.knightquest.arkanoid.observer.GameEventManager;
 import static com.knightquest.arkanoid.util.Constants.SCREEN_WIDTH;
 
 import javafx.geometry.Rectangle2D;
 
 public class CollisionHandler {
     private GameManager gameManager;
+    private GameEventManager eventManager;
 
-    public CollisionHandler(GameManager gameManger) {
+    public CollisionHandler(GameManager gameManager, GameEventManager eventManager) {
         this.gameManager = gameManager;
+        this.eventManager = eventManager;
     }
 
     /**
@@ -76,22 +80,29 @@ public class CollisionHandler {
             double overlapX = (brick.getWidth() + ball.getWidth()) / 2 - Math.abs(dx);
             double overlapY = (brick.getHeight() + ball.getHeight()) / 2 - Math.abs(dy);
 
-            if (overlapX < overlapY) {
-                 ball.bounceHorizontal();
-                if (dx > 0) {
-                ball.setX(brickCenterX + brick.getWidth() / 2);
-                 } else {
-                ball.setX(brickCenterX - brick.getWidth() / 2 - ball.getWidth());
-                }
-            } else {
-                ball.bounceVertical();
-                if (dy > 0) {
-                ball.setY(brickCenterY + brick.getHeight() / 2);
-                } else {
-                ball.setY(brickCenterY - brick.getHeight() / 2 - ball.getHeight());
-                }
-            }
+            boolean shouldBounce = ball.getMovementStrategy().handleBrickCollision(ball, brick);
+
             handleBrickDestruction(brick);
+
+            if (shouldBounce) {
+                if (overlapX < overlapY) {
+                     ball.bounceHorizontal();
+                    if (dx > 0) {
+                    ball.setX(brickCenterX + brick.getWidth() / 2);
+                     } else {
+                    ball.setX(brickCenterX - brick.getWidth() / 2 - ball.getWidth());
+                    }
+                } else {
+                    ball.bounceVertical();
+                    if (dy > 0) {
+                    ball.setY(brickCenterY + brick.getHeight() / 2);
+                    } else {
+                    ball.setY(brickCenterY - brick.getHeight() / 2 - ball.getHeight());
+                    }
+                }
+                break;
+            }
+//            handleBrickDestruction(brick);
             //SoundManager.play("brick_hit");
             
             break;
@@ -132,12 +143,23 @@ public class CollisionHandler {
      * Handling when bricks are destroyed
      */
     private void handleBrickDestruction(Brick brick) {
-        brick.takeHit();
+//        brick.takeHit();
 
-        /*if (brick.isDestroyed()) {
-            gameManager.addScore(10);
-            SoundManager.play("brick_break");
-        }*/
+        if (brick.isDestroyed()) {
+            int points = 10; //  point value
+
+            PowerUpType powerUpType = brick.getPowerUpDrop();
+            if (powerUpType != null) {
+
+                double powerUpX = brick.getX() + (brick.getWidth() - 30) / 2;
+                double powerUpY = brick.getY();
+                System.out.println("Brick dropped power-up at (" + powerUpX + ", " + powerUpY + ")");
+                gameManager.getPowerUpManager().spawnPowerUp(powerUpType, powerUpX, powerUpY);
+            }
+
+            eventManager.notifyBrickDestroyed(brick, points);
+
+        }
     }
 }
 
