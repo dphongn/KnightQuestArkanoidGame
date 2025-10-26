@@ -102,11 +102,13 @@ public class PlayingState extends GameState {
 
         // Draw ball
         Ball ball = gameManager.getBall();
-        gc.setFill(Color.WHITE);
-        gc.fillOval(ball.getX() - ball.getRadius(), ball.getY() - ball.getRadius(),
-                ball.getRadius() * 2, ball.getRadius() * 2);
-
-        // Draw score and lives
+//        gc.setFill(Color.WHITE);
+//        gc.fillOval(ball.getX() - ball.getRadius(), ball.getY() - ball.getRadius(),
+//                ball.getRadius() * 2, ball.getRadius() * 2);
+//
+//        // Draw score and lives
+        ball.render(gc);
+        gameManager.getPowerUpManager().render(gc);
         drawUI(gc);
     }
 
