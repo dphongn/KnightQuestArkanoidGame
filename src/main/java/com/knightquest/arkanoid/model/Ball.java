@@ -19,6 +19,10 @@ public class Ball extends MovableObject {
     private boolean fallenOff;
     private boolean piercing = false;
 
+    // Sticky ball state
+    private boolean stuckToPaddle = false;
+    private double stuckOffsetX = 0;
+
     /**
      * Contructor from GameObject.
      */
@@ -26,7 +30,9 @@ public class Ball extends MovableObject {
         super(x, y, BALL_RADIUS * 2, BALL_RADIUS * 2);
         this.radius = BALL_RADIUS;
         this.movementStrategy = new NormalMovementStrategy();
-        setVelocity(200, -BALL_SPEED); //up right
+//        setVelocity(200, -BALL_SPEED); //up right
+        this.stuckToPaddle = true;
+        this.stuckOffsetX = 0;
     }
 
     /**
@@ -34,7 +40,12 @@ public class Ball extends MovableObject {
      */
     @Override
     public void update(double deltaTime) {
-        move(deltaTime);
+
+        if(stuckToPaddle) {
+            return;
+        }
+
+        movementStrategy.move(this, deltaTime);
 
         // Clamp velocity to prevent excessive speeds
         double maxSpeed = BALL_SPEED * 2; // Allow up to 2x normal speed
@@ -123,5 +134,72 @@ public class Ball extends MovableObject {
     public void multiplySpeed(double speedMultiplier) {
     }
 
+    // Sticky ball methods
+    public boolean isStuckToPaddle() {
+        return stuckToPaddle;
+    }
 
+    /**
+     * Stick ball to paddle
+     */
+    public void stickToPaddle (Paddle paddle) {
+        if (!stuckToPaddle) return;
+
+        double paddleCenterX = paddle.getX() + paddle.getWidth() / 2;
+        this.x = paddleCenterX + stuckOffsetX - radius;
+        this.y = paddle.getY() - height - 2;
+    }
+
+    /**
+     *  Lauch ball from paddle
+     */
+    public void launch() {
+        if (!stuckToPaddle) return;
+
+        stuckToPaddle = false;
+
+        // Calculate launch angle based on offset from paddle center
+        // stuckOffsetX range: -50 to +50 (paddle width = 100)
+
+        double maxOffset = 50.0; // Half of paddle width
+        double normalizedOffset = Math.max(-1.0, Math.min(1.0, stuckOffsetX / maxOffset));
+
+        // Angle range: 45° (left edge) to 135° (right edge), 90° (center straight up)
+        double baseAngle = 90.0; // Straight up
+        double angleVariation = 45.0; // ±45° variation
+        double angle = Math.toRadians(baseAngle + (normalizedOffset * angleVariation));
+
+        // Use BALL_SPEED constant directly
+        double speed = BALL_SPEED;
+
+        // Calculate velocity components
+        double vx = Math.cos(angle) * speed; // Horizontal component
+        double vy = -Math.abs(Math.sin(angle)) * speed; // Vertical component (always negative = upward)
+
+        setDx(vx);
+        setDy(vy);
+
+        System.out.println("🚀 Ball launched! Offset: " + String.format("%.1f", stuckOffsetX)
+                + " | Angle: " + String.format("%.1f", Math.toDegrees(angle)) + "°"
+                + " | Velocity: (" + String.format("%.1f", vx) + ", " + String.format("%.1f", vy) + ")");
+
+
+    }
+
+    public void updateStuckOffset(double dx) {
+        if (!stuckToPaddle) return;
+
+        stuckOffsetX += dx;
+        stuckOffsetX = Math.max(-45, Math.min(45, stuckOffsetX));
+    }
+
+    /**
+     * Reset ball to stuck state
+     */
+    public void resetToStuck() {
+        stuckToPaddle = true;
+        stuckOffsetX = 0;
+        setVelocity(0, 0);
+        System.out.println("Ball reset to stuck");
+    }
 }
