@@ -34,6 +34,10 @@ public class PlayingState extends GameState {
     public void update(double deltaTime) {
         // Update paddle movement based on key presses
         Paddle paddle = gameManager.getPaddle();
+        Ball ball = gameManager.getBall();
+
+        double paddleOldx = paddle.getX();
+
         if (leftPressed && !rightPressed) {
             paddle.moveLeft();
         } else if (rightPressed && !leftPressed) {
@@ -41,6 +45,13 @@ public class PlayingState extends GameState {
         } else {
             paddle.stop(); // Stop when no keys pressed or both pressed
         }
+
+        if (ball.isStuckToPaddle()) {
+            double paddleDx = paddle.getX() - paddleOldx;
+            ball.updateStuckOffset(paddleDx);
+            ball.stickToPaddle(paddle);
+        }
+
         // Update game logic
         gameManager.updateGameLogic(deltaTime);
 
@@ -65,6 +76,15 @@ public class PlayingState extends GameState {
         if (keyPressed && keyCode == KeyCode.ESCAPE) {
             changeState(new PausedState(gameManager));
             return;
+        }
+
+        // Handle ball launch (Enter or Space)
+        Ball ball = gameManager.getBall();
+        if (keyPressed && (keyCode == KeyCode.SPACE || keyCode == KeyCode.ENTER)) {
+            if (ball.isStuckToPaddle()) {
+                ball.launch();
+                return;
+            }
         }
 
         // Handle paddle movement keys
