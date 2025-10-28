@@ -155,6 +155,7 @@ public class GameManager {
 
     private void resetBall() {
         ball = new Ball(SCREEN_WIDTH/2, 500);
+        ball.resetToStuck();
         // Clear active power-ups
         powerUpManager.clearAll(paddle);
     }
