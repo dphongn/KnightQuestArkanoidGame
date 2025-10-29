@@ -5,6 +5,7 @@ import com.knightquest.arkanoid.model.powerup.PowerUp;
 import com.knightquest.arkanoid.model.powerup.PowerUpType;
 import com.knightquest.arkanoid.model.powerup.FireBallPowerUp;
 import com.knightquest.arkanoid.model.powerup.PierceBallPowerUp;
+import com.knightquest.arkanoid.model.powerup.MultiBallPowerUp;
 
 import com.knightquest.arkanoid.model.Paddle;
 import com.knightquest.arkanoid.observer.GameEventManager;
@@ -35,6 +36,10 @@ public class PowerUpManager {
 
             case PIERCE_BALL:
                 powerUp = new PierceBallPowerUp(x, y);
+                break;
+
+            case MULTI_BALL:
+                powerUp = new MultiBallPowerUp(x, y);
                 break;
 
             default:
