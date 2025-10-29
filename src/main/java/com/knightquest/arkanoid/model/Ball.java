@@ -47,18 +47,39 @@ public class Ball extends MovableObject {
 
         movementStrategy.move(this, deltaTime);
 
-        // Clamp velocity to prevent excessive speeds
-        double maxSpeed = BALL_SPEED * 2; // Allow up to 2x normal speed
-        if (Math.abs(getDx()) > maxSpeed) setDx(Math.signum(getDx()) * maxSpeed);
-        if (Math.abs(getDy()) > maxSpeed) setDy(Math.signum(getDy()) * maxSpeed);
-
-        // Ensure minimum speed to prevent ball getting stuck
-        double minSpeed = BALL_SPEED * 0.3;
-        if (Math.abs(getDx()) < minSpeed) setDx(Math.signum(getDx()) * minSpeed);
-        if (Math.abs(getDy()) < minSpeed) setDy(Math.signum(getDy()) * minSpeed);
-
+//        // Clamp velocity to prevent excessive speeds
+//        double maxSpeed = BALL_SPEED * 2; // Allow up to 2x normal speed
+//        if (Math.abs(getDx()) > maxSpeed) setDx(Math.signum(getDx()) * maxSpeed);
+//        if (Math.abs(getDy()) > maxSpeed) setDy(Math.signum(getDy()) * maxSpeed);
+//
+//        // Ensure minimum speed to prevent ball getting stuck
+//        double minSpeed = BALL_SPEED * 0.3;
+//        if (Math.abs(getDx()) < minSpeed) setDx(Math.signum(getDx()) * minSpeed);
+//        if (Math.abs(getDy()) < minSpeed) setDy(Math.signum(getDy()) * minSpeed);
+//
+//    }
+        // Normalize velocity to exactly BALL_SPEED to ensure all balls move at same speed
+        // This guarantees consistent speed regardless of power-ups, collisions, or multi-ball spawns
+        normalizeSpeed();
     }
 
+    /**
+     * Normalize velocity magnitude to exactly BALL_SPEED while preserving direction.
+     * This ensures all balls always move at the same speed.
+     */
+    private void normalizeSpeed() {
+        double currentSpeed = Math.sqrt(getDx() * getDx() + getDy() * getDy());
+
+        // If speed is effectively zero, ball is stuck - don't normalize
+        if (currentSpeed < 0.01) {
+            return;
+        }
+
+        // Scale velocity to exact BALL_SPEED
+        double factor = BALL_SPEED / currentSpeed;
+        setDx(getDx() * factor);
+        setDy(getDy() * factor);
+    }
     @Override
     public void render(GraphicsContext gc) {
         if (onFire) {
@@ -201,5 +222,18 @@ public class Ball extends MovableObject {
         stuckOffsetX = 0;
         setVelocity(0, 0);
         System.out.println("Ball reset to stuck");
+    }
+
+
+    /**
+     * Release ball from stuck state and set initial velocity so it will move.
+     * Normalizes speed to exactly BALL_SPEED to ensure consistency.
+     */
+    public void releaseWithVelocity(double vx, double vy) {
+        this.stuckToPaddle = false;
+        setVelocity(vx, vy);
+        // Normalize to exact BALL_SPEED to ensure all spawned balls have identical speed
+        normalizeSpeed();
+        System.out.println("🔓 Spawned ball released with velocity: (" + String.format("%.1f", getDx()) + ", " + String.format("%.1f", getDy()) + ") | Speed: " + String.format("%.1f", getSpeed()));
     }
 }
