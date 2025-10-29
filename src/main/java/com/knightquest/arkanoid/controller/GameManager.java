@@ -28,7 +28,7 @@ public class GameManager {
 
     private Paddle paddle;
     private List<Ball> balls;
-    private Ball ball;
+//    private Ball ball;
     private List<Brick> bricks;
     private int score, lives;
     private CollisionHandler collisionHandler;
@@ -61,7 +61,10 @@ public class GameManager {
 
     private void initGame() {
         paddle = new Paddle(SCREEN_WIDTH/2 - PADDLE_WIDTH/2, 550);
-        ball = new Ball(SCREEN_WIDTH/2, 500);
+        balls = new ArrayList<>();
+        Ball initialBall = new Ball(SCREEN_WIDTH/2, 500);
+        initialBall.resetToStuck();
+        balls.add(initialBall);
         lives = INITIAL_LIVES;
         score = 0;
 
@@ -96,15 +99,32 @@ public class GameManager {
 
     public void updateGameLogic(double deltaTime) {
         paddle.update(deltaTime);
-        ball.update(deltaTime);
+//        ball.update(deltaTime);
 
         // Update power-ups system
         powerUpManager.update(deltaTime, paddle);
 
+        // Update and process each ball
+        java.util.Iterator<Ball> ballIter = balls.iterator();
+        while (ballIter.hasNext()) {
+            Ball b = ballIter.next();
+            b.update(deltaTime);
+
+            // Use CollisionHandler for more precise collision detection
+            collisionHandler.checkBallWallCollision(b);
+            collisionHandler.checkBallPaddleCollision(b, paddle);
+            collisionHandler.checkBallBrickCollision(b, bricks);
+
+            // Ball out of screen: remove it
+            if (b.isFallenOff()) {
+                ballIter.remove();
+                System.out.println("Life: a ball has fallen off. Remaining balls: " + balls.size());
+            }
+        }
         // Check collisions
-        collisionHandler.checkBallWallCollision(ball);
-        collisionHandler.checkBallPaddleCollision(ball, paddle);
-        collisionHandler.checkBallBrickCollision(ball, bricks);
+//        collisionHandler.checkBallWallCollision(ball);
+//        collisionHandler.checkBallPaddleCollision(ball, paddle);
+//        collisionHandler.checkBallBrickCollision(ball, bricks);
 
         // Remove destroyed bricks and update score
         Iterator<Brick> iter = bricks.iterator();
@@ -119,7 +139,7 @@ public class GameManager {
         }
 
         // Ball out
-        if (ball.isFallenOff()) {
+        if (balls.isEmpty()) {
             lives--;
             eventManager.notifyLifeLost(lives);
             if (lives > 0) {
@@ -154,9 +174,14 @@ public class GameManager {
     }
 
     private void resetBall() {
-        ball = new Ball(SCREEN_WIDTH/2, 500);
-        ball.resetToStuck();
+//        ball = new Ball(SCREEN_WIDTH/2, 500);
+//        ball.resetToStuck();
         // Clear active power-ups
+        if (balls == null) balls = new ArrayList<>();
+        balls.clear();
+        Ball newBall = new Ball(SCREEN_WIDTH/2, 500);
+        newBall.resetToStuck();
+        balls.add(newBall);
         powerUpManager.clearAll(paddle);
     }
 
@@ -197,9 +222,7 @@ public class GameManager {
     public Paddle getPaddle() {
         return paddle;
     }
-    public Ball getBall() {
-        return ball;
-    }
+
     public List<Brick> getBricks() {
         return bricks;
     }
@@ -223,20 +246,27 @@ public class GameManager {
         return powerUpManager;
     }
 
-    public List<Ball> getBalls() {
+
+    /**
+     * Return the primary ball (first in list) or null if none.
+     */
+    public Ball getBall() {
+        return (balls != null && !balls.isEmpty()) ? balls.get(0) : null;
+    }
+
+    /**
+     * Return live view of all balls.
+     */
+    public java.util.List<Ball> getBalls() {
         return balls;
     }
 
     public void addBall(Ball ball) {
-        if (balls == null) {
-            balls = new ArrayList<>();
-        }
-        balls.add(ball);
+        if (balls == null) balls = new java.util.ArrayList<>();
+        if (ball != null) balls.add(ball);
     }
 
     public void removeBall(Ball ball) {
-        if (balls != null) {
-            balls.remove(ball);
-        }
+        if (balls != null && ball != null) balls.remove(ball);
     }
 }
