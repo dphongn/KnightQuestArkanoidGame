@@ -1,5 +1,6 @@
 package com.knightquest.arkanoid.state;
 
+import java.util.List;
 import com.knightquest.arkanoid.controller.GameManager;
 import com.knightquest.arkanoid.model.Ball;
 import com.knightquest.arkanoid.model.Paddle;
@@ -121,13 +122,19 @@ public class PlayingState extends GameState {
         gc.fillRect(paddle.getX(), paddle.getY(), paddle.getWidth(), paddle.getHeight());
 
         // Draw ball
-        Ball ball = gameManager.getBall();
+//        Ball ball = gameManager.getBall();
 //        gc.setFill(Color.WHITE);
 //        gc.fillOval(ball.getX() - ball.getRadius(), ball.getY() - ball.getRadius(),
 //                ball.getRadius() * 2, ball.getRadius() * 2);
 //
 //        // Draw score and lives
-        ball.render(gc);
+//        ball.render(gc);
+        List<Ball> balls = gameManager.getBalls();
+        if (balls != null) {
+            for (Ball b : balls) {
+                if (b != null) b.render(gc);
+            }
+        }
         gameManager.getPowerUpManager().render(gc);
         drawUI(gc);
     }
