@@ -248,6 +248,13 @@ public class GameManager {
 
 
     /**
+     * Expose the event manager for states/controllers that need to send events.
+     */
+    public GameEventManager getEventManager() {
+        return eventManager;
+    }
+
+    /**
      * Return the primary ball (first in list) or null if none.
      */
     public Ball getBall() {
