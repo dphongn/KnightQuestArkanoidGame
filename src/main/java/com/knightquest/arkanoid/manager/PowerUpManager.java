@@ -8,6 +8,7 @@ import com.knightquest.arkanoid.model.powerup.GunPaddlePowerUp;
 import com.knightquest.arkanoid.model.powerup.PierceBallPowerUp;
 import com.knightquest.arkanoid.model.powerup.MultiBallPowerUp;
 import com.knightquest.arkanoid.model.powerup.ExpandPaddlePowerUp;
+import com.knightquest.arkanoid.model.powerup.MagnetPaddlePowerUp;
 import com.knightquest.arkanoid.model.powerup.FastBallPowerUp;
 import com.knightquest.arkanoid.model.powerup.SlowBallPowerUp;
 import com.knightquest.arkanoid.model.Paddle;
@@ -58,6 +59,12 @@ public class PowerUpManager {
             case GUN_PADDLE:
                 powerUp = new GunPaddlePowerUp(x, y);
                 System.out.println("🎁 Gun Paddle power-up spawned at (" + x + ", " + y + ")");
+                break;
+
+
+            case MAGNET_PADDLE:
+                powerUp = new MagnetPaddlePowerUp(x, y);
+                System.out.println("🎁 Magnet Paddle power-up spawned at (" + x + ", " + y + ")");
                 break;
 
             case MULTI_BALL:
