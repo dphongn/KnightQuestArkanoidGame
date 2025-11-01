@@ -105,7 +105,7 @@ public abstract class PowerUp extends GameObject {
             case MULTI_BALL -> Color.rgb(230, 126, 34);
             case PIERCE_BALL -> Color.rgb(155, 89, 182);
             case FIRE_BALL -> Color.rgb(192, 57, 43);
-            case LASER_PADDLE -> Color.rgb(241, 196, 15);
+            case GUN_PADDLE -> Color.rgb(241, 196, 15);
             case MAGNET_PADDLE -> Color.rgb(26, 188, 156);
         };
     }

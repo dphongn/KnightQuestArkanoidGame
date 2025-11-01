@@ -2,16 +2,8 @@ package com.knightquest.arkanoid.factory;
 
 import java.util.Random;
 
-import com.knightquest.arkanoid.model.powerup.PowerUp;
-import com.knightquest.arkanoid.model.powerup.PowerUpType;
-import com.knightquest.arkanoid.model.powerup.ExpandPaddlePowerUp;
-import com.knightquest.arkanoid.model.powerup.FastBallPowerUp;
-import com.knightquest.arkanoid.model.powerup.FireBallPowerUp;
-import com.knightquest.arkanoid.model.powerup.LaserPaddlePowerUp;
-import com.knightquest.arkanoid.model.powerup.MagnetPaddlePowerUp;
-import com.knightquest.arkanoid.model.powerup.MultiBallPowerUp;
-import com.knightquest.arkanoid.model.powerup.SlowBallPowerUp;
-import com.knightquest.arkanoid.model.powerup.PierceBallPowerUp;
+import com.knightquest.arkanoid.model.powerup.*;
+//import com.knightquest.arkanoid.model.powerup.GunPaddlePowerUp;
 
 /**
  * Factory class to create PowerUp instances based on PowerUpType.
@@ -25,7 +17,7 @@ public class PowerUpFactory {
     public static PowerUp createPowerUp(PowerUpType type, double x, double y) {
         return switch (type) {
             case EXPAND_PADDLE -> new ExpandPaddlePowerUp(x, y);
-            case LASER_PADDLE -> new LaserPaddlePowerUp(x, y);
+            case GUN_PADDLE -> new GunPaddlePowerUp(x, y);
             case MAGNET_PADDLE -> new MagnetPaddlePowerUp(x, y);
             case MULTI_BALL -> new MultiBallPowerUp(x, y);
             case FAST_BALL -> new FastBallPowerUp(x, y);
