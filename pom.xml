@@ -199,6 +199,10 @@
                             <noManPages>true</noManPages>
                             <stripDebug>true</stripDebug>
                             <noHeaderFiles>true</noHeaderFiles>
+                            <options>
+                                <option>--add-modules</option>
+                                 <option>javafx.controls,javafx.fxml,javafx.web,javafx.swing,javafx.media</option>
+                            </options>
                         </configuration>
                     </execution>
                 </executions>
