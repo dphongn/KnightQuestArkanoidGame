@@ -1,25 +1,29 @@
 package com.knightquest.arkanoid.model.powerup;
 
 import com.knightquest.arkanoid.model.Paddle;
+
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.ArcType;
 
 public class MagnetPaddlePowerUp extends PowerUp {
+    private static final double DURATION = 12.0; // 12 seconds
 
     public MagnetPaddlePowerUp(double x, double y) {
-        super(x, y, PowerUpType.MAGNET_PADDLE, PowerUpType.MAGNET_PADDLE.getDefaultDuration());
+        super(x, y, PowerUpType.MAGNET_PADDLE, DURATION);
     }
 
     @Override
     public void apply(Paddle paddle) {
         paddle.setMagnetic(true);
+        System.out.println("🧲 Magnet Paddle power-up APPLIED! Paddle is now magnetic.");
     }
 
     @Override
     public void remove(Paddle paddle) {
         paddle.setMagnetic(false);
-        paddle.releaseBall();   //Release ball if it's stuck
+        paddle.releaseBall(); // Release ball if it's stuck
+        System.out.println("🧲 Magnet Paddle power-up REMOVED.");
     }
 
     @Override
