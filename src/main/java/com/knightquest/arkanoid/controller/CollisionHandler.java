@@ -30,8 +30,17 @@ public class CollisionHandler {
             return;
         }
 
+
         // Position ball above paddle to prevent sticking
         ball.setY(paddle.getY() - ball.getHeight());
+
+
+        // If paddle is magnetic, catch the ball
+        if (paddle.isMagnetic() && !ball.isStuckToPaddle()) {
+            ball.resetToStuck(); // Use existing method to set stuck state
+            System.out.println("🧲 Ball caught by magnetic paddle!");
+            return; // Don't bounce, just stick
+        }
 
         // Calculate where ball hit the paddle (0 = left edge, 1 = right edge)
         double ballCenterX = ball.getX() + ball.getWidth() / 2;
