@@ -10,6 +10,7 @@ import  com.knightquest.arkanoid.manager.PowerUpManager;
 import com.knightquest.arkanoid.model.Ball;
 import com.knightquest.arkanoid.model.Paddle;
 import com.knightquest.arkanoid.model.brick.Brick;
+import com.knightquest.arkanoid.model.Bullet;
 import com.knightquest.arkanoid.observer.GameEventListener;
 import com.knightquest.arkanoid.observer.GameEventManager;
 import com.knightquest.arkanoid.state.GameState;
@@ -28,7 +29,9 @@ public class GameManager {
 
     private Paddle paddle;
     private List<Ball> balls;
-//    private Ball ball;
+    private List<Bullet> bullets;
+
+    //    private Ball ball;
     private List<Brick> bricks;
     private int score, lives;
     private CollisionHandler collisionHandler;
@@ -63,6 +66,7 @@ public class GameManager {
         paddle = new Paddle(SCREEN_WIDTH/2 - PADDLE_WIDTH/2, 550);
         balls = new ArrayList<>();
         Ball initialBall = new Ball(SCREEN_WIDTH/2, 500);
+        bullets = new ArrayList<>();
         initialBall.resetToStuck();
         balls.add(initialBall);
         lives = INITIAL_LIVES;
@@ -104,6 +108,28 @@ public class GameManager {
         // Update power-ups system
         powerUpManager.update(deltaTime, paddle);
 
+        // Update and process bullets
+        java.util.Iterator<Bullet> bulletIter = bullets.iterator();
+        while (bulletIter.hasNext()) {
+            Bullet bullet = bulletIter.next();
+            bullet.update(deltaTime);
+
+            // Check bullet collision with bricks
+            Iterator<Brick> brickIter = bricks.iterator();
+            while (brickIter.hasNext()) {
+                Brick brick = brickIter.next();
+                if (bullet.isActive() && bullet.getBounds().intersects(brick.getBounds())) {
+                    brick.takeHit();
+                    bullet.setActive(false);
+                    break;
+                }
+            }
+
+            // Remove inactive bullets
+            if (!bullet.isActive() || bullet.isOffScreen()) {
+                bulletIter.remove();
+            }
+        }
         // Update and process each ball
         java.util.Iterator<Ball> ballIter = balls.iterator();
         while (ballIter.hasNext()) {
@@ -275,5 +301,40 @@ public class GameManager {
 
     public void removeBall(Ball ball) {
         if (balls != null && ball != null) balls.remove(ball);
+    }
+
+
+    /**
+     * Shoot a bullet from the paddle (when Gun Paddle power-up is active).
+     */
+    public void shootBullet() {
+        System.out.println("🔫 shootBullet() called. Can shoot: " + paddle.canShootGun());
+        if (paddle.canShootGun()) {
+            // Create two bullets, one from each side of paddle
+            double paddleCenterX = paddle.getX() + paddle.getWidth() / 2.0;
+            double paddleTop = paddle.getY();
+
+            // Left bullet
+            Bullet leftBullet = new Bullet(paddleCenterX - 15, paddleTop);
+            bullets.add(leftBullet);
+
+            // Right bullet
+            Bullet rightBullet = new Bullet(paddleCenterX + 10, paddleTop);
+            bullets.add(rightBullet);
+
+            // Reset cooldown timer
+            paddle.resetGunTimer();
+
+            System.out.println("💥 Bullets fired! Total bullets: " + bullets.size());
+        } else {
+            System.out.println("❌ Cannot shoot - Gun power-up not active or on cooldown");
+        }
+    }
+
+    /**
+     * Get bullets for rendering.
+     */
+    public List<Bullet> getBullets() {
+        return bullets;
     }
 }
