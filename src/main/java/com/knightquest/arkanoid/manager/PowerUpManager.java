@@ -6,7 +6,9 @@ import com.knightquest.arkanoid.model.powerup.PowerUpType;
 import com.knightquest.arkanoid.model.powerup.FireBallPowerUp;
 import com.knightquest.arkanoid.model.powerup.PierceBallPowerUp;
 import com.knightquest.arkanoid.model.powerup.MultiBallPowerUp;
-
+import com.knightquest.arkanoid.model.powerup.ExpandPaddlePowerUp;
+import com.knightquest.arkanoid.model.powerup.FastBallPowerUp;
+import com.knightquest.arkanoid.model.powerup.SlowBallPowerUp;
 import com.knightquest.arkanoid.model.Paddle;
 import com.knightquest.arkanoid.observer.GameEventManager;
 import javafx.scene.canvas.GraphicsContext;
@@ -36,6 +38,20 @@ public class PowerUpManager {
 
             case PIERCE_BALL:
                 powerUp = new PierceBallPowerUp(x, y);
+                break;
+            case FAST_BALL:
+                powerUp = new FastBallPowerUp(x, y);
+                System.out.println("🎁 Fast Ball power-up spawned at (" + x + ", " + y + ")");
+                break;
+
+            case SLOW_BALL:
+                powerUp = new SlowBallPowerUp(x, y);
+                System.out.println("🎁 Slow Ball power-up spawned at (" + x + ", " + y + ")");
+                break;
+
+            case EXPAND_PADDLE:
+                powerUp = new ExpandPaddlePowerUp(x, y);
+                System.out.println("🎁 Expand Paddle power-up spawned at (" + x + ", " + y + ")");
                 break;
 
             case MULTI_BALL:
