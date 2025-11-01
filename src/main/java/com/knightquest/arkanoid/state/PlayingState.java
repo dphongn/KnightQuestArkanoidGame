@@ -86,6 +86,10 @@ public class PlayingState extends GameState {
                 ball.launch();
                 return;
             }
+            // If ball is not stuck, try to shoot bullets (Gun Paddle power-up)
+            else {
+                gameManager.shootBullet();
+            }
         }
 
         // Handle paddle movement keys
@@ -135,6 +139,17 @@ public class PlayingState extends GameState {
                 if (b != null) b.render(gc);
             }
         }
+
+        // Draw bullets (Gun Paddle power-up)
+        java.util.List<com.knightquest.arkanoid.model.Bullet> bullets = gameManager.getBullets();
+        if (bullets != null) {
+            for (com.knightquest.arkanoid.model.Bullet bullet : bullets) {
+                if (bullet != null && bullet.isActive()) {
+                    bullet.render(gc);
+                }
+            }
+        }
+
         gameManager.getPowerUpManager().render(gc);
         drawUI(gc);
     }
