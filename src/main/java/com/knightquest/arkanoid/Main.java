@@ -31,15 +31,8 @@ public class Main extends Application {
         StackPane root = new StackPane(canvas);
         Scene scene = new Scene(root, SCREEN_WIDTH, SCREEN_HEIGHT);
 
-        scene.setOnKeyPressed(e -> {
-            if (e.getCode() == KeyCode.LEFT) gameManager.getPaddle().moveLeft();
-            if (e.getCode() == KeyCode.RIGHT) gameManager.getPaddle().moveRight();
-        });
-        scene.setOnKeyReleased(e -> {
-            if (e.getCode() == KeyCode.LEFT || e.getCode() == KeyCode.RIGHT) {
-                gameManager.getPaddle().stop();
-            }
-        });
+        scene.setOnKeyPressed(e -> gameManager.handleInput(e));
+        scene.setOnKeyReleased(e -> gameManager.handleInput(e));
 
         new AnimationTimer() {
             @Override
@@ -67,35 +60,7 @@ public class Main extends Application {
     }
 
     private void render() {
-        // Clear screen
-        gc.setFill(Color.BLACK);
-        gc.fillRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-
-        // Render game objects
-        gameManager.getPaddle().render(gc);
-        gameManager.getBall().render(gc);
-        gameManager.getBricks().forEach(brick -> {
-            if (brick.isActive()) {
-                brick.render(gc);
-            }
-        });
-
-        // Render UI text with better formatting
-        gc.setFill(Color.WHITE);
-        gc.setFont(javafx.scene.text.Font.font("Arial", 16));
-        gc.fillText("Score: " + gameManager.getScore(), 10, 25);
-        gc.fillText("Lives: " + gameManager.getLives(), SCREEN_WIDTH - 80, 25);
-
-        // Game over or win message
-        if (gameManager.getLives() <= 0) {
-            gc.setFont(javafx.scene.text.Font.font("Arial", 48));
-            gc.setFill(Color.RED);
-            gc.fillText("GAME OVER", SCREEN_WIDTH/2 - 120, SCREEN_HEIGHT/2);
-        } else if (gameManager.getBricks().isEmpty()) {
-            gc.setFont(javafx.scene.text.Font.font("Arial", 48));
-            gc.setFill(Color.GREEN);
-            gc.fillText("YOU WIN!", SCREEN_WIDTH/2 - 100, SCREEN_HEIGHT/2);
-        }
+        gameManager.render(gc);
     }
 
     public static void main(String[] args) {

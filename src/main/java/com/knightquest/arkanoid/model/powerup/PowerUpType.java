@@ -7,7 +7,7 @@ public enum PowerUpType {
     MULTI_BALL("Multi Ball", 0.0, "Spaw s additional balls"),
     PIERCE_BALL("Pierce Ball", 12.0, "Ball pierces through bricks"),
     FIRE_BALL("Fire Ball", 10.0, "Ball destroys bricks in one hit"),
-    LASER_PADDLE("Laser Paddle", 15.0, "Enables laser shooting"),
+    GUN_PADDLE("Gun Paddle", 15.0, "Enables bullet shooting"),
     MAGNET_PADDLE("Magnet Paddle", 10.0, "Ball sticks to paddle");
 
     private final String displayName;

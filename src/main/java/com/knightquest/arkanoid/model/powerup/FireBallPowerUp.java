@@ -3,12 +3,16 @@ package com.knightquest.arkanoid.model.powerup;
 import com.knightquest.arkanoid.model.Paddle;
 import com.knightquest.arkanoid.model.Ball;
 import com.knightquest.arkanoid.controller.GameManager;
+import  com.knightquest.arkanoid.strategy.FireMovementStrategy;
+import  com.knightquest.arkanoid.strategy.NormalMovementStrategy;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 public class FireBallPowerUp extends PowerUp {
+    private static final double DURATION = 10.0; // seconds
+
     public FireBallPowerUp(double x, double y) {
-        super(x, y, PowerUpType.FIRE_BALL, PowerUpType.FIRE_BALL.getDefaultDuration());
+        super(x, y, PowerUpType.FIRE_BALL, DURATION);
     }
 
     @Override
@@ -16,15 +20,17 @@ public class FireBallPowerUp extends PowerUp {
         GameManager gm = GameManager.getInstance();
         Ball ball = gm.getBall();
         if (ball != null) {
+            ball.setMovementStrategy(new FireMovementStrategy());
             ball.setOnFire(true);
         }
 
         //Apply to all balls if multi-ball is active
-        if (gm.getBalls() != null) {
-            for (Ball b : gm.getBalls()) {
-                b.setOnFire(true);
-            }
-        }
+//        if (gm.getBalls() != null) {
+//            for (Ball b : gm.getBalls()) {
+//                b.setOnFire(true);
+//            }
+//        }
+        System.out.println("Fire Ball PowerUp");
     }
 
     @Override
@@ -32,15 +38,17 @@ public class FireBallPowerUp extends PowerUp {
         GameManager gm = GameManager.getInstance();
         Ball ball = gm.getBall();
         if (ball != null) {
+            ball.setMovementStrategy(new NormalMovementStrategy());
             ball.setOnFire(false);
         }
 
         //Remove from all balls
-        if (gm.getBalls() != null) {
-            for (Ball b : gm.getBalls()) {
-                b.setOnFire(false);
-            }
-        }
+//        if (gm.getBalls() != null) {
+//            for (Ball b : gm.getBalls()) {
+//                b.setOnFire(false);
+//            }
+//        }
+        System.out.println("Fire Ball PowerUp removed");
     }
 
     @Override

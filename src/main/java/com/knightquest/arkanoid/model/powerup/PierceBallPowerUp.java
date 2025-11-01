@@ -4,12 +4,15 @@ import com.knightquest.arkanoid.model.Paddle;
 import com.knightquest.arkanoid.model.Ball;
 import com.knightquest.arkanoid.controller.GameManager;
 import javafx.scene.canvas.GraphicsContext;
+import com.knightquest.arkanoid.strategy.PierceMovementStratrgy;
+import com.knightquest.arkanoid.strategy.NormalMovementStrategy;
 import javafx.scene.paint.Color;
 
 public class PierceBallPowerUp extends PowerUp {
+    private static final double DURATION = 4.0; // seconds
 
     public PierceBallPowerUp(double x, double y) {
-        super(x, y, PowerUpType.PIERCE_BALL, PowerUpType.PIERCE_BALL.getDefaultDuration());
+        super(x, y, PowerUpType.PIERCE_BALL, DURATION);
     }
 
     @Override
@@ -17,15 +20,17 @@ public class PierceBallPowerUp extends PowerUp {
         GameManager gm = GameManager.getInstance();
         Ball ball = gm.getBall();
         if (ball != null) {
+            ball.setMovementStrategy(new PierceMovementStratrgy());
             ball.setPiercing(true);
         }
 
-        //Apply to all balls if multi-ball is active
-        if (gm.getBalls() != null) {
-            for (Ball b : gm.getBalls()) {
-                b.setPiercing(true);
-            }
-        }
+        System.out.println("PierceBallPowerUp apply");
+//        //Apply to all balls if multi-ball is active
+//        if (gm.getBalls() != null) {
+//            for (Ball b : gm.getBalls()) {
+//                b.setPiercing(true);
+//            }
+//        }
     }
 
     @Override
@@ -33,15 +38,17 @@ public class PierceBallPowerUp extends PowerUp {
         GameManager gm = GameManager.getInstance();
         Ball ball = gm.getBall();
         if (ball != null) {
+            ball.setMovementStrategy(new NormalMovementStrategy());
             ball.setPiercing(false);
         }
 
         //Remove from all balls
-        if (gm.getBalls() != null) {
-            for (Ball b : gm.getBalls()) {
-                b.setPiercing(false);
-            }
-        }
+//        if (gm.getBalls() != null) {
+//            for (Ball b : gm.getBalls()) {
+//                b.setPiercing(false);
+//            }
+//        }
+        System.out.println("PierceBallPowerUp remove");
     }
 
     @Override

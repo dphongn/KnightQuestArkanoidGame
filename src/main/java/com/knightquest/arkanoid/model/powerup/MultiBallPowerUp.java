@@ -4,6 +4,8 @@ import com.knightquest.arkanoid.model.Paddle;
 import com.knightquest.arkanoid.model.Ball;
 import com.knightquest.arkanoid.controller.GameManager;
 import javafx.scene.canvas.GraphicsContext;
+import static com.knightquest.arkanoid.util.Constants.BALL_SPEED;
+
 import javafx.scene.paint.Color;
 
 public class MultiBallPowerUp extends PowerUp {
@@ -32,13 +34,21 @@ public class MultiBallPowerUp extends PowerUp {
             double angleOffset = (i + 1) * 30;
             double currentAngle = Math.atan2(-originalBall.getDy(), -originalBall.getDx());
             double newAngle = currentAngle + Math.toRadians(angleOffset * (i % 2 == 0 ? 1 : -1));
-            double speed = originalBall.getSpeed();
+//            double speed = originalBall.getSpeed();
+//
+//            newBall.setVelocity(
+//                    speed * Math.cos(newAngle),
+//                    speed * Math.sin(newAngle)
+//            );
 
-            newBall.setVelocity(
-                    speed * Math.cos(newAngle),
-                    speed * Math.sin(newAngle)
-            );
+            // Always use BALL_SPEED for consistency - all spawned balls have same speed
+            double speed = BALL_SPEED;
 
+            double nvx = speed * Math.cos(newAngle);
+            double nvy = speed * Math.sin(newAngle);
+
+            // Release the spawned ball from stuck state and give it velocity so it moves
+            newBall.releaseWithVelocity(nvx, nvy);
             gm.addBall(newBall);
         }
     }

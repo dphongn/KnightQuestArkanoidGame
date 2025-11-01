@@ -7,15 +7,19 @@ import com.knightquest.arkanoid.model.Ball;
 import com.knightquest.arkanoid.model.GameObject;
 import com.knightquest.arkanoid.model.Paddle;
 import com.knightquest.arkanoid.model.brick.Brick;
+import com.knightquest.arkanoid.model.powerup.PowerUpType;
+import com.knightquest.arkanoid.observer.GameEventManager;
 import static com.knightquest.arkanoid.util.Constants.SCREEN_WIDTH;
 
 import javafx.geometry.Rectangle2D;
 
 public class CollisionHandler {
     private GameManager gameManager;
+    private GameEventManager eventManager;
 
-    public CollisionHandler(GameManager gameManger) {
+    public CollisionHandler(GameManager gameManager, GameEventManager eventManager) {
         this.gameManager = gameManager;
+        this.eventManager = eventManager;
     }
 
     /**
@@ -26,8 +30,17 @@ public class CollisionHandler {
             return;
         }
 
+
         // Position ball above paddle to prevent sticking
         ball.setY(paddle.getY() - ball.getHeight());
+
+
+        // If paddle is magnetic, catch the ball
+        if (paddle.isMagnetic() && !ball.isStuckToPaddle()) {
+            ball.resetToStuck(); // Use existing method to set stuck state
+            System.out.println("🧲 Ball caught by magnetic paddle!");
+            return; // Don't bounce, just stick
+        }
 
         // Calculate where ball hit the paddle (0 = left edge, 1 = right edge)
         double ballCenterX = ball.getX() + ball.getWidth() / 2;
@@ -65,18 +78,22 @@ public class CollisionHandler {
                 continue;
             }
 
-            if (!ball.isOnFire() && !ball.isPiercing()) {
-                double ballCenterX = ball.getX() + ball.getWidth() / 2;
-                double ballCenterY = ball.getY() + ball.getHeight() / 2;
-                double brickCenterX = brick.getX() + brick.getWidth() / 2;
-                double brickCenterY = brick.getY() + brick.getHeight() / 2;
+            double ballCenterX = ball.getX() + ball.getWidth() / 2;
+            double ballCenterY = ball.getY() + ball.getHeight() / 2;
+            double brickCenterX = brick.getX() + brick.getWidth() / 2;
+            double brickCenterY = brick.getY() + brick.getHeight() / 2;
 
-                double dx = ballCenterX - brickCenterX;
-                double dy = ballCenterY - brickCenterY;
+            double dx = ballCenterX - brickCenterX;
+            double dy = ballCenterY - brickCenterY;
 
-                double overlapX = (brick.getWidth() + ball.getWidth()) / 2 - Math.abs(dx);
-                double overlapY = (brick.getHeight() + ball.getHeight()) / 2 - Math.abs(dy);
+            double overlapX = (brick.getWidth() + ball.getWidth()) / 2 - Math.abs(dx);
+            double overlapY = (brick.getHeight() + ball.getHeight()) / 2 - Math.abs(dy);
 
+            boolean shouldBounce = ball.getMovementStrategy().handleBrickCollision(ball, brick);
+
+            handleBrickDestruction(brick);
+
+            if (shouldBounce) {
                 if (overlapX < overlapY) {
                      ball.bounceHorizontal();
                     if (dx > 0) {
@@ -92,10 +109,11 @@ public class CollisionHandler {
                     ball.setY(brickCenterY - brick.getHeight() / 2 - ball.getHeight());
                     }
                 }
-            handleBrickDestruction(brick);
+                break;
+            }
+//            handleBrickDestruction(brick);
             //SoundManager.play("brick_hit");
             
-            }
             break;
         }
     }
@@ -134,12 +152,23 @@ public class CollisionHandler {
      * Handling when bricks are destroyed
      */
     private void handleBrickDestruction(Brick brick) {
-        brick.takeHit();
+//        brick.takeHit();
 
-        /*if (brick.isDestroyed()) {
-            gameManager.addScore(10);
-            SoundManager.play("brick_break");
-        }*/
+        if (brick.isDestroyed()) {
+            int points = 10; //  point value
+
+            PowerUpType powerUpType = brick.getPowerUpDrop();
+            if (powerUpType != null) {
+
+                double powerUpX = brick.getX() + (brick.getWidth() - 30) / 2;
+                double powerUpY = brick.getY();
+                System.out.println("Brick dropped power-up at (" + powerUpX + ", " + powerUpY + ")");
+                gameManager.getPowerUpManager().spawnPowerUp(powerUpType, powerUpX, powerUpY);
+            }
+
+            eventManager.notifyBrickDestroyed(brick, points);
+
+        }
     }
 }
 

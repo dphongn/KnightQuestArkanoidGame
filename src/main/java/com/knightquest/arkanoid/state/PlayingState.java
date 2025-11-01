@@ -1,5 +1,6 @@
 package com.knightquest.arkanoid.state;
 
+import java.util.List;
 import com.knightquest.arkanoid.controller.GameManager;
 import com.knightquest.arkanoid.model.Ball;
 import com.knightquest.arkanoid.model.Paddle;
@@ -34,12 +35,24 @@ public class PlayingState extends GameState {
     public void update(double deltaTime) {
         // Update paddle movement based on key presses
         Paddle paddle = gameManager.getPaddle();
-        if (leftPressed) {
+        Ball ball = gameManager.getBall();
+
+        double paddleOldx = paddle.getX();
+
+        if (leftPressed && !rightPressed) {
             paddle.moveLeft();
-        }
-        if (rightPressed) {
+        } else if (rightPressed && !leftPressed) {
             paddle.moveRight();
+        } else {
+            paddle.stop(); // Stop when no keys pressed or both pressed
         }
+
+        if (ball.isStuckToPaddle()) {
+            double paddleDx = paddle.getX() - paddleOldx;
+            ball.updateStuckOffset(paddleDx);
+            ball.stickToPaddle(paddle);
+        }
+
         // Update game logic
         gameManager.updateGameLogic(deltaTime);
 
@@ -62,8 +75,21 @@ public class PlayingState extends GameState {
 
         //Handle pause
         if (keyPressed && keyCode == KeyCode.ESCAPE) {
-            changeState(new PauseState(gameManager));
+            changeState(new PausedState(gameManager));
             return;
+        }
+
+        // Handle ball launch (Enter or Space)
+        Ball ball = gameManager.getBall();
+        if (keyPressed && (keyCode == KeyCode.SPACE || keyCode == KeyCode.ENTER)) {
+            if (ball.isStuckToPaddle()) {
+                ball.launch();
+                return;
+            }
+            // If ball is not stuck, try to shoot bullets (Gun Paddle power-up)
+            else {
+                gameManager.shootBullet();
+            }
         }
 
         // Handle paddle movement keys
@@ -85,7 +111,7 @@ public class PlayingState extends GameState {
     public void render(GraphicsContext gc) {
         // Clear screen
         gc.setFill(Color.rgb(15 ,15 ,25));
-        gc.fillRect(0. 0. gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
+        gc.fillRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
 
         //Draw bricks
         for (Brick brick : gameManager.getBricks()) {
@@ -100,12 +126,31 @@ public class PlayingState extends GameState {
         gc.fillRect(paddle.getX(), paddle.getY(), paddle.getWidth(), paddle.getHeight());
 
         // Draw ball
-        Ball ball = gameManager.getBall();
-        gc.setFill(Color.WHITE);
-        gc.fillOval(ball.getX() - ball.getRadius(), ball.getY() - ball.getRadius(),
-                ball.getRadius() * 2, ball.getRadius() * 2);
+//        Ball ball = gameManager.getBall();
+//        gc.setFill(Color.WHITE);
+//        gc.fillOval(ball.getX() - ball.getRadius(), ball.getY() - ball.getRadius(),
+//                ball.getRadius() * 2, ball.getRadius() * 2);
+//
+//        // Draw score and lives
+//        ball.render(gc);
+        List<Ball> balls = gameManager.getBalls();
+        if (balls != null) {
+            for (Ball b : balls) {
+                if (b != null) b.render(gc);
+            }
+        }
 
-        // Draw score and lives
+        // Draw bullets (Gun Paddle power-up)
+        java.util.List<com.knightquest.arkanoid.model.Bullet> bullets = gameManager.getBullets();
+        if (bullets != null) {
+            for (com.knightquest.arkanoid.model.Bullet bullet : bullets) {
+                if (bullet != null && bullet.isActive()) {
+                    bullet.render(gc);
+                }
+            }
+        }
+
+        gameManager.getPowerUpManager().render(gc);
         drawUI(gc);
     }
 
@@ -145,6 +190,7 @@ public class PlayingState extends GameState {
 
     private void handleLevelComplete() {
         System.out.println("Level Complete");
-        gameManager.nextLevel();
+        // Transition to LevelCompleteState
+        changeState(new LevelCompleteState(gameManager));
     }
 }

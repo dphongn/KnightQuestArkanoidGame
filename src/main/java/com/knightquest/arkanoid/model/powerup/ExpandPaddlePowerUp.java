@@ -9,7 +9,8 @@ public class ExpandPaddlePowerUp extends PowerUp {
     private double originalWidth;
 
     public ExpandPaddlePowerUp(double x, double y) {
-        super(x, y, PowerUpType.EXPAND_PADDLE, PowerUpType.EXPAND_PADDLE.getDefaultDuration());
+        // Use a reasonable default duration (seconds) for paddle expansion
+        super(x, y, PowerUpType.EXPAND_PADDLE, 8.0);
     }
 
     @Override
