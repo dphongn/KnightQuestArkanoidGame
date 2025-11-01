@@ -12,7 +12,7 @@ public class Paddle extends MovableObject {
     private double gunCooldown = 0.3;
     private double gunTimer = 0.0;
 
-    private boolean isMagnetic;
+    private boolean isMagnetic = false;
     private Ball attachedBall;
 
     /**
@@ -112,10 +112,10 @@ public class Paddle extends MovableObject {
     }
 
     public void releaseBall() {
-        if (attachedBall != null) {
-            attachedBall.setVelocity(0, -BALL_SPEED);
-            attachedBall = null;
-        }
+//        if (attachedBall != null) {
+//            attachedBall.setVelocity(0, -BALL_SPEED);
+//            attachedBall = null;
+//        }
     }
 
     public Ball getAttachedBall() {
