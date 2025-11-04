@@ -3,10 +3,12 @@ package com.knightquest.arkanoid.controller;
 import java.util.Iterator;
 import java.util.List;
 
+import com.knightquest.arkanoid.factory.PowerUpFactory;
 import com.knightquest.arkanoid.model.Ball;
 import com.knightquest.arkanoid.model.GameObject;
 import com.knightquest.arkanoid.model.Paddle;
 import com.knightquest.arkanoid.model.brick.Brick;
+import com.knightquest.arkanoid.model.powerup.PowerUp;
 import com.knightquest.arkanoid.model.powerup.PowerUpType;
 import com.knightquest.arkanoid.observer.GameEventManager;
 import static com.knightquest.arkanoid.util.Constants.SCREEN_WIDTH;
@@ -138,7 +140,6 @@ public class CollisionHandler {
         }
     }
 
-
     /**
      * Check AABB collision between 2 game objects
      */
@@ -152,22 +153,22 @@ public class CollisionHandler {
      * Handling when bricks are destroyed
      */
     private void handleBrickDestruction(Brick brick) {
-//        brick.takeHit();
-
         if (brick.isDestroyed()) {
             int points = 10; //  point value
-
             PowerUpType powerUpType = brick.getPowerUpDrop();
             if (powerUpType != null) {
-
                 double powerUpX = brick.getX() + (brick.getWidth() - 30) / 2;
                 double powerUpY = brick.getY();
                 System.out.println("Brick dropped power-up at (" + powerUpX + ", " + powerUpY + ")");
-                gameManager.getPowerUpManager().spawnPowerUp(powerUpType, powerUpX, powerUpY);
+                PowerUp newPowerUp = PowerUpFactory.createPowerUp(powerUpType, powerUpX, powerUpY);
+                if (newPowerUp != null) {
+                    gameManager.getPowerUpManager().addPowerUp(newPowerUp);
+                    System.out.println("Power-up successfully created and added to manager.");
+                } else {
+                    System.err.println("Failed to create PowerUp object for type: " + powerUpType);
+                }
             }
-
             eventManager.notifyBrickDestroyed(brick, points);
-
         }
     }
 }

@@ -224,7 +224,7 @@ public class GameManager {
         currentLevelNumber = 3;
         lives = INITIAL_LIVES;
         score = 0;
-        loadLevel(3);
+        loadLevel(currentLevelNumber);
         resetBall();
     }
 

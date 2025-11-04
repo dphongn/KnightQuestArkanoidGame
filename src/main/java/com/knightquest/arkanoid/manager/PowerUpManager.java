@@ -30,6 +30,13 @@ public class PowerUpManager {
         activePowerUps = new HashMap<>();
     }
 
+    public void addPowerUp(PowerUp powerUp) {
+        if (powerUp != null) {
+            this.droppingPowerUps.add(powerUp);
+            System.out.println("PowerUpManager: Đã thêm " + powerUp.getType() + " vào danh sách rơi.");
+        }
+    }
+
     public void spawnPowerUp(PowerUpType type, double x, double y) {
         PowerUp powerUp = null;
 
@@ -82,7 +89,6 @@ public class PowerUpManager {
         }
     }
 
-
     /**
      * Add a PowerUp that will drop from a brick
      */
@@ -100,7 +106,6 @@ public class PowerUpManager {
         if (!droppingPowerUps.isEmpty()) {
             System.out.println("Power-ups dropping: " + droppingPowerUps.size());
         }
-
 
         //Update droppong PowerUps
         Iterator<PowerUp> dropIterator = droppingPowerUps.iterator();
