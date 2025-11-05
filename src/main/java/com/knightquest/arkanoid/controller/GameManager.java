@@ -10,6 +10,7 @@ import com.knightquest.arkanoid.manager.PowerUpManager;
 import com.knightquest.arkanoid.model.Ball;
 import com.knightquest.arkanoid.model.Paddle;
 import com.knightquest.arkanoid.model.brick.Brick;
+import com.knightquest.arkanoid.model.brick.MonsterBrick;
 import com.knightquest.arkanoid.model.Bullet;
 import com.knightquest.arkanoid.observer.GameEventListener;
 import com.knightquest.arkanoid.observer.GameEventManager;
@@ -155,6 +156,14 @@ public class GameManager {
 //        collisionHandler.checkBallBrickCollision(ball, bricks);
 
         // Remove destroyed bricks and update score
+
+        // Update monster bricks (move + collision)
+        for (Brick brick : bricks) {
+            if (brick instanceof MonsterBrick monster) {
+                monster.update(deltaTime, bricks);
+            }
+        }
+
         Iterator<Brick> iter = bricks.iterator();
         while (iter.hasNext()) {
             Brick brick = iter.next();

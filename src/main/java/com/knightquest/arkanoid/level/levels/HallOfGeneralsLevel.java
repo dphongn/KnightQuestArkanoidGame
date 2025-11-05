@@ -24,12 +24,12 @@ public class HallOfGeneralsLevel extends BaseLevel {
         double screenWidth = 800;
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < cols; col++) {
-                double x = startX * col * (BRICK_WIDTH + 3);
-                double y = startY * row * (BRICK_HEIGHT + 3);
+                double x = startX + col * (BRICK_WIDTH + 3);
+                double y = startY + row * (BRICK_HEIGHT + 3);
                 if (row == 1 || row == 4 || row == 6) {
                     if (col % 4 == 0 || col % 4 == 3) {
-                        double minX = Math.max(0, startX + (col - 2) + (BRICK_WIDTH + 3));
-                        double maxX = Math.min(screenWidth - BRICK_WIDTH, startX + (col - 2) + (BRICK_WIDTH + 3));
+                        double minX = Math.max(0, startX + (col - 2) * (BRICK_WIDTH + 3));
+                        double maxX = Math.min(screenWidth - BRICK_WIDTH, startX + (col + 2) * (BRICK_WIDTH + 3));
                         bricks.add(new MonsterBrick(x, y, BRICK_WIDTH, BRICK_HEIGHT, minX, maxX));
                     } else {
                         bricks.add(new StrongBrick(x, y, BRICK_WIDTH, BRICK_HEIGHT));
