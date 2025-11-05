@@ -6,7 +6,7 @@ import java.util.List;
 
 import com.knightquest.arkanoid.factory.LevelFactory;
 import com.knightquest.arkanoid.level.Level;
-import  com.knightquest.arkanoid.manager.PowerUpManager;
+import com.knightquest.arkanoid.manager.PowerUpManager;
 import com.knightquest.arkanoid.model.Ball;
 import com.knightquest.arkanoid.model.Paddle;
 import com.knightquest.arkanoid.model.brick.Brick;
@@ -15,6 +15,7 @@ import com.knightquest.arkanoid.observer.GameEventListener;
 import com.knightquest.arkanoid.observer.GameEventManager;
 import com.knightquest.arkanoid.state.GameState;
 import com.knightquest.arkanoid.state.GameStateManager;
+
 import static com.knightquest.arkanoid.util.Constants.BRICK_HEIGHT;
 import static com.knightquest.arkanoid.util.Constants.BRICK_WIDTH;
 import static com.knightquest.arkanoid.util.Constants.INITIAL_LIVES;
@@ -63,9 +64,9 @@ public class GameManager {
     }
 
     private void initGame() {
-        paddle = new Paddle(SCREEN_WIDTH/2 - PADDLE_WIDTH/2, 550);
+        paddle = new Paddle(SCREEN_WIDTH / 2 - PADDLE_WIDTH / 2, 550);
         balls = new ArrayList<>();
-        Ball initialBall = new Ball(SCREEN_WIDTH/2, 500);
+        Ball initialBall = new Ball(SCREEN_WIDTH / 2, 500);
         bullets = new ArrayList<>();
         initialBall.resetToStuck();
         balls.add(initialBall);
@@ -98,6 +99,7 @@ public class GameManager {
 
     /**
      * Update game logic.
+     *
      * @param deltaTime
      */
 
@@ -205,7 +207,7 @@ public class GameManager {
         // Clear active power-ups
         if (balls == null) balls = new ArrayList<>();
         balls.clear();
-        Ball newBall = new Ball(SCREEN_WIDTH/2, 500);
+        Ball newBall = new Ball(SCREEN_WIDTH / 2, 500);
         newBall.resetToStuck();
         balls.add(newBall);
         powerUpManager.clearAll(paddle);
@@ -233,8 +235,7 @@ public class GameManager {
         if (currentLevelNumber < LevelFactory.getTotalLevels()) {
             loadLevel(currentLevelNumber + 1);
             resetBall();
-        }
-        else {
+        } else {
             // All levels completed - victory!
             System.out.println("========================================");
             System.out.println("🎉 CONGRATULATIONS! 🎉");
@@ -252,9 +253,11 @@ public class GameManager {
     public List<Brick> getBricks() {
         return bricks;
     }
+
     public int getScore() {
         return score;
     }
+
     public int getLives() {
         return lives;
     }

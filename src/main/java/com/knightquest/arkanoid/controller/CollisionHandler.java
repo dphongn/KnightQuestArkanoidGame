@@ -8,6 +8,7 @@ import com.knightquest.arkanoid.model.Ball;
 import com.knightquest.arkanoid.model.GameObject;
 import com.knightquest.arkanoid.model.Paddle;
 import com.knightquest.arkanoid.model.brick.Brick;
+import com.knightquest.arkanoid.model.brick.ExplosiveBrick;
 import com.knightquest.arkanoid.model.powerup.PowerUp;
 import com.knightquest.arkanoid.model.powerup.PowerUpType;
 import com.knightquest.arkanoid.observer.GameEventManager;
@@ -97,6 +98,19 @@ public class CollisionHandler {
 
             handleBrickDestruction(brick);
 
+            // Handle explosion bricks, brick destruction and power-up spawning
+            if (brick instanceof ExplosiveBrick explosiveBrick) {
+                explosiveBrick.takeHit(bricks);
+                for (Brick b : bricks) {
+                    if (b.isDestroyed()) {
+                        handleBrickDestruction(b);
+                    }
+                }
+            } else {
+                brick.takeHit();
+                handleBrickDestruction(brick);
+            }
+
             if (shouldBounce) {
                 if (overlapX < overlapY) {
                     ball.bounceHorizontal();
@@ -115,9 +129,6 @@ public class CollisionHandler {
                 }
                 break;
             }
-//            handleBrickDestruction(brick);
-            //SoundManager.play("brick_hit");
-
             break;
         }
     }

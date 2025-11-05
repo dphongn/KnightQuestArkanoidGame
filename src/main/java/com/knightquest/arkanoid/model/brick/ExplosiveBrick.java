@@ -18,8 +18,34 @@ public class ExplosiveBrick extends Brick {
     @Override
     public void takeHit() {
         super.takeHit();
-        if (!active && !hasExploded) {
+        if (!isActive()) {
             hasExploded = true;
+            explode(null);
+        }
+    }
+
+    public void takeHit(List<Brick> allBricks) {
+        super.takeHit();
+        if (!isActive()) {
+            explode(allBricks);
+        }
+    }
+
+    public void explode(List<Brick> allBricks) {
+        if (allBricks == null) return;
+        double radius = EXPLOSION_RADIUS;
+        for (Brick other : allBricks) {
+            if (other != this && other.isActive()) {
+                double dx = other.getX() - this.getX();
+                double dy = other.getY() - this.getY();
+                double distance = Math.sqrt(dx * dx + dy * dy);
+                if (distance <= radius) {
+                    if (other instanceof ExplosiveBrick explosiveBrick) {
+                        explosiveBrick.takeHit(allBricks);
+                    }
+                    other.takeHit();
+                }
+            }
         }
     }
 
