@@ -58,7 +58,7 @@ public interface GameEventListener {
      * Called when the paddle size changes.
      * @param evenType
      */
-    void onPaddleSizeChanged(String evenType);
+    void onPaddleSizeChanged(String eventType);
 
     /**
      * Called when menu selection changes.
