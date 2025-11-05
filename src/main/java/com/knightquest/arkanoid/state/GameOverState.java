@@ -7,20 +7,25 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import  javafx.scene.text.TextAlignment;
+
+
 /**
  * GameOverState handles the game over screen.
  */
-
 public class GameOverState extends GameState {
     private final  int finalScore;
     private final int levelsCompleted;
     private double animationTimer = 0;
 
 
-    public GameOverState(GameManager gameManager) {
+    public GameOverState(GameManager gameManager, boolean isVictory) {
         super(gameManager);
         this.finalScore = gameManager.getScore();
         this.levelsCompleted = gameManager.getCurrentLevelNumber();
+    }
+
+    public GameOverState(GameManager gameManager) {
+        this(gameManager, false);
     }
 
     @Override
@@ -29,6 +34,8 @@ public class GameOverState extends GameState {
         System.out.println("Final Score: " + finalScore);
         System.out.println("Levels Completed: " + levelsCompleted);
         animationTimer = 0;
+
+        gameManager.getEventManager().getAudioController().stopBGM();
     }
 
     @Override
@@ -44,12 +51,16 @@ public class GameOverState extends GameState {
 
         switch (event.getCode()) {
             case R:
+                // Play confirm sound
+                gameManager.getEventManager().notifyMenuOptionSelected();
                 // Restart game
                 gameManager.resetGame();
                 changeState(new PlayingState(gameManager));
                 break;
             case M:
             case ESCAPE:
+                // Play confirm sound
+                gameManager.getEventManager().notifyMenuOptionSelected();
                 // Return to main menu
                 changeState(new MenuState(gameManager));
                 break;
@@ -103,7 +114,5 @@ public class GameOverState extends GameState {
     }
 
     @Override
-    public void exit() {
-
-    }
+    public void exit() {}
 }
