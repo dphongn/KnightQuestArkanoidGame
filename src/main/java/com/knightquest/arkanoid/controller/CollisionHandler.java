@@ -2,6 +2,10 @@ package com.knightquest.arkanoid.controller;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Set;
+import java.util.HashSet;
 
 import com.knightquest.arkanoid.factory.PowerUpFactory;
 import com.knightquest.arkanoid.model.Ball;
@@ -96,20 +100,8 @@ public class CollisionHandler {
 
             boolean shouldBounce = ball.getMovementStrategy().handleBrickCollision(ball, brick);
 
-            handleBrickDestruction(brick);
-
-            // Handle explosion bricks, brick destruction and power-up spawning
-            if (brick instanceof ExplosiveBrick explosiveBrick) {
-                explosiveBrick.takeHit(bricks);
-                for (Brick b : bricks) {
-                    if (b.isDestroyed()) {
-                        handleBrickDestruction(b);
-                    }
-                }
-            } else {
-                brick.takeHit();
-                handleBrickDestruction(brick);
-            }
+            processBrickDestruction(brick, bricks);
+            //handleBrickDestruction(brick);
 
             if (shouldBounce) {
                 if (overlapX < overlapY) {
@@ -130,6 +122,41 @@ public class CollisionHandler {
                 break;
             }
             break;
+        }
+    }
+
+    private void processBrickDestruction(Brick initialBrick, List<Brick> allBricks) {
+        Queue<Brick> destructionQueue = new LinkedList<>();
+        Set<Brick> processedSet = new HashSet<>();
+
+        if (initialBrick.isDestroyed()) {
+            destructionQueue.add(initialBrick);
+        }
+
+        while (!destructionQueue.isEmpty()) {
+            Brick currentBrick = destructionQueue.poll();
+
+            if (processedSet.contains(currentBrick)) {
+                continue;
+            }
+            processedSet.add(currentBrick);
+            handleBrickDestruction(currentBrick);
+
+            if (currentBrick instanceof ExplosiveBrick) {
+                ExplosiveBrick explosiveBrick = (ExplosiveBrick) currentBrick;
+                if (explosiveBrick.hasExploded()) {
+                    System.out.println("💣 Kích hoạt vụ nổ tại (" + explosiveBrick.getX() + ", " + explosiveBrick.getY() + ")");
+
+                    List<Brick> targets = explosiveBrick.getExplosionTargets(allBricks);
+
+                    for (Brick target : targets) {
+                        if (target.isActive()) {
+                            target.takeHit();
+                            destructionQueue.add(target);
+                        }
+                    }
+                }
+            }
         }
     }
 

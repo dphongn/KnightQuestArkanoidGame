@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ExplosiveBrick extends Brick {
-    private static final double EXPLOSION_RADIUS = 80.0;
+    private static final double EXPLOSION_RADIUS = 65.0;
     private boolean hasExploded = false;
 
     public ExplosiveBrick(double x, double y, double width, double height) {
@@ -18,34 +18,8 @@ public class ExplosiveBrick extends Brick {
     @Override
     public void takeHit() {
         super.takeHit();
-        if (!isActive()) {
+        if (!active && !hasExploded) {
             hasExploded = true;
-            explode(null);
-        }
-    }
-
-    public void takeHit(List<Brick> allBricks) {
-        super.takeHit();
-        if (!isActive()) {
-            explode(allBricks);
-        }
-    }
-
-    public void explode(List<Brick> allBricks) {
-        if (allBricks == null) return;
-        double radius = EXPLOSION_RADIUS;
-        for (Brick other : allBricks) {
-            if (other != this && other.isActive()) {
-                double dx = other.getX() - this.getX();
-                double dy = other.getY() - this.getY();
-                double distance = Math.sqrt(dx * dx + dy * dy);
-                if (distance <= radius) {
-                    if (other instanceof ExplosiveBrick explosiveBrick) {
-                        explosiveBrick.takeHit(allBricks);
-                    }
-                    other.takeHit();
-                }
-            }
         }
     }
 
@@ -54,7 +28,7 @@ public class ExplosiveBrick extends Brick {
         double centerX = x + width / 2;
         double centerY = y + height / 2;
         for (Brick brick : allBricks) {
-            if (!brick.isActive()) {
+            if (!brick.isActive() && brick == this) {
                 continue;
             }
             double brickCenterX = brick.getX() + brick.getWidth() / 2;
