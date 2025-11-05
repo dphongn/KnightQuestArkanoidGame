@@ -15,6 +15,8 @@ import com.knightquest.arkanoid.observer.GameEventListener;
 import com.knightquest.arkanoid.observer.GameEventManager;
 import com.knightquest.arkanoid.state.GameState;
 import com.knightquest.arkanoid.state.GameStateManager;
+import com.knightquest.arkanoid.observer.AudioController;
+import com.knightquest.arkanoid.observer.UIController;
 import static com.knightquest.arkanoid.util.Constants.BRICK_HEIGHT;
 import static com.knightquest.arkanoid.util.Constants.BRICK_WIDTH;
 import static com.knightquest.arkanoid.util.Constants.INITIAL_LIVES;
@@ -38,6 +40,9 @@ public class GameManager {
 
     // Event manager
     private GameEventManager eventManager;
+
+    // Audio manager
+    private AudioController audioController;
 
     // Power-up manager
     private PowerUpManager powerUpManager;
@@ -75,6 +80,15 @@ public class GameManager {
         eventManager = new GameEventManager();
         System.out.println("GameEventManager initialized.");
 
+        //Initialize audio and UI controllers
+        audioController = new AudioController();
+        UIController uiController = new UIController();
+        System.out.println("AudioController and UIController registered.");
+
+        //Register listeners
+        eventManager.addListener(audioController);
+        eventManager.addListener(uiController);
+
         // Power-up manager
         powerUpManager = new PowerUpManager(this, eventManager);
         System.out.println("PowerUpManager initialized.");
@@ -90,6 +104,9 @@ public class GameManager {
         currentLevel = LevelFactory.createLevel(levelNumber);
         // Get bricks from level
         bricks = currentLevel.getBricks();
+
+        //Play music for the level
+        //audioController.playLevelMusic(levelNumber);
 
         // Print level info to console
         System.out.println("Loaded Level " + levelNumber);
@@ -221,7 +238,7 @@ public class GameManager {
 
     // Reset game to level 1
     public void resetGame() {
-        currentLevelNumber = 3;
+        currentLevelNumber = 1;
         lives = INITIAL_LIVES;
         score = 0;
         loadLevel(3);

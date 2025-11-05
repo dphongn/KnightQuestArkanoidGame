@@ -1,10 +1,12 @@
 package com.knightquest.arkanoid.state;
 
 import com.knightquest.arkanoid.controller.GameManager;
+import com.knightquest.arkanoid.observer.AudioController;
+
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.text.TextAlignment;
-
+import com.knightquest.arkanoid.observer.GameEventManager;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
@@ -15,9 +17,11 @@ public class MenuState extends GameState {
     private int selectedOption = 0;
     private final String[] menuOptions = {"Start Game", "Exit"};
     private double animationTimer = 0;
+    private final GameEventManager eventManager;
 
     public MenuState(GameManager gameManager) {
         super(gameManager);
+        this.eventManager = gameManager.getEventManager(); // Cache the event manager
     }
 
     @Override
@@ -26,6 +30,11 @@ public class MenuState extends GameState {
         selectedOption = 0;
         animationTimer = 0;
 
+        //Add play menu music
+        AudioController audioController = gameManager.getEventManager().getAudioController();
+        if (audioController != null) {
+            audioController.playLevelMusic(0);
+        }
     }
 
     @Override
@@ -40,17 +49,26 @@ public class MenuState extends GameState {
             return;
         }
 
-        switch(event.getCode()) {
+                switch(event.getCode()) {
             case UP:
             case W:
                 selectedOption = (selectedOption - 1 + menuOptions.length) % menuOptions.length;
+                if (eventManager != null) { // ✅ DÙNG CACHED
+                    eventManager.notifyMenuSelectionChanged();
+                }
                 break;
             case DOWN:
             case S:
                 selectedOption = (selectedOption + 1) % menuOptions.length;
+                if (eventManager != null) {
+                    eventManager.notifyMenuSelectionChanged();
+                }
                 break;
             case ENTER:
             case SPACE:
+                if (eventManager != null) {
+                    eventManager.notifyMenuOptionSelected();
+                }
                 handleSelection();
                 break;
             case ESCAPE:
@@ -104,6 +122,11 @@ public class MenuState extends GameState {
 
     @Override
     public void exit() {
+        //Stop menu music when exiting
+        AudioController audioController = gameManager.getEventManager().getAudioController();
+        if (audioController != null) {
+            audioController.stopBGM();
+        }
     }
 
     private void handleSelection() {

@@ -16,8 +16,6 @@ public class GameEventManager {
         this.listeners = new ArrayList<>();
     }
 
-
-
     /**
      * Registers a new game event listener.
      */
@@ -88,5 +86,29 @@ public class GameEventManager {
         for (GameEventListener listener : listeners) {
             listener.onPaddleSizeChanged(eventType);
         }
+    }
+
+    public void notifyMenuSelectionChanged() {
+        for (GameEventListener listener : listeners) {
+            listener.onMenuSelectionChanged();
+        }
+    }
+
+    public void notifyMenuOptionSelected() {
+        for (GameEventListener listener : listeners) {
+            listener.onMenuOptionSelected();
+        }
+    }
+
+    /**
+     * Get the AudioController listener.
+     */
+    public AudioController getAudioController() {
+        for (GameEventListener listener : listeners) {
+            if (listener instanceof AudioController) {
+                return (AudioController) listener;
+            }
+        }
+        return null;
     }
 }
