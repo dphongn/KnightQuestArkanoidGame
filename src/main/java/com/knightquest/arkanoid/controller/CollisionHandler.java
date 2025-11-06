@@ -104,9 +104,7 @@ public class CollisionHandler {
 
             eventManager.notifyBrickHit(brick);
             
-            handleBrickDestruction(brick);
             processBrickDestruction(brick, bricks);
-            //handleBrickDestruction(brick);
 
             if (shouldBounce) {
                 if (overlapX < overlapY) {
