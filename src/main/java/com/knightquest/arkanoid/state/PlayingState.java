@@ -11,6 +11,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
+import com.knightquest.arkanoid.observer.AudioController;
 
 import static com.knightquest.arkanoid.util.Constants.*;
 
@@ -28,7 +29,12 @@ public class PlayingState extends GameState {
 
     @Override
     public void enter() {
-        System.out.println("Entering PlayingState");
+        System.out.println("=== GAME STARTED ===");
+        //Start background music
+        AudioController audioController = gameManager.getEventManager().getAudioController();
+        if (audioController != null) {
+            audioController.playLevelMusic(gameManager.getCurrentLevelNumber());
+        }
     }
 
     @Override
@@ -82,7 +88,7 @@ public class PlayingState extends GameState {
         // Handle ball launch (Enter or Space)
         Ball ball = gameManager.getBall();
         if (keyPressed && (keyCode == KeyCode.SPACE || keyCode == KeyCode.ENTER)) {
-            if (ball.isStuckToPaddle()) {
+            if (ball != null  && ball.isStuckToPaddle()) {
                 ball.launch();
                 return;
             }
@@ -158,6 +164,12 @@ public class PlayingState extends GameState {
     public void exit() {
         leftPressed = false;
         rightPressed = false;
+        
+        //Stop music when exiting playing state
+        AudioController audioController = gameManager.getEventManager().getAudioController();
+        if (audioController != null) {
+            audioController.stopBGM();
+        }
     }
 
     public void drawUI(GraphicsContext gc) {

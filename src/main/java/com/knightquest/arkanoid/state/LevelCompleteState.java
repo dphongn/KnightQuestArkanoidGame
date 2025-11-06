@@ -7,11 +7,11 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
+import com.knightquest.arkanoid.observer.GameEventManager;
 
 /**
  * LevelCompleteState handles the state when a level is completed.
  */
-
 public class LevelCompleteState extends GameState {
     private int selectedOption = 0; // 0: Continue, 1: Replay, 2: Main Menu
     private final String[] menuOptions = {"CONTINUE TO NEXT LEVEL", "REPLAY THIS LEVEL", "MAIN MENU"};
@@ -44,27 +44,36 @@ public class LevelCompleteState extends GameState {
         if (event.getEventType() != KeyEvent.KEY_PRESSED) {
             return;
         }
+
+        GameEventManager eventManager= gameManager.getEventManager();
+
         switch (event.getCode()) {
             case UP:
             case W:
                 selectedOption = (selectedOption - 1 + menuOptions.length) % menuOptions.length;
+                if (eventManager != null) eventManager.notifyMenuSelectionChanged();
                 break;
             case DOWN:
             case S:
                 selectedOption = (selectedOption + 1) % menuOptions.length;
+                if (eventManager != null) eventManager.notifyMenuSelectionChanged();
                 break;
             case ENTER:
             case SPACE:
+                if (eventManager != null) eventManager.notifyMenuOptionSelected();
                 handleSelection();
                 break;
             case C:
+                if (eventManager != null) eventManager.notifyMenuOptionSelected();
                 continueToNextLevel();
                 break;
             case R:
+                if (eventManager != null) eventManager.notifyMenuOptionSelected();
                 replayLevel();
                 break;
             case M:
             case ESCAPE:
+                if (eventManager != null) eventManager.notifyMenuOptionSelected();
                 changeState(new MenuState(gameManager));
                 break;
             default:
