@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ExplosiveBrick extends Brick {
-    private static final double EXPLOSION_RADIUS = 80.0;
+    private static final double EXPLOSION_RADIUS = 65.0;
     private boolean hasExploded = false;
 
     public ExplosiveBrick(double x, double y, double width, double height) {
@@ -28,7 +28,7 @@ public class ExplosiveBrick extends Brick {
         double centerX = x + width / 2;
         double centerY = y + height / 2;
         for (Brick brick : allBricks) {
-            if (!brick.isActive()) {
+            if (!brick.isActive() && brick == this) {
                 continue;
             }
             double brickCenterX = brick.getX() + brick.getWidth() / 2;

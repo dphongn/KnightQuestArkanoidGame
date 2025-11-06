@@ -1,6 +1,7 @@
 package com.knightquest.arkanoid.level.levels;
 
 import com.knightquest.arkanoid.level.BaseLevel;
+import com.knightquest.arkanoid.level.Level;
 import com.knightquest.arkanoid.model.brick.NormalBrick;
 import com.knightquest.arkanoid.model.brick.PrisonerBrick;
 import com.knightquest.arkanoid.model.brick.StrongBrick;
@@ -13,6 +14,7 @@ import static com.knightquest.arkanoid.util.Constants.BRICK_WIDTH;
 public class BazaarOfChaosLevel extends BaseLevel {
     public BazaarOfChaosLevel() {
         super(3, "Bazaar of Chaos", "Chaotic marketplace where allies are held captive. Free them to gain their aid!", new ArrayList<>(), false, 3);
+        buildLevel();
     }
 
     @Override
@@ -44,7 +46,7 @@ public class BazaarOfChaosLevel extends BaseLevel {
         }
     }
 
-    public static BazaarOfChaosLevel create() {
+    public static Level create() {
         return new BazaarOfChaosLevel();
     }
 }

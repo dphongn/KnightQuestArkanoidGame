@@ -2,13 +2,21 @@ package com.knightquest.arkanoid.controller;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Set;
+import java.util.HashSet;
 
+import com.knightquest.arkanoid.factory.PowerUpFactory;
 import com.knightquest.arkanoid.model.Ball;
 import com.knightquest.arkanoid.model.GameObject;
 import com.knightquest.arkanoid.model.Paddle;
 import com.knightquest.arkanoid.model.brick.Brick;
+import com.knightquest.arkanoid.model.brick.ExplosiveBrick;
+import com.knightquest.arkanoid.model.powerup.PowerUp;
 import com.knightquest.arkanoid.model.powerup.PowerUpType;
 import com.knightquest.arkanoid.observer.GameEventManager;
+
 import static com.knightquest.arkanoid.util.Constants.SCREEN_WIDTH;
 
 import javafx.geometry.Rectangle2D;
@@ -67,6 +75,7 @@ public class CollisionHandler {
 
         //SoundManager.play("paddle_hit");
     }
+
     /**
      * Check and handle collisions between the ball and the bricks
      */
@@ -96,29 +105,63 @@ public class CollisionHandler {
             eventManager.notifyBrickHit(brick);
             
             handleBrickDestruction(brick);
+            processBrickDestruction(brick, bricks);
+            //handleBrickDestruction(brick);
 
             if (shouldBounce) {
                 if (overlapX < overlapY) {
-                     ball.bounceHorizontal();
+                    ball.bounceHorizontal();
                     if (dx > 0) {
-                    ball.setX(brickCenterX + brick.getWidth() / 2);
-                     } else {
-                    ball.setX(brickCenterX - brick.getWidth() / 2 - ball.getWidth());
+                        ball.setX(brickCenterX + brick.getWidth() / 2);
+                    } else {
+                        ball.setX(brickCenterX - brick.getWidth() / 2 - ball.getWidth());
                     }
                 } else {
                     ball.bounceVertical();
                     if (dy > 0) {
-                    ball.setY(brickCenterY + brick.getHeight() / 2);
+                        ball.setY(brickCenterY + brick.getHeight() / 2);
                     } else {
-                    ball.setY(brickCenterY - brick.getHeight() / 2 - ball.getHeight());
+                        ball.setY(brickCenterY - brick.getHeight() / 2 - ball.getHeight());
                     }
                 }
                 break;
             }
-//            handleBrickDestruction(brick);
-            //SoundManager.play("brick_hit");
-            
             break;
+        }
+    }
+
+    private void processBrickDestruction(Brick initialBrick, List<Brick> allBricks) {
+        Queue<Brick> destructionQueue = new LinkedList<>();
+        Set<Brick> processedSet = new HashSet<>();
+
+        if (initialBrick.isDestroyed()) {
+            destructionQueue.add(initialBrick);
+        }
+
+        while (!destructionQueue.isEmpty()) {
+            Brick currentBrick = destructionQueue.poll();
+
+            if (processedSet.contains(currentBrick)) {
+                continue;
+            }
+            processedSet.add(currentBrick);
+            handleBrickDestruction(currentBrick);
+
+            if (currentBrick instanceof ExplosiveBrick) {
+                ExplosiveBrick explosiveBrick = (ExplosiveBrick) currentBrick;
+                if (explosiveBrick.hasExploded()) {
+                    System.out.println("💣 Kích hoạt vụ nổ tại (" + explosiveBrick.getX() + ", " + explosiveBrick.getY() + ")");
+
+                    List<Brick> targets = explosiveBrick.getExplosionTargets(allBricks);
+
+                    for (Brick target : targets) {
+                        if (target.isActive()) {
+                            target.takeHit();
+                            destructionQueue.add(target);
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -142,7 +185,6 @@ public class CollisionHandler {
         }
     }
 
-
     /**
      * Check AABB collision between 2 game objects
      */
@@ -156,22 +198,22 @@ public class CollisionHandler {
      * Handling when bricks are destroyed
      */
     private void handleBrickDestruction(Brick brick) {
-//        brick.takeHit();
-
         if (brick.isDestroyed()) {
             int points = 10; //  point value
-
             PowerUpType powerUpType = brick.getPowerUpDrop();
             if (powerUpType != null) {
-
                 double powerUpX = brick.getX() + (brick.getWidth() - 30) / 2;
                 double powerUpY = brick.getY();
                 System.out.println("Brick dropped power-up at (" + powerUpX + ", " + powerUpY + ")");
-                gameManager.getPowerUpManager().spawnPowerUp(powerUpType, powerUpX, powerUpY);
+                PowerUp newPowerUp = PowerUpFactory.createPowerUp(powerUpType, powerUpX, powerUpY);
+                if (newPowerUp != null) {
+                    gameManager.getPowerUpManager().spawnPowerUp(powerUpType, powerUpX, powerUpY);
+                    System.out.println("Power-up successfully created and added to manager.");
+                } else {
+                    System.err.println("Failed to create PowerUp object for type: " + powerUpType);
+                }
             }
-
             eventManager.notifyBrickDestroyed(brick, points);
-
         }
     }
 }

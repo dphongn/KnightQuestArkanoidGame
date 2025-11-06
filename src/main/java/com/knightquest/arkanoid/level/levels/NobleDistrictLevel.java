@@ -36,8 +36,8 @@ public class NobleDistrictLevel extends BaseLevel {
                     bricks.add(new UnbreakableBrick(x, y, BRICK_WIDTH, BRICK_HEIGHT));
                 } else if (row == 2 || row == 5) {
                     if (col % 3 == 1) {
-                        double minX = Math.max(0, startX + (col - 1) * (BRICK_WIDTH + 2));
-                        double maxX = Math.min(screenWidth, startX + (col - 1) * (BRICK_WIDTH + 2));
+                        double minX = Math.max(0, startX + (col - 2) * (BRICK_WIDTH + 3));
+                        double maxX = Math.min(screenWidth - BRICK_WIDTH, startX + (col + 2) * (BRICK_WIDTH + 3));
                         bricks.add(new MonsterBrick(x, y, BRICK_WIDTH, BRICK_HEIGHT, minX, maxX));
                     } else {
                         bricks.add(new StrongBrick(x, y, BRICK_WIDTH, BRICK_HEIGHT));
