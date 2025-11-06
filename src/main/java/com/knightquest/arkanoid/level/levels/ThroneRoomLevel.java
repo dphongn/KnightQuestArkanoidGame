@@ -38,8 +38,8 @@ public class ThroneRoomLevel extends BaseLevel {
                     if (row == 4 && col == centerCol) {
                         bricks.add(new ExplosiveBrick(x, y, BRICK_WIDTH, BRICK_HEIGHT));
                     } else if (distFromCenter == 2) {
-                        double minX = Math.max(0, x - 30);
-                        double maxX = Math.min(screenWidth - BRICK_WIDTH, x + 30);
+                        double minX = Math.max(0, startX + (col - 2) * (BRICK_WIDTH + 3));
+                        double maxX = Math.min(screenWidth - BRICK_WIDTH, startX + (col + 2) * (BRICK_WIDTH + 3));
                         bricks.add(new MonsterBrick(x, y, BRICK_WIDTH, BRICK_HEIGHT, minX, maxX));
                     } else {
                         bricks.add(new StrongBrick(x, y, BRICK_WIDTH, BRICK_HEIGHT));
