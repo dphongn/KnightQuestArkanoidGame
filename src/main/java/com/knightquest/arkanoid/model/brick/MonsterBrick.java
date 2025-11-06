@@ -3,8 +3,10 @@ package com.knightquest.arkanoid.model.brick;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
+import java.util.List;
+
 public class MonsterBrick extends Brick {
-    private double moveSpeed = 50.0;
+    private double moveSpeed = 100.0;
     private double moveDirection = 1; // 1 for rights, -1 for left
     private double minX, maxX;
     private double attackTimer = 0;
@@ -12,19 +14,33 @@ public class MonsterBrick extends Brick {
 
     public MonsterBrick(double x, double y, double width, double height,
                         double minX, double maxX) {
-        super(x, y, width, height, 2);
+        super(x, y, width, height, 1);
         this.color = Color.DARKRED;
         this.minX = minX;
         this.maxX = maxX;
         this.type = BrickType.MONSTER;
     }
 
-    @Override
-    public void update(double deltaTime) {
-        x += moveSpeed * moveDirection * deltaTime;
-        if (x <= minX || x + width >= maxX) {
+    public void update(double deltaTime, List<Brick> allBricks) {
+        double newX = x + moveSpeed * moveDirection * deltaTime;
+
+        if (newX <= minX || newX + width >= maxX) {
             moveDirection *= -1;
+            newX = x + moveSpeed * moveDirection * deltaTime;
         }
+
+        for (Brick other : allBricks) {
+            if (other == this || other.isDestroyed()) continue;
+            if (newX < other.getX() + other.getWidth() &&
+                    newX + width > other.getX() &&
+                    y < other.getY() + other.getHeight() &&
+                    y + height > other.getY()) {
+                moveDirection *= -1;
+                newX = x + moveSpeed * moveDirection * deltaTime;
+                break;
+            }
+        }
+        x = newX;
         attackTimer += deltaTime;
     }
 

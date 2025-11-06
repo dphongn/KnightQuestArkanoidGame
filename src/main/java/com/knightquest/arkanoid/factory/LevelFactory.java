@@ -1,13 +1,13 @@
 package com.knightquest.arkanoid.factory;
 
 import com.knightquest.arkanoid.level.Level;
-//import com.knightquest.arkanoid.level.levels.BazaarOfChaosLevel;
-//import com.knightquest.arkanoid.level.levels.BlackCellsLevel;
-//import com.knightquest.arkanoid.level.levels.HallOfGeneralsLevel;
-//import com.knightquest.arkanoid.level.levels.NobleDistrictLevel;
-//import com.knightquest.arkanoid.level.levels.OuterBarracksLevel;
-//import com.knightquest.arkanoid.level.levels.ThroneRoomLevel;
-import com.knightquest.arkanoid.level.levels.WildwoodOutskirtsLevel;
+import com.knightquest.arkanoid.level.levels.BazaarOfChaosLevel;
+import com.knightquest.arkanoid.level.levels.BlackCellsLevel;
+import com.knightquest.arkanoid.level.levels.HallOfGeneralsLevel;
+import com.knightquest.arkanoid.level.levels.NobleDistrictLevel;
+import com.knightquest.arkanoid.level.levels.OuterBarracksLevel;
+import com.knightquest.arkanoid.level.levels.ThroneRoomLevel;
+import com.knightquest.arkanoid.level.levels.*;
 import com.knightquest.arkanoid.model.brick.StrongBrick;
 
 
@@ -17,26 +17,32 @@ import com.knightquest.arkanoid.model.brick.StrongBrick;
 
 
 public class LevelFactory {
-    /** Create a level based on level number. */
+    /**
+     * Create a level based on level number.
+     */
     public static Level createLevel(int levelNumber) {
         return switch (levelNumber) {
-            case 1 -> new WildwoodOutskirtsLevel().create();
-//            case 2 -> new BlackCellsLevel().create();
-//            case 3 -> new BazaarOfChaosLevel().create();
-//            case 4 -> new OuterBarracksLevel().create();
-//            case 5 -> new HallOfGeneralsLevel().create();
-//            case 6 -> new NobleDistrictLevel().create();
-//            case 7 -> new ThroneRoomLevel().create();
-            default -> WildwoodOutskirtsLevel.create(); // Default level
+            case 1 -> WildwoodOutskirtsLevel.create();
+            case 2 -> BlackCellsLevel.create();
+            case 3 -> BazaarOfChaosLevel.create();
+            case 4 -> OuterBarracksLevel.create();
+            case 5 -> HallOfGeneralsLevel.create();
+            case 6 -> NobleDistrictLevel.create();
+            case 7 -> ThroneRoomLevel.create();
+            default -> WildwoodOutskirtsLevel.create();
         };
     }
 
-    /** Get total number of levels available. */
+    /**
+     * Get total number of levels available.
+     */
     public static int getTotalLevels() {
         return 1;
     }
 
-    /** Get level name based on level number. */
+    /**
+     * Get level name based on level number.
+     */
     public static String getLevelName(int levelNumber) {
         return switch (levelNumber) {
             case 1 -> "Wildwood Outskirts";
@@ -50,7 +56,9 @@ public class LevelFactory {
         };
     }
 
-    /** Check if level is a boss level. */
+    /**
+     * Check if level is a boss level.
+     */
     public static boolean isBossLevel(int levelNumber) {
         return levelNumber == 7;
     }

@@ -1,5 +1,6 @@
 package com.knightquest.arkanoid.model.brick;
 
+import com.knightquest.arkanoid.model.powerup.PowerUpType;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
@@ -7,6 +8,7 @@ public class PrisonerBrick extends Brick {
     private boolean powerUpDropped = false;
     private final Color prisonerColor = Color.PURPLE;
     private final Color chainColor = Color.DARKGRAY;
+    private static int nextPowerUpIndex = 0;
 
     public PrisonerBrick(double x, double y, double width, double height) {
         super(x, y, width, height, 1);
@@ -51,5 +53,20 @@ public class PrisonerBrick extends Brick {
 
     public double[] getPowerUpSpawnPosition() {
         return new double[]{x + width / 2, y + height / 2};
+    }
+
+    @Override
+    public PowerUpType getPowerUpDrop() {
+        if (powerUpDropped) {
+            PowerUpType[] allTypes = PowerUpType.values();
+            PowerUpType typeToDrop = allTypes[nextPowerUpIndex];
+            nextPowerUpIndex++;
+            if (nextPowerUpIndex >= allTypes.length) {
+                nextPowerUpIndex = 0; // Quay vòng lại từ đầu
+            }
+            powerUpDropped = false;
+            return typeToDrop;
+        }
+        return null;
     }
 }
