@@ -128,4 +128,12 @@ public class UIController implements GameEventListener {
     public void setStatusMessage(String message) {
         this.statusMessage = message;
     }
+
+    public void onBrickHit(Brick brick) {
+        // Optional: Update UI for brick hit feedback
+    }
+
+    public void onBallPaddleCollision() {
+        // Optional: Update UI for ball-paddle collision feedback
+    }
 }

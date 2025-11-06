@@ -33,7 +33,7 @@ public class LevelFactory {
 
     /** Get total number of levels available. */
     public static int getTotalLevels() {
-        return 1;
+        return 7;
     }
 
     /** Get level name based on level number. */

@@ -111,4 +111,16 @@ public class GameEventManager {
         }
         return null;
     }
+
+    public void notifyBrickHit(Brick brick) {
+        for (GameEventListener listener : listeners) {
+            listener.onBrickHit(brick);
+        }
+    }
+
+    public void notifyBallPaddleCollision() {
+        for (GameEventListener listener : listeners) {
+            listener.onBallPaddleCollision();
+        }
+    }
 }

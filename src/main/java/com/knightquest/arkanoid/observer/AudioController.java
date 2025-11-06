@@ -41,6 +41,26 @@ public class AudioController implements GameEventListener {
     }
 
     @Override
+    public void onBrickHit(Brick brick) {
+        if (!soundEnabled) return;
+
+        String brickType = brick.getClass().getSimpleName();
+        
+        // Play hit sound for strong bricks
+        if ("StrongBrick".equals(brickType)) {
+            playSound("strong_brick_hit.wav", masterVolume * 0.6);
+        }
+    }
+
+    @Override
+    public void onBallPaddleCollision() {
+        if (!soundEnabled) return;
+
+        // Play paddle hit sound
+        playSound("paddle_hit.wav", masterVolume * 0.8);
+    }
+
+    @Override
     public void onPowerUpCollected(PowerUp powerUp) {
         if (!soundEnabled) return;
 
