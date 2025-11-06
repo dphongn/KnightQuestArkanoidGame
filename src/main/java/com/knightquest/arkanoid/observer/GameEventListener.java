@@ -69,4 +69,15 @@ public interface GameEventListener {
      * Called when menu option is confirmed.
      */
     void onMenuOptionSelected();
+
+    /**
+     * Called when a brick is hit(but not necessarily destroyed).
+     * Useful for StrongBrick that needs multiple hits.
+     */
+    void onBrickHit(Brick brick);
+
+    /**
+     * Called when ball collides with paddle.
+     */
+    void onBallPaddleCollision();
 }

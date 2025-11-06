@@ -38,6 +38,8 @@ public class CollisionHandler {
             return;
         }
 
+        //Notify paddle collision
+        eventManager.notifyBallPaddleCollision();
 
         // Position ball above paddle to prevent sticking
         ball.setY(paddle.getY() - ball.getHeight());
@@ -100,6 +102,9 @@ public class CollisionHandler {
 
             boolean shouldBounce = ball.getMovementStrategy().handleBrickCollision(ball, brick);
 
+            eventManager.notifyBrickHit(brick);
+            
+            handleBrickDestruction(brick);
             processBrickDestruction(brick, bricks);
             //handleBrickDestruction(brick);
 
