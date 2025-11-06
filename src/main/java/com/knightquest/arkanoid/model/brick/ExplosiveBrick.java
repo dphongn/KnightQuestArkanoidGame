@@ -21,25 +21,8 @@ public class ExplosiveBrick extends Brick {
     }
 
     @Override
-    public void render(GraphicsContext gc) {
-        if (!imageLoaded) {
-            try {
-                explosiveBrickImage = new Image(getClass().getResourceAsStream(imagePath));
-                if (explosiveBrickImage.isError()) {
-                    explosiveBrickImage = null;
-                }
-            } catch (Exception e) {
-                System.err.println("Không thể load ảnh: " + imagePath);
-                explosiveBrickImage = null;
-            }
-            imageLoaded = true;
-        }
-
-        if (explosiveBrickImage != null) {
-            gc.drawImage(explosiveBrickImage, x, y, width, height);
-        } else {
-            super.render(gc);
-        }
+    protected String getImagePath() {
+        return imagePath;
     }
 
     @Override

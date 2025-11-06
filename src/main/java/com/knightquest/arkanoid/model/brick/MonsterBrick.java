@@ -1,7 +1,6 @@
 package com.knightquest.arkanoid.model.brick;
 
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
 import java.util.List;
@@ -12,8 +11,6 @@ public class MonsterBrick extends Brick {
     private double minX, maxX;
     private double attackTimer = 0;
     private static final double ATTACK_INTERVAL = 3.0;
-    private static Image monsterBrickImage;
-    private static boolean imageLoaded = false;
     private static final String imagePath = "/images/sprites/bricks/monsterbrick.gif";
 
     public MonsterBrick(double x, double y, double width, double height,
@@ -56,37 +53,24 @@ public class MonsterBrick extends Brick {
         return false;
     }
 
+    protected String getImagePath() {
+        return imagePath;
+    }
+
     @Override
-    public void render(GraphicsContext gc) {
-        if (!imageLoaded) {
-            try {
-                monsterBrickImage = new Image(getClass().getResourceAsStream(imagePath));
-                if (monsterBrickImage.isError()) {
-                    monsterBrickImage = null;
-                }
-            } catch (Exception e) {
-                System.err.println("Không thể load ảnh: " + imagePath);
-                monsterBrickImage = null;
-            }
-            imageLoaded = true;
-        }
+    protected void renderFallback(GraphicsContext gc) {
+        gc.setFill(color);
+        gc.fillRect(x, y, width, height);
 
-        if (monsterBrickImage != null) {
-            gc.drawImage(monsterBrickImage, x, y, width, height);
-        } else {
-            gc.setFill(color);
-            gc.fillRect(x, y, width, height);
+        gc.setFill(Color.YELLOW);
+        double eyeSize = width / 6;
+        gc.fillOval(x + width * 0.25 - eyeSize / 2, y + height * 0.3,
+                eyeSize, eyeSize);
+        gc.fillOval(x + width * 0.75 - eyeSize / 2, y + height * 0.3,
+                eyeSize, eyeSize);
 
-            gc.setFill(Color.YELLOW);
-            double eyeSize = width / 6;
-            gc.fillOval(x + width * 0.25 - eyeSize / 2, y + height * 0.3,
-                    eyeSize, eyeSize);
-            gc.fillOval(x + width * 0.75 - eyeSize / 2, y + height * 0.3,
-                    eyeSize, eyeSize);
-
-            gc.setStroke(Color.BLACK);
-            gc.strokeRect(x, y, width, height);
-        }
+        gc.setStroke(Color.BLACK);
+        gc.strokeRect(x, y, width, height);
     }
 
     public double[] getProjectileSpawnPosition() {

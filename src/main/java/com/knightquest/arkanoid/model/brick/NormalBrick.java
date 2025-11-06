@@ -1,12 +1,8 @@
 package com.knightquest.arkanoid.model.brick;
 
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
 public class NormalBrick extends Brick {
-    private static Image normalBrickImage;
-    private static boolean imageLoaded = false;
     private static final String imagePath = "/images/sprites/bricks/normalbrick.gif";
 
     public NormalBrick(double x, double y, double width, double height) {
@@ -16,24 +12,7 @@ public class NormalBrick extends Brick {
     }
 
     @Override
-    public void render(GraphicsContext gc) {
-        if (!imageLoaded) {
-            try {
-                normalBrickImage = new Image(getClass().getResourceAsStream(imagePath));
-                if (normalBrickImage.isError()) {
-                    normalBrickImage = null;
-                }
-            } catch (Exception e) {
-                System.err.println("Không thể load ảnh: " + imagePath);
-                normalBrickImage = null;
-            }
-            imageLoaded = true;
-        }
-
-        if (normalBrickImage != null) {
-            gc.drawImage(normalBrickImage, x, y, width, height);
-        } else {
-            super.render(gc);
-        }
+    protected String getImagePath() {
+        return imagePath;
     }
 }

@@ -1,7 +1,5 @@
 package com.knightquest.arkanoid.model.brick;
 
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
 public class StrongBrick extends Brick {
@@ -15,9 +13,8 @@ public class StrongBrick extends Brick {
             "/images/sprites/bricks/strongbrick1.gif",
             "/images/sprites/bricks/strongbrick2.gif",
             "/images/sprites/bricks/normalbrick.gif"
+
     };
-    private static final Image[] images = new Image[INITIAL_HP];
-    private static boolean imagesLoaded = false;
 
     public StrongBrick(double x, double y, double width, double height) {
         super(x, y, width, height, INITIAL_HP);
@@ -32,29 +29,12 @@ public class StrongBrick extends Brick {
     }
 
     @Override
-    public void render(GraphicsContext gc) {
-        if (!imagesLoaded) {
-            for (int i = 0; i < INITIAL_HP; ++i) {
-                try {
-                    images[i] = new Image(getClass().getResourceAsStream(imagePaths[i]));
-                    if (images[i].isError()) {
-                        images[i] = null;
-                    }
-                } catch (Exception e) {
-                    System.err.println("Không thể load ảnh: " + imagePaths[i]);
-                    images[i] = null;
-                }
-            }
-            imagesLoaded = true;
+    protected String getImagePath() {
+        int index = Math.max(0, INITIAL_HP - hitPoints);
+        if (index >= imagePaths.length) {
+            index = imagePaths.length - 1;
         }
-
-        int index = Math.max(0, Math.min(INITIAL_HP - 1, INITIAL_HP - hitPoints));
-        Image img = images[index];
-        if (img != null) {
-            gc.drawImage(img, x, y, width, height);
-        } else {
-            super.render(gc);
-        }
+        return imagePaths[index];
     }
 
     public void updateColor() {
