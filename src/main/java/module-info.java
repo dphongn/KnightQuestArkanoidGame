@@ -12,6 +12,7 @@ module com.knightquest.arkanoid.knightquestarkanoid {
     requires eu.hansolo.tilesfx;
     requires com.almasb.fxgl.all;
     requires annotations;
+    requires javafx.graphics;
 
     opens com.knightquest.arkanoid to javafx.fxml;
     exports com.knightquest.arkanoid;

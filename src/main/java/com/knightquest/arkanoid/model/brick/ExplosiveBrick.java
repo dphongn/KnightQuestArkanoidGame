@@ -1,5 +1,7 @@
 package com.knightquest.arkanoid.model.brick;
 
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
@@ -8,11 +10,36 @@ import java.util.List;
 public class ExplosiveBrick extends Brick {
     private static final double EXPLOSION_RADIUS = 65.0;
     private boolean hasExploded = false;
+    private static Image explosiveBrickImage;
+    private static boolean imageLoaded = false;
+    private static final String imagePath = "/images/sprites/bricks/explosivebrick.gif";
 
     public ExplosiveBrick(double x, double y, double width, double height) {
         super(x, y, width, height, 1);
         this.color = Color.ORANGE;
         this.type = BrickType.EXPLOSIVE;
+    }
+
+    @Override
+    public void render(GraphicsContext gc) {
+        if (!imageLoaded) {
+            try {
+                explosiveBrickImage = new Image(getClass().getResourceAsStream(imagePath));
+                if (explosiveBrickImage.isError()) {
+                    explosiveBrickImage = null;
+                }
+            } catch (Exception e) {
+                System.err.println("Không thể load ảnh: " + imagePath);
+                explosiveBrickImage = null;
+            }
+            imageLoaded = true;
+        }
+
+        if (explosiveBrickImage != null) {
+            gc.drawImage(explosiveBrickImage, x, y, width, height);
+        } else {
+            super.render(gc);
+        }
     }
 
     @Override

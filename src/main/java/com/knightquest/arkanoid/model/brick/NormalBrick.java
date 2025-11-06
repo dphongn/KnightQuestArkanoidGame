@@ -6,7 +6,7 @@ import javafx.scene.paint.Color;
 
 public class NormalBrick extends Brick {
     private static Image normalBrickImage;
-    private static boolean imageLoadAttempted = false;
+    private static boolean imageLoaded = false;
     private static final String imagePath = "/images/sprites/bricks/normalbrick.gif";
 
     public NormalBrick(double x, double y, double width, double height) {
@@ -17,17 +17,17 @@ public class NormalBrick extends Brick {
 
     @Override
     public void render(GraphicsContext gc) {
-        if (!imageLoadAttempted) {
+        if (!imageLoaded) {
             try {
                 normalBrickImage = new Image(getClass().getResourceAsStream(imagePath));
                 if (normalBrickImage.isError()) {
                     normalBrickImage = null;
                 }
             } catch (Exception e) {
-                System.err.println("Lỗi load file ảnh: " + imagePath);
+                System.err.println("Không thể load ảnh: " + imagePath);
                 normalBrickImage = null;
             }
-            imageLoadAttempted = true;
+            imageLoaded = true;
         }
 
         if (normalBrickImage != null) {
