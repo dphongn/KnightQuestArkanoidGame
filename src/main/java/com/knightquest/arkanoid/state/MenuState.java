@@ -9,15 +9,11 @@ import javafx.scene.text.TextAlignment;
 import com.knightquest.arkanoid.observer.GameEventManager;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import javafx.scene.effect.DropShadow;
 import javafx.scene.text.FontWeight;
 import javafx.scene.image.Image;
 import java.io.InputStream;
+import javafx.scene.input.KeyCode;
 
-import javafx.scene.paint.LinearGradient;
-import javafx.scene.paint.Stop;
-import javafx.scene.paint.CycleMethod;
-import javafx.scene.effect.DropShadow;
 
 /**
  * MenuState handles the main menu of the game.
@@ -135,7 +131,9 @@ public class MenuState extends GameState {
             return;
         }
 
-                switch(event.getCode()) {
+        KeyCode code = event.getCode();
+
+        switch(code) {
             case UP:
             case W:
                 selectedOption = (selectedOption - 1 + menuOptions.length) % menuOptions.length;
@@ -222,10 +220,6 @@ public class MenuState extends GameState {
             //Button background
             gc.setFill(Color.rgb(40, 45, 55, 0.95));
             gc.fillRoundRect(buttonX, buttonY, scaledWidth, scaledHeight, 6, 6);
-
-            // //Inner highlight
-            // gc.setFill(Color.rgb(60, 40, 30, 0.4));
-            // gc.fillRoundRect(buttonX + 3, buttonY + 3, scaledWidth - 6, scaledHeight / 2, 4, 4);
 
             //Button border
             gc.setStroke(isSelected ? Color.rgb(220, 225, 230) : Color.rgb(140, 150, 160));
