@@ -97,8 +97,10 @@ public class PlayingState extends GameState {
         gameManager.updateGameLogic(deltaTime);
 
         // Check for win/loss conditions
-        if (gameManager.getBricks().isEmpty()) {
+        boolean hasBreakable = gameManager.getBricks().stream().anyMatch(Brick::isBreakable);
+        if (!hasBreakable) {
             handleLevelComplete();
+            return;
         }
 
         if (gameManager.getLives() <= 0) {

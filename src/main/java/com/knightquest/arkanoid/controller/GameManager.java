@@ -210,7 +210,8 @@ public class GameManager {
             }
         }
 
-        if (bricks.isEmpty()) {
+        boolean hasBreakableBricks = bricks.stream().anyMatch(Brick::isBreakable);
+        if (!hasBreakableBricks) {
             eventManager.notifyLevelCompleted(currentLevelNumber, score);
         }
 

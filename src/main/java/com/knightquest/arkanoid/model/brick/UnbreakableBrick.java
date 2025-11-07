@@ -24,5 +24,10 @@ public class UnbreakableBrick extends Brick {
     public boolean isDestroyed() {
         return false;
     }
+
+    @Override
+    public boolean isBreakable() {
+        return false;
+    }
 }
 
