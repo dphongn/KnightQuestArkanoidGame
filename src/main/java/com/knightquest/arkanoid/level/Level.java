@@ -11,20 +11,18 @@ public class Level {
     private String description;
     protected List<Brick> bricks;
     private boolean completed;
-    private boolean isBossLevel;
 
     public Level(int levelNumber, String levelName, List<Brick> bricks) {
-        this(levelNumber, levelName, "", bricks, false);
+        this(levelNumber, levelName, "", bricks);
     }
 
     public Level(int levelNumber, String levelName, String description,
-                 List<Brick> bricks, boolean isBossLevel) {
+                 List<Brick> bricks) {
         this.levelNumber = levelNumber;
         this.levelName = levelName;
         this.description = description;
         this.bricks = new ArrayList<>(bricks);
         this.completed = false;
-        this.isBossLevel = isBossLevel;
     }
 
     public boolean isCompleted() {
@@ -61,10 +59,6 @@ public class Level {
 
     public List<Brick> getBricks() {
         return bricks;
-    }
-
-    public boolean isBossLevel() {
-        return isBossLevel;
     }
 
     public void setCompleted(boolean completed) {
