@@ -24,11 +24,25 @@ public class Ball extends MovableObject {
     private boolean stuckToPaddle = false;
     private double stuckOffsetX = 0;
 
-    private Image[] ballImages;
-    private static final String[] BALL_IMAGES = {
+    private Image[] normalBallImages;
+    private Image[] fireBallImages;
+    private Image[] piercingBallImages;
+
+    private static final String[] NORMAL_BALL_IMAGES = {
         "/images/sprites/ball/ball1.png",
         "/images/sprites/ball/ball2.png"
     };
+
+    private static final String[] FIRE_BALL_IMAGES = {
+        "/images/sprites/ball/fire_ball1.png",
+        "/images/sprites/ball/fire_ball2.png"
+    };
+
+    private static final String[] PIERCING_BALL_IMAGES = {
+        "/images/sprites/ball/piercing_ball1.png",
+        "/images/sprites/ball/piercing_ball2.png"
+    };
+
     private int currentImageIndex = 0;
     private double rotation = 0;
 
@@ -46,26 +60,59 @@ public class Ball extends MovableObject {
         this.stuckToPaddle = true;
         this.stuckOffsetX = 0;
 
-        loadBallImage();
+        loadAllBallImage();
     }
 
     /**
-     * Load ball image.
+     * Load all ball image.
      */
-    private void loadBallImage() {
-        ballImages = new Image[BALL_IMAGES.length];
-        for (int i = 0; i < BALL_IMAGES.length; i++) {
+    private void loadAllBallImage() {
+        normalBallImages = new Image[NORMAL_BALL_IMAGES.length];
+        for (int i = 0; i < NORMAL_BALL_IMAGES.length; i++) {
         try {
-            java.net.URL imageURL = getClass().getResource(BALL_IMAGES[i]);
+            java.net.URL imageURL = getClass().getResource(NORMAL_BALL_IMAGES[i]);
 
             if (imageURL != null) {
-                ballImages[i] = new Image(imageURL.toString());
+                normalBallImages[i] = new Image(imageURL.toString());
+                System.out.println("✅ Loaded ball image: " + NORMAL_BALL_IMAGES[i]);
             } else {
-                System.err.println("⚠️ Ball image not found: " + BALL_IMAGES[i]);
+                System.err.println("⚠️ Ball image not found: " + NORMAL_BALL_IMAGES[i]);
             }
         } catch (Exception e) {
             System.err.println("⚠️ Error loading ball image: " + e.getMessage());
+        }
+        }
+
+        fireBallImages = new Image[FIRE_BALL_IMAGES.length];
+        for (int i = 0; i < FIRE_BALL_IMAGES.length; i++) {
+        try {
+            java.net.URL imageURL = getClass().getResource(FIRE_BALL_IMAGES[i]);
+
+            if (imageURL != null) {
+                fireBallImages[i] = new Image(imageURL.toString());
+                System.out.println("✅ Loaded fire ball image: " + FIRE_BALL_IMAGES[i]);
+            } else {
+                System.err.println("⚠️ Fire Ball image not found: " + FIRE_BALL_IMAGES[i]);
+            }
+        } catch (Exception e) {
+            System.err.println("⚠️ Error loading fire ball image: " + e.getMessage());
             e.printStackTrace();
+        }
+        }
+
+        piercingBallImages = new Image[PIERCING_BALL_IMAGES.length];
+        for (int i = 0; i < PIERCING_BALL_IMAGES.length; i++) {
+        try {
+            java.net.URL imageURL = getClass().getResource(PIERCING_BALL_IMAGES[i]);
+
+            if (imageURL != null) {
+                piercingBallImages[i] = new Image(imageURL.toString());
+                System.out.println("✅ Loaded piercing ball image: " + PIERCING_BALL_IMAGES[i]);
+            } else {
+                System.err.println("⚠️ Piercing Ball image not found: " + PIERCING_BALL_IMAGES[i]);
+            }
+        } catch (Exception e) {
+            System.err.println("⚠️ Error loading piercing ball image: " + e.getMessage());
         }
         }
     }
@@ -94,7 +141,17 @@ public class Ball extends MovableObject {
             animationTimer += deltaTime;
             if (animationTimer >= FRAME_DURATION) {
                 animationTimer = 0;
-                currentImageIndex = (currentImageIndex + 1) % BALL_IMAGES.length;
+                Image[] currentImages;
+                if (piercing) {
+                    currentImages = piercingBallImages;
+                } else if (onFire) {
+                    currentImages = fireBallImages;
+                } else {
+                    currentImages = normalBallImages;
+                }
+                if (currentImages != null) {
+                    currentImageIndex = (currentImageIndex + 1) % currentImages.length;
+                }
             }
         }
     }
@@ -118,15 +175,22 @@ public class Ball extends MovableObject {
     }
 
     @Override
-    public void render(GraphicsContext gc) {
+    public void render(GraphicsContext gc) {   
+        Image[] currentImages;
+        if (piercing) {
+            currentImages = piercingBallImages;
+        } else if (onFire) {
+            currentImages = fireBallImages;
+        } else {
+            currentImages = normalBallImages;
+        }
 
-        Image currentImage = (ballImages != null && currentImageIndex < ballImages.length) 
-                         ? ballImages[currentImageIndex] 
-                         : null;
+        Image currentImage = (currentImages != null && currentImageIndex < currentImages.length) 
+                             ? currentImages[currentImageIndex] 
+                             : null;
         if (currentImage != null) {
             gc.save();
-            
-            if (onFire) {
+            if (onFire && !piercing) {
                 // Fire Ball effect - orange glow
                 gc.setFill(Color.rgb(255, 100, 0, 0.5));
                 gc.fillOval(x - 4, y - 4, width + 8, height + 8);
@@ -144,24 +208,25 @@ public class Ball extends MovableObject {
 
             gc.restore();
         } else {
+            //Fallback rendering
             if (onFire) {
-            // Fire Ball effect - orange glow
-            gc.setFill(Color.rgb(255, 100, 0, 0.5));
-            gc.fillOval(x - 4, y - 4, width + 8, height + 8);
-            gc.setFill(Color.ORANGE);
-            gc.fillOval(x, y, width, height);
-            gc.setFill(Color.YELLOW);
-            gc.fillOval(x + 3, y + 3, width - 6, height - 6);
+                // Fire Ball effect - orange glow
+                gc.setFill(Color.rgb(255, 100, 0, 0.5));
+                gc.fillOval(x - 4, y - 4, width + 8, height + 8);
+                gc.setFill(Color.ORANGE);
+                gc.fillOval(x, y, width, height);
+                gc.setFill(Color.YELLOW);
+                gc.fillOval(x + 3, y + 3, width - 6, height - 6);
             } else if (piercing) {
             // Pierce Ball effect - white with cyan aura
-            gc.setFill(Color.rgb(0, 255, 255, 0.5));
-            gc.fillOval(x - 3, y - 3, width + 6, height + 6);
-            gc.setFill(Color.WHITE);
-            gc.fillOval(x, y, width, height);
+                gc.setFill(Color.rgb(0, 255, 255, 0.5));
+                gc.fillOval(x - 3, y - 3, width + 6, height + 6);
+                gc.setFill(Color.WHITE);
+                gc.fillOval(x, y, width, height);
             } else {
             // Normal ball
-            gc.setFill(Color.RED);
-            gc.fillOval(x, y, width, height);
+                gc.setFill(Color.RED);
+                gc.fillOval(x, y, width, height);
             }
         }
     }
