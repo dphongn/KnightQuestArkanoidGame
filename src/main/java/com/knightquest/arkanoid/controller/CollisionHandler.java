@@ -103,7 +103,7 @@ public class CollisionHandler {
             boolean shouldBounce = ball.getMovementStrategy().handleBrickCollision(ball, brick);
 
             eventManager.notifyBrickHit(brick);
-            
+
             processBrickDestruction(brick, bricks);
 
             if (shouldBounce) {
@@ -149,7 +149,9 @@ public class CollisionHandler {
                 ExplosiveBrick explosiveBrick = (ExplosiveBrick) currentBrick;
                 if (explosiveBrick.hasExploded()) {
                     System.out.println("💣 Kích hoạt vụ nổ tại (" + explosiveBrick.getX() + ", " + explosiveBrick.getY() + ")");
-
+                    double cx = explosiveBrick.getX() + explosiveBrick.getWidth() / 2.0;
+                    double cy = explosiveBrick.getY() + explosiveBrick.getHeight() / 2.0;
+                    eventManager.notifyExplosion(cx, cy, explosiveBrick.getExplosionRadius());
                     List<Brick> targets = explosiveBrick.getExplosionTargets(allBricks);
 
                     for (Brick target : targets) {

@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.knightquest.arkanoid.factory.LevelFactory;
 import com.knightquest.arkanoid.level.Level;
+import com.knightquest.arkanoid.manager.ExplosionEffectManager;
 import com.knightquest.arkanoid.manager.PowerUpManager;
 import com.knightquest.arkanoid.model.Ball;
 import com.knightquest.arkanoid.model.Paddle;
@@ -18,6 +19,7 @@ import com.knightquest.arkanoid.state.GameState;
 import com.knightquest.arkanoid.state.GameStateManager;
 import com.knightquest.arkanoid.observer.AudioController;
 import com.knightquest.arkanoid.observer.UIController;
+
 import static com.knightquest.arkanoid.util.Constants.BRICK_HEIGHT;
 import static com.knightquest.arkanoid.util.Constants.BRICK_WIDTH;
 import static com.knightquest.arkanoid.util.Constants.INITIAL_LIVES;
@@ -41,6 +43,9 @@ public class GameManager {
 
     // Event manager
     private GameEventManager eventManager;
+
+    // Explosion manager
+    private ExplosionEffectManager explosionEffectManager;
 
     // Audio manager
     private AudioController audioController;
@@ -95,6 +100,9 @@ public class GameManager {
         System.out.println("PowerUpManager initialized.");
 
         collisionHandler = new CollisionHandler(this, eventManager);
+
+        explosionEffectManager = new ExplosionEffectManager();
+        eventManager.addListener(explosionEffectManager);
 
         // Load first level
         loadLevel(1);
@@ -205,6 +213,8 @@ public class GameManager {
         if (bricks.isEmpty()) {
             eventManager.notifyLevelCompleted(currentLevelNumber, score);
         }
+
+        explosionEffectManager.update(deltaTime);
     }
 
     // Update game state
@@ -300,6 +310,9 @@ public class GameManager {
         return powerUpManager;
     }
 
+    public ExplosionEffectManager getExplosionEffectManager() {
+        return explosionEffectManager;
+    }
 
     /**
      * Expose the event manager for states/controllers that need to send events.

@@ -44,6 +44,7 @@ public class GameStateManager {
         if (currentState != null) {
             currentState.update(deltaTime);
         }
+        gameManager.getExplosionEffectManager().update(deltaTime);
     }
 
     /**
@@ -66,6 +67,7 @@ public class GameStateManager {
         if (currentState != null) {
             currentState.render(gc);
         }
+        gameManager.getExplosionEffectManager().render(gc);
     }
 
     /**
