@@ -48,7 +48,9 @@ public class AudioController implements GameEventListener {
         
         // Play hit sound for strong bricks
         if ("StrongBrick".equals(brickType)) {
-            playSound("strong_brick_hit.wav", masterVolume * 0.6);
+            playSound("strong_brick_hit.wav", masterVolume * 0.5);
+        } else if ("UnbreakableBrick".equals(brickType)) {
+            playSound("metal_clang.wav", masterVolume * 0.5);
         }
     }
 
@@ -57,7 +59,7 @@ public class AudioController implements GameEventListener {
         if (!soundEnabled) return;
 
         // Play paddle hit sound
-        playSound("paddle_hit.wav", masterVolume * 0.8);
+        playSound("paddle_hit.wav", masterVolume * 0.6);
     }
 
     @Override
