@@ -7,6 +7,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
+import java.io.InputStream;
 
 /**
  * PausedState handles the paused state of the game.
@@ -15,8 +16,40 @@ public class PausedState extends  GameState {
     private int selectedOption = 0; // 0: Resume, 1: Restart, 2: Main Menu
     private final String[] menuOptions = {"Resume", "Restart", "Main Menu"};
 
+    private Font cinzelTitle;
+    private Font cinzelButton;
+    private Font cinzelButtonSelected;
+
     public PausedState(GameManager gameManager) {
         super(gameManager);
+        loadFonts();
+    }
+
+    private void loadFonts() {
+        String cinzelPath = "/fonts/Cinzel-Regular.ttf";
+
+        try {
+            InputStream titleStream = getClass().getResourceAsStream(cinzelPath);
+            if (titleStream != null) {
+                cinzelTitle = Font.loadFont(titleStream, 40);
+            } else {
+                throw new Exception("Font file not found: " + cinzelPath);
+            }
+
+            InputStream buttonStream = getClass().getResourceAsStream(cinzelPath);
+            if (buttonStream != null) {
+                cinzelButton = Font.loadFont(buttonStream, 20);
+                cinzelButtonSelected = Font.loadFont(buttonStream, 24);
+            } else {
+                throw new Exception("Font file not found: " + cinzelPath);
+            }
+        } catch (Exception e) {
+            System.err.println("Error loading fonts: " + e.getMessage());
+            // Fallback to default fonts
+            cinzelTitle = Font.font("Arial", 48);
+            cinzelButton = Font.font("Arial", 16);
+            cinzelButtonSelected = Font.font("Arial", 18);
+        }
     }
 
     @Override
@@ -36,7 +69,9 @@ public class PausedState extends  GameState {
             return;
         }
 
-        switch (event.getCode()) {
+        KeyCode code = event.getCode();
+
+        switch (code) {
             case UP:
             case W:
                 selectedOption = (selectedOption - 1 + menuOptions.length) % menuOptions.length;
@@ -72,43 +107,52 @@ public class PausedState extends  GameState {
         // Dim the background
         rendeGameBackground(gc);
 
-        // Draw pause menu
-        double width = gc.getCanvas().getWidth();
-        double height = gc.getCanvas().getHeight();
-
         // Semi-transparent overlay
         gc.setFill(Color.rgb(0, 0, 0, 0.7));
-        gc.fillRect(0, 0, width, height);
-        double centerX = width / 2;
-        double centerY = height / 2;
+        gc.fillRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
 
-        // Draw pause box background
+        double centerX = gc.getCanvas().getWidth() / 2;
+        double centerY = gc.getCanvas().getHeight() / 2;
+
+        // Draw pause box background (Dark Stone Color)
         double boxWidth = 400;
         double boxHeight = 300;
-        gc.setFill(Color.rgb(30, 30, 40));
-        gc.fillRect(centerX - boxWidth / 2, centerY - boxHeight / 2, boxWidth, boxHeight);
+        gc.setFill(Color.rgb(40, 45, 55, 0.95));
+        gc.fillRoundRect(centerX - boxWidth / 2, centerY - boxHeight / 2, boxWidth, boxHeight, 10, 10);
 
-        //Draw pause box border
-        gc.setStroke(Color.GOLD);
+        // Draw pause box border (Silver/Metal)
+        gc.setStroke(Color.rgb(140, 150, 160));
         gc.setLineWidth(3);
-        gc.strokeRect(centerX - boxWidth / 2, centerY - boxHeight / 2, boxWidth, boxHeight);
+        gc.strokeRoundRect(centerX - boxWidth / 2, centerY - boxHeight / 2, boxWidth, boxHeight, 10, 10);
+        
+        // Inner border highlight
+        gc.setStroke(Color.rgb(100, 110, 120, 0.5));
+        gc.setLineWidth(2);
+        gc.strokeRoundRect(centerX - boxWidth / 2 + 3, centerY - boxHeight / 2 + 3, boxWidth - 6, boxHeight - 6, 8, 8);
+
 
         // Draw title
         gc.setTextAlign(TextAlignment.CENTER);
-        gc.setFont(Font.font("Arial", 42));
-        gc.setFill(Color.GOLD);
+        gc.setFont(cinzelTitle);
+        gc.setFill(Color.rgb(255, 245, 200));
         gc.fillText("PAUSED", centerX, centerY - 80);
 
         // Draw menu options
-        gc.setFont(Font.font("Arial", 28));
+        gc.setFont(cinzelButton);
         for (int i = 0; i < menuOptions.length; i++) {
             double y = centerY - 10 + i * 50;
+            boolean isSelected = (i == selectedOption);
 
-            if (i == selectedOption) {
-                gc.setFill(Color.GOLD);
+            gc.setFont(isSelected ? cinzelButtonSelected : cinzelButton);
+
+            if (isSelected) {
+                // Highlight for selected option
+                gc.setFill(Color.rgb(200, 210, 220, 0.25)); 
+                gc.fillRoundRect(centerX - 150, y - 20, 300, 30, 8, 8);
+                gc.setFill(Color.WHITE);
                 gc.fillText("> " + menuOptions[i] + " <", centerX, y);
             } else {
-                gc.setFill(Color.LIGHTGRAY);
+                gc.setFill(Color.rgb(210, 215, 220));
                 gc.fillText(menuOptions[i], centerX, y);
             }
         }
@@ -116,8 +160,7 @@ public class PausedState extends  GameState {
         // Draw instructions
         gc.setFont(Font.font("Arial", 14));
         gc.setFill(Color.GRAY);
-        gc.fillText("Use W/S or Up/Down to navigate | Enter to select | ESC to resume", centerX, centerY + boxHeight/2 - 20);
-
+        gc.fillText("Use W/S or ↑/↓ to navigate | Enter to select | ESC to resume", centerX, centerY + boxHeight/2 - 20);
     }
 
     @Override
