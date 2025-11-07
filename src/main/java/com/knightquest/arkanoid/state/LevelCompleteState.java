@@ -8,6 +8,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
 import com.knightquest.arkanoid.observer.GameEventManager;
+import java.io.InputStream;
 
 /**
  * LevelCompleteState handles the state when a level is completed.
@@ -19,6 +20,9 @@ public class LevelCompleteState extends GameState {
     private final String completedLevelName;
     private final int currentScore;
     private final int currentLives;
+    private Font cinzelTitle;
+    private Font cinzelButton;
+    private Font cinzelButtonSelected;
 
     public LevelCompleteState(GameManager gameManager) {
         super(gameManager);
@@ -26,6 +30,41 @@ public class LevelCompleteState extends GameState {
         this.completedLevelName = gameManager.getCurrentLevelName();
         this.currentScore = gameManager.getScore();
         this.currentLives = gameManager.getLives();
+
+        loadFonts();
+    }
+
+    private void loadFonts() {
+        String cinzelPath = "/fonts/Cinzel-Regular.ttf";
+
+        try {
+            InputStream titleStream = getClass().getResourceAsStream(cinzelPath);
+            if (titleStream != null) {
+                cinzelTitle = Font.loadFont(titleStream, 40);
+            } else {
+                throw new Exception("Font not found: " + cinzelPath);
+            }
+
+            InputStream buttonStream1 = getClass().getResourceAsStream(cinzelPath);
+            if (buttonStream1 != null) {
+                cinzelButton = Font.loadFont(buttonStream1, 24);
+            } else {
+                throw new Exception("Font not found: " + cinzelPath);
+            }
+
+            InputStream buttonStream2 = getClass().getResourceAsStream(cinzelPath);
+            if (buttonStream2 != null) {
+                cinzelButtonSelected = Font.loadFont(buttonStream2, 20);
+            } else {
+                throw new Exception("Font not found: " + cinzelPath);
+            }
+            System.out.println("✅ Loaded custom fonts for " + getClass().getSimpleName());
+        } catch (Exception e) {
+            System.err.println("Error loading custom fonts: " + e.getMessage());
+            cinzelTitle = Font.font("Arial", FontWeight.BOLD, 40);
+            cinzelButton = Font.font("Arial", 24);
+            cinzelButtonSelected = Font.font("Arial", 20);
+        }
     }
 
     @Override
@@ -116,17 +155,17 @@ public class LevelCompleteState extends GameState {
         gc.fillText("🎉", centerX, centerY - 140);
 
         // Draw Title
-        gc.setFont(Font.font("Arial", 40));
+        gc.setFont(cinzelTitle);
         gc.setFill(Color.GOLD);
         gc.fillText("LEVEL COMPLETE!", centerX, centerY - 90);
 
         // Draw Level Info
-        gc.setFont(Font.font("Arial", 24));
+        gc.setFont(cinzelButtonSelected);
         gc.setFill(Color.LIGHTBLUE);
         gc.fillText("Level " + completedLevelNumber + ": " + completedLevelName, centerX, centerY - 50);
 
         // Draw Score and Lives
-        gc.setFont(Font.font("Arial", 20));
+        gc.setFont(cinzelButton);
         gc.setFill(Color.WHITE);
         gc.fillText("Score: " + currentScore, centerX, centerY - 15);
 
@@ -134,6 +173,7 @@ public class LevelCompleteState extends GameState {
         for (int i = 0; i < currentLives; i++) {
             livesStr.append("♥ ");
         }
+        gc.setFont(Font.font("Arial", 20));
         gc.fillText(livesStr.toString(), centerX, centerY + 15);
 
         // Draw separator line
@@ -142,26 +182,29 @@ public class LevelCompleteState extends GameState {
         gc.strokeLine(centerX - 200, centerY + 35, centerX + 200, centerY + 35);
 
         // Draw menu options
-        gc.setFont(Font.font("Arial", 24));
         for (int i = 0; i < menuOptions.length; i++) {
             double y = centerY + 75 + i * 45;
+            boolean isSelected = (i == selectedOption);
+            
+            // Set font for both selected and unselected
+            gc.setFont(isSelected ? cinzelButtonSelected : cinzelButton); // <<< CHANGED (Was Arial 24)
 
             if (i == selectedOption) {
-                gc.setFill(Color.rgb(255, 215, 0, 0.3));
-                gc.fillRect(centerX - 220, y - 30, 440, 40);
+                gc.setFill(Color.rgb(255, 215, 0, 0.3)); // Keep Gold glow
+                gc.fillRect(centerX - 220, y - 22, 440, 30); // Adjusted size slightly
 
-                gc.setFill(Color.GOLD);
+                gc.setFill(Color.GOLD); // Keep Gold text
                 gc.fillText("> " + menuOptions[i] + " <", centerX, y);
             } else {
-                gc.setFill(Color.LIGHTGRAY);
+                gc.setFill(Color.LIGHTGRAY); // Keep Light gray text
                 gc.fillText(menuOptions[i], centerX, y);
             }
         }
 
         // Draw instructions
-        gc.setFont(Font.font("Arial", 10));
+        gc.setFont(Font.font("Arial", 10)); // Keep Arial (it's small, readable)
         gc.setFill(Color.GRAY);
-        gc.fillText("Use UP/DOWN or W/S to navigate, ENTER/SPACE to select, C to continue, R to replay", centerX, centerY + boxHeight / 2 - 20);
+        gc.fillText("Use UP/DOWN or ↑/↓ to navigate, ENTER/SPACE to select, C to continue, R to replay", centerX, centerY + boxHeight / 2 - 20);
     }
 
     @Override
