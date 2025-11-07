@@ -1,11 +1,13 @@
 package com.knightquest.arkanoid.state;
 
 import java.util.List;
+
 import com.knightquest.arkanoid.controller.GameManager;
 import com.knightquest.arkanoid.model.Ball;
 import com.knightquest.arkanoid.model.Paddle;
 import com.knightquest.arkanoid.model.brick.Brick;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
@@ -22,6 +24,9 @@ import static com.knightquest.arkanoid.util.Constants.*;
 public class PlayingState extends GameState {
     private boolean leftPressed = false;
     private boolean rightPressed = false;
+    private Image backgroundImage;
+    private Image heartImage;
+    private Font arcadeFont;
 
     public PlayingState(GameManager gameManager) {
         super(gameManager);
@@ -30,6 +35,35 @@ public class PlayingState extends GameState {
     @Override
     public void enter() {
         System.out.println("=== GAME STARTED ===");
+        // Load background image
+        int level = gameManager.getCurrentLevelNumber();
+        String backgroundPath = "/images/backgrounds/level" + level + ".gif";
+        try {
+            backgroundImage = new Image(getClass().getResourceAsStream(backgroundPath));
+        } catch (Exception e) {
+            backgroundImage = null;
+            System.err.println("Không tìm thấy background cho level " + level);
+        }
+        //Load heart image
+        String heartPath = "/images/ui/icons/heart.gif";
+        try {
+            heartImage = new Image(getClass().getResourceAsStream(heartPath));
+        } catch (Exception e) {
+            heartImage = null;
+            System.err.println("Không tìm thấy heart.gif");
+        }
+        // Load Arcade Classic font
+        try {
+            arcadeFont = Font.loadFont(getClass().getResourceAsStream("/fonts/arcadeclassic.ttf"), 28);
+            if (arcadeFont == null) {
+                arcadeFont = Font.font("Arial", 20);
+                System.err.println("Không thể tải arcadeclassic.ttf, dùng Arial thay thế.");
+            }
+        } catch (Exception e) {
+            arcadeFont = Font.font("Arial", 20);
+            System.err.println("Không thể tải arcadeclassic.ttf, fallback Arial.");
+        }
+
         //Start background music
         AudioController audioController = gameManager.getEventManager().getAudioController();
         if (audioController != null) {
@@ -88,7 +122,7 @@ public class PlayingState extends GameState {
         // Handle ball launch (Enter or Space)
         Ball ball = gameManager.getBall();
         if (keyPressed && (keyCode == KeyCode.SPACE || keyCode == KeyCode.ENTER)) {
-            if (ball != null  && ball.isStuckToPaddle()) {
+            if (ball != null && ball.isStuckToPaddle()) {
                 ball.launch();
                 return;
             }
@@ -104,7 +138,7 @@ public class PlayingState extends GameState {
             case A:
                 leftPressed = keyPressed;
                 break;
-            case  RIGHT:
+            case RIGHT:
             case D:
                 rightPressed = keyPressed;
                 break;
@@ -115,13 +149,16 @@ public class PlayingState extends GameState {
 
     @Override
     public void render(GraphicsContext gc) {
-        // Clear screen
-        gc.setFill(Color.WHITE);
-        gc.fillRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
+        if (backgroundImage != null) {
+            gc.drawImage(backgroundImage, 0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
+        } else {
+            gc.setFill(Color.WHITE);
+            gc.fillRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
+        }
 
         //Draw bricks
         for (Brick brick : gameManager.getBricks()) {
-            if(brick.isActive()) {
+            if (brick.isActive()) {
                 brick.render(gc);
             }
         }
@@ -164,7 +201,7 @@ public class PlayingState extends GameState {
     public void exit() {
         leftPressed = false;
         rightPressed = false;
-        
+
         //Stop music when exiting playing state
         AudioController audioController = gameManager.getEventManager().getAudioController();
         if (audioController != null) {
@@ -177,27 +214,44 @@ public class PlayingState extends GameState {
         gc.setFont(Font.font("Arial", 20));
         gc.setFill(Color.WHITE);
 
-        // Draw score
-        gc.fillText("Score: " + gameManager.getScore(), 20, 30);
+        // === SCORE ===
+        gc.setFont(Font.font(arcadeFont.getFamily(), 22));
+        gc.setTextAlign(TextAlignment.LEFT);
+        gc.setStroke(Color.BLACK);
+        gc.setLineWidth(3);
+        gc.setFill(Color.GOLD);
+        gc.strokeText("SCORE: " + gameManager.getScore(), 20, 28);
+        gc.fillText("SCORE: " + gameManager.getScore(), 20, 28);
+
+        // === LEVEL TITLE ===
+        String levelText = "LEVEL " + gameManager.getCurrentLevelNumber() + ": " + gameManager.getCurrentLevelName();
+        gc.setTextAlign(TextAlignment.CENTER);
+        gc.setFont(Font.font(arcadeFont.getFamily(), 26));
+        gc.setStroke(Color.BLACK);
+        gc.setLineWidth(4);
+        gc.setFill(Color.GOLD);
+
+        gc.strokeText(levelText, gc.getCanvas().getWidth() / 2, 45);
+        gc.fillText(levelText, gc.getCanvas().getWidth() / 2, 45);
 
         // Draw lives
-        StringBuilder livesStr = new StringBuilder("Lives: ");
-        for (int i = 0; i < gameManager.getLives(); i++) {
-            livesStr.append("♥ ");
+        if (heartImage != null) {
+            double heartSize = 24;
+            for (int i = 0; i < gameManager.getLives(); ++i) {
+                gc.drawImage(heartImage, 20 + i * (heartSize + 5), 55 - heartSize, heartSize, heartSize);
+            }
+        } else {
+            StringBuilder livesStr = new StringBuilder("Lives: ");
+            for (int i = 0; i < gameManager.getLives(); i++) {
+                livesStr.append("♥ ");
+            }
+            gc.fillText(livesStr.toString(), 20, 55);
         }
-        gc.fillText(livesStr.toString(), 20, 55);
-
-        // Draw level
-        gc.setTextAlign(TextAlignment.CENTER);
-        gc.setFont(Font.font("Arial", 18));
-        gc.setFill(Color.GOLD);
-        String levelText = "Level " + gameManager.getCurrentLevelNumber() + ": " + gameManager.getCurrentLevelName();
-        gc.fillText(levelText, gc.getCanvas().getWidth() / 2, 30);
 
         // Draw instructions
         gc.setFont(Font.font("Arial", 14));
         gc.setFill(Color.GRAY);
-        gc.fillText("<- Move Left    -> Move Right    ESC - Pause", gc.getCanvas().getWidth() / 2,gc.getCanvas().getHeight() - 20);
+        gc.fillText("<- Move Left    -> Move Right    ESC - Pause", gc.getCanvas().getWidth() / 2, gc.getCanvas().getHeight() - 20);
     }
 
     private void handleLevelComplete() {
