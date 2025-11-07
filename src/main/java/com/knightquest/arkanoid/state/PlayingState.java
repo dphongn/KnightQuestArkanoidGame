@@ -116,7 +116,7 @@ public class PlayingState extends GameState {
     @Override
     public void render(GraphicsContext gc) {
         // Clear screen
-        gc.setFill(Color.rgb(15 ,15 ,25));
+        gc.setFill(Color.WHITE);
         gc.fillRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
 
         //Draw bricks

@@ -9,6 +9,7 @@ import com.knightquest.arkanoid.strategy.NormalMovementStrategy;
 import com.knightquest.arkanoid.strategy.PierceMovementStratrgy;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import javafx.scene.image.Image;
 
 public class Ball extends MovableObject {
     private double radius;
@@ -23,8 +24,19 @@ public class Ball extends MovableObject {
     private boolean stuckToPaddle = false;
     private double stuckOffsetX = 0;
 
+    private Image[] ballImages;
+    private static final String[] BALL_IMAGES = {
+        "/images/sprites/ball/ball1.png",
+        "/images/sprites/ball/ball2.png"
+    };
+    private int currentImageIndex = 0;
+    private double rotation = 0;
+
+    private double animationTimer = 0;
+    private static final double FRAME_DURATION = 0.1;
+
     /**
-     * Contructor from GameObject.
+     * Constructor from GameObject.
      */
     public Ball(double x, double y) {
         super(x, y, BALL_RADIUS * 2, BALL_RADIUS * 2);
@@ -33,6 +45,29 @@ public class Ball extends MovableObject {
 //        setVelocity(200, -BALL_SPEED); //up right
         this.stuckToPaddle = true;
         this.stuckOffsetX = 0;
+
+        loadBallImage();
+    }
+
+    /**
+     * Load ball image.
+     */
+    private void loadBallImage() {
+        ballImages = new Image[BALL_IMAGES.length];
+        for (int i = 0; i < BALL_IMAGES.length; i++) {
+        try {
+            java.net.URL imageURL = getClass().getResource(BALL_IMAGES[i]);
+
+            if (imageURL != null) {
+                ballImages[i] = new Image(imageURL.toString());
+            } else {
+                System.err.println("⚠️ Ball image not found: " + BALL_IMAGES[i]);
+            }
+        } catch (Exception e) {
+            System.err.println("⚠️ Error loading ball image: " + e.getMessage());
+            e.printStackTrace();
+        }
+        }
     }
 
     /**
@@ -42,25 +77,26 @@ public class Ball extends MovableObject {
     public void update(double deltaTime) {
 
         if(stuckToPaddle) {
+            currentImageIndex = 0;
             return;
         }
 
         movementStrategy.move(this, deltaTime);
 
-//        // Clamp velocity to prevent excessive speeds
-//        double maxSpeed = BALL_SPEED * 2; // Allow up to 2x normal speed
-//        if (Math.abs(getDx()) > maxSpeed) setDx(Math.signum(getDx()) * maxSpeed);
-//        if (Math.abs(getDy()) > maxSpeed) setDy(Math.signum(getDy()) * maxSpeed);
-//
-//        // Ensure minimum speed to prevent ball getting stuck
-//        double minSpeed = BALL_SPEED * 0.3;
-//        if (Math.abs(getDx()) < minSpeed) setDx(Math.signum(getDx()) * minSpeed);
-//        if (Math.abs(getDy()) < minSpeed) setDy(Math.signum(getDy()) * minSpeed);
-//
-//    }
         // Normalize velocity to exactly BALL_SPEED to ensure all balls move at same speed
         // This guarantees consistent speed regardless of power-ups, collisions, or multi-ball spawns
         normalizeSpeed();
+
+        double velocity = Math.sqrt(getDx() * getDx() + getDy() * getDy());
+        rotation += velocity * deltaTime * 0.3; // Adjust rotation speed
+
+        if (velocity > 10) {
+            animationTimer += deltaTime;
+            if (animationTimer >= FRAME_DURATION) {
+                animationTimer = 0;
+                currentImageIndex = (currentImageIndex + 1) % BALL_IMAGES.length;
+            }
+        }
     }
 
     /**
@@ -80,9 +116,35 @@ public class Ball extends MovableObject {
         setDx(getDx() * factor);
         setDy(getDy() * factor);
     }
+
     @Override
     public void render(GraphicsContext gc) {
-        if (onFire) {
+
+        Image currentImage = (ballImages != null && currentImageIndex < ballImages.length) 
+                         ? ballImages[currentImageIndex] 
+                         : null;
+        if (currentImage != null) {
+            gc.save();
+            
+            if (onFire) {
+                // Fire Ball effect - orange glow
+                gc.setFill(Color.rgb(255, 100, 0, 0.5));
+                gc.fillOval(x - 4, y - 4, width + 8, height + 8);
+            } else if (piercing) {
+                // Pierce Ball effect - white with cyan aura
+                gc.setFill(Color.rgb(0, 255, 255, 0.5));
+                gc.fillOval(x - 3, y - 3, width + 6, height + 6);
+            }
+
+            gc.translate(x + width / 2, y + height / 2);
+            gc.rotate(rotation);
+            gc.translate(-(x + width / 2), -(y + height / 2));
+
+            gc.drawImage(currentImage, x, y, width, height);
+
+            gc.restore();
+        } else {
+            if (onFire) {
             // Fire Ball effect - orange glow
             gc.setFill(Color.rgb(255, 100, 0, 0.5));
             gc.fillOval(x - 4, y - 4, width + 8, height + 8);
@@ -90,21 +152,19 @@ public class Ball extends MovableObject {
             gc.fillOval(x, y, width, height);
             gc.setFill(Color.YELLOW);
             gc.fillOval(x + 3, y + 3, width - 6, height - 6);
-        } else if (piercing) {
+            } else if (piercing) {
             // Pierce Ball effect - white with cyan aura
             gc.setFill(Color.rgb(0, 255, 255, 0.5));
             gc.fillOval(x - 3, y - 3, width + 6, height + 6);
             gc.setFill(Color.WHITE);
             gc.fillOval(x, y, width, height);
-        }
-        else {
+            } else {
             // Normal ball
             gc.setFill(Color.RED);
             gc.fillOval(x, y, width, height);
+            }
         }
-
     }
-
     public boolean isOnFire() {
         return onFire;
     }
