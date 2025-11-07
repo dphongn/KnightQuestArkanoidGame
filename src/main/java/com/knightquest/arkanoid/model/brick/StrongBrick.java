@@ -9,6 +9,12 @@ public class StrongBrick extends Brick {
             Color.BLUE,
             Color.LIGHTBLUE
     };
+    private static final String[] imagePaths = {
+            "/images/sprites/bricks/strongbrick1.gif",
+            "/images/sprites/bricks/strongbrick2.gif",
+            "/images/sprites/bricks/normalbrick.gif"
+
+    };
 
     public StrongBrick(double x, double y, double width, double height) {
         super(x, y, width, height, INITIAL_HP);
@@ -20,6 +26,15 @@ public class StrongBrick extends Brick {
     public void takeHit() {
         super.takeHit();
         updateColor();
+    }
+
+    @Override
+    protected String getImagePath() {
+        int index = Math.max(0, INITIAL_HP - hitPoints);
+        if (index >= imagePaths.length) {
+            index = imagePaths.length - 1;
+        }
+        return imagePaths[index];
     }
 
     public void updateColor() {

@@ -6,11 +6,12 @@ import javafx.scene.paint.Color;
 import java.util.List;
 
 public class MonsterBrick extends Brick {
-    private double moveSpeed = 100.0;
+    private double moveSpeed = 75.0;
     private double moveDirection = 1; // 1 for rights, -1 for left
     private double minX, maxX;
     private double attackTimer = 0;
     private static final double ATTACK_INTERVAL = 3.0;
+    private static final String imagePath = "/images/sprites/bricks/monsterbrick.gif";
 
     public MonsterBrick(double x, double y, double width, double height,
                         double minX, double maxX) {
@@ -52,8 +53,12 @@ public class MonsterBrick extends Brick {
         return false;
     }
 
+    protected String getImagePath() {
+        return imagePath;
+    }
+
     @Override
-    public void render(GraphicsContext gc) {
+    protected void renderFallback(GraphicsContext gc) {
         gc.setFill(color);
         gc.fillRect(x, y, width, height);
 

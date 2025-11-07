@@ -3,12 +3,14 @@ package com.knightquest.arkanoid.model.brick;
 import com.knightquest.arkanoid.model.powerup.PowerUpType;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import org.jetbrains.annotations.NotNull;
 
 public class PrisonerBrick extends Brick {
     private boolean powerUpDropped = false;
     private final Color prisonerColor = Color.PURPLE;
     private final Color chainColor = Color.DARKGRAY;
     private static int nextPowerUpIndex = 0;
+    private static final String imagePath = "/images/sprites/bricks/prisonerbrick.gif";
 
     public PrisonerBrick(double x, double y, double width, double height) {
         super(x, y, width, height, 1);
@@ -24,8 +26,12 @@ public class PrisonerBrick extends Brick {
         }
     }
 
+    protected String getImagePath() {
+        return imagePath;
+    }
+
     @Override
-    public void render(GraphicsContext gc) {
+    protected void renderFallback(@NotNull GraphicsContext gc) {
         gc.setFill(color);
         gc.fillRect(x, y, width, height);
 
