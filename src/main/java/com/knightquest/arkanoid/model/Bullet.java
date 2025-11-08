@@ -1,6 +1,7 @@
 package com.knightquest.arkanoid.model;
 
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
 /**
@@ -8,9 +9,21 @@ import javafx.scene.paint.Color;
  * Travels upward and destroys bricks on contact.
  */
 public class Bullet extends MovableObject {
-    private static final double BULLET_SPEED = 400.0; // Pixels per second
+    private static final double BULLET_SPEED = 200.0; // Pixels per second
     private static final double BULLET_WIDTH = 8.0;   // Tăng từ 4 -> 8
     private static final double BULLET_HEIGHT = 15.0; // Tăng từ 10 -> 15
+    private static Image bulletImage;
+
+    static {
+        try {
+            bulletImage = new Image(Bullet.class.getResourceAsStream("/images/sprites/bullet/sword.gif"));
+            if (bulletImage.isError()) {
+                bulletImage = null;
+            }
+        } catch (Exception e) {
+            bulletImage = null;
+        }
+    }
 
     public Bullet(double x, double y) {
         super(x, y, BULLET_WIDTH, BULLET_HEIGHT);
@@ -31,19 +44,19 @@ public class Bullet extends MovableObject {
     public void render(GraphicsContext gc) {
         if (!active) return;
 
-        // Draw bullet với màu sáng hơn, dễ nhìn hơn
-        // Vẽ core màu cam sáng
-        gc.setFill(Color.ORANGE);
-        gc.fillRect(x, y, width, height);
+        if (bulletImage != null) {
+            gc.drawImage(bulletImage, x - 4, y - 10, width + 8, height + 20);
+        } else {
+            gc.setFill(Color.ORANGE);
+            gc.fillRect(x, y, width, height);
 
-        // Add glow effect màu vàng
-        gc.setFill(Color.rgb(255, 255, 0, 0.7));
-        gc.fillRect(x - 2, y, width + 4, height);
+            gc.setFill(Color.rgb(255, 255, 0, 0.7));
+            gc.fillRect(x - 2, y, width + 4, height);
 
-        // Viền trắng để nổi bật
-        gc.setStroke(Color.WHITE);
-        gc.setLineWidth(1);
-        gc.strokeRect(x, y, width, height);
+            gc.setStroke(Color.WHITE);
+            gc.setLineWidth(1);
+            gc.strokeRect(x, y, width, height);
+        }
     }
 
     /**
