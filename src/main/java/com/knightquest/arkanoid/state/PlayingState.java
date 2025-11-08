@@ -26,6 +26,7 @@ public class PlayingState extends GameState {
     private boolean rightPressed = false;
     private Image backgroundImage;
     private Image heartImage;
+    private Image shieldImage;
     private Font arcadeFont;
 
     public PlayingState(GameManager gameManager) {
@@ -51,6 +52,14 @@ public class PlayingState extends GameState {
         } catch (Exception e) {
             heartImage = null;
             System.err.println("Không tìm thấy heart.gif");
+        }
+        //Load shield image
+        String shieldPath = "/images/ui/icons/shield.gif";
+        try {
+            shieldImage = new Image(getClass().getResourceAsStream(shieldPath));
+        } catch (Exception e) {
+            shieldImage = null;
+            System.err.println("Không tìm thấy shield.gif");
         }
         // Load Arcade Classic font
         try {
@@ -228,10 +237,16 @@ public class PlayingState extends GameState {
         gc.fillText(levelText, gc.getCanvas().getWidth() / 2, 45);
 
         // Draw lives
-        if (heartImage != null) {
-            double heartSize = 24;
+        //if (heartImage != null) {
+        //double heartSize = 24;
+        //    for (int i = 0; i < gameManager.getLives(); ++i) {
+        //        gc.drawImage(heartImage, 20 + i * (heartSize + 5), 55 - heartSize, heartSize, heartSize);
+        //    }
+        //}
+        if (shieldImage != null) {
+            double shieldSize = 24;
             for (int i = 0; i < gameManager.getLives(); ++i) {
-                gc.drawImage(heartImage, 20 + i * (heartSize + 5), 55 - heartSize, heartSize, heartSize);
+                gc.drawImage(shieldImage, 20 + i * (shieldSize + 5), 55 - shieldSize, shieldSize, shieldSize);
             }
         } else {
             StringBuilder livesStr = new StringBuilder("Lives: ");
