@@ -54,7 +54,7 @@ public class GameManager {
     private PowerUpManager powerUpManager;
 
     // Level system
-    private int currentLevelNumber = 3;
+    private int currentLevelNumber = 1;
     private Level currentLevel;
 
     // State management
