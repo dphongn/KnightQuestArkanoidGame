@@ -3,6 +3,7 @@ package com.knightquest.arkanoid.level.levels;
 
 import java.util.ArrayList;
 
+import com.knightquest.arkanoid.factory.BrickFactory;
 import com.knightquest.arkanoid.level.BaseLevel;
 import com.knightquest.arkanoid.model.brick.*;
 import com.knightquest.arkanoid.model.powerup.PowerUpType;
@@ -25,10 +26,8 @@ public class BazaarOfChaosLevel extends BaseLevel {
 
     @Override
     protected void buildLevel() {
-        double startX = 30;
-        double startY = 70;
 
-        int[][] layout = {
+        int[][] map = {
                 {1,1,1,3,1,1,1,3,1,1,1,3},
                 {3,1,3,0,3,1,3,0,3,1,3,0},
                 {0,1,0,0,0,1,0,0,0,1,0,0},
@@ -50,38 +49,27 @@ public class BazaarOfChaosLevel extends BaseLevel {
         int powerUpIndex = 0;
         int powerUpBrickCount = 0;
 
-        for (int row = 0; row < layout.length; row++) {
-            for (int col = 0; col < layout[row].length; col++) {
-                int type = layout[row][col];
-                if (type == 0) continue; // ô trống, bỏ qua
+        double startX = 30;
+        double startY = 70;
+        double screenWidth = 800;
+
+        for (int row = 0; row < map.length; row++) {
+            for (int col = 0; col < map[row].length; col++) {
+                int type = map[row][col];
+                if (type == 0) continue;
 
                 double x = startX + col * (BRICK_WIDTH + 2);
                 double y = startY + row * (BRICK_HEIGHT + 3);
+
                 Brick brick = null;
 
-                switch (type) {
-                    case 1:
-                        brick = new NormalBrick(x, y, BRICK_WIDTH, BRICK_HEIGHT);
-                        break;
-                    case 2:
-                        brick = new StrongBrick(x, y, BRICK_WIDTH, BRICK_HEIGHT);
-                        break;
-                    case 3:
-                        brick = new PrisonerBrick(x, y, BRICK_WIDTH, BRICK_HEIGHT);
-                        break;
-                    /*case 4:
-                        brick = new ExplosiveBrick(x, y, BRICK_WIDTH, BRICK_HEIGHT);
-                        break;
-                    case 5:
-                        brick = new MonsterBrick(x, y, BRICK_WIDTH, BRICK_HEIGHT);
-                        break;
-                    case 6:
-                        brick = new UnbreakableBrick(x, y, BRICK_WIDTH, BRICK_HEIGHT);
-                        break;
-
-                     */
+                if (type == 5) {
+                    double minX = Math.max(0, startX + (col - 2) * (BRICK_WIDTH + 3));
+                    double maxX = Math.min(screenWidth - BRICK_WIDTH, startX + (col + 2) * (BRICK_WIDTH + 3));
+                    brick = BrickFactory.createMonsterBrickFromCode(5, x, y, BRICK_WIDTH, BRICK_HEIGHT, minX, maxX);
+                } else {
+                    brick = BrickFactory.createBrickFromCode(type, x, y, BRICK_WIDTH, BRICK_HEIGHT);
                 }
-
                 if (brick != null) {
                     bricks.add(brick);
                 }

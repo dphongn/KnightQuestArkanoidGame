@@ -1,6 +1,8 @@
 package com.knightquest.arkanoid.level.levels;
 
 import java.util.ArrayList;
+
+import com.knightquest.arkanoid.factory.BrickFactory;
 import com.knightquest.arkanoid.level.BaseLevel;
 import com.knightquest.arkanoid.model.brick.*;
 import com.knightquest.arkanoid.model.powerup.PowerUpType;
@@ -42,26 +44,24 @@ public class OuterBarracksLevel extends BaseLevel {
         int powerUpIndex = 0;
         int powerUpBrickCount = 0;
 
+        double screenWidth = 800;
+
         for (int row = 0; row < map.length; row++) {
             for (int col = 0; col < map[row].length; col++) {
                 int type = map[row][col];
                 if (type == 0) continue;
-                double x = startX + col * (BRICK_WIDTH + 4);
+
+                double x = startX + col * (BRICK_WIDTH + 2);
                 double y = startY + row * (BRICK_HEIGHT + 3);
+
                 Brick brick = null;
-                switch (type) {
-                    case 1:
-                        brick = new NormalBrick(x, y, BRICK_WIDTH, BRICK_HEIGHT);
-                        break;
-                    case 2:
-                        brick = new StrongBrick(x, y, BRICK_WIDTH, BRICK_HEIGHT);
-                        break;
-                    case 3:
-                        brick = new PrisonerBrick(x, y, BRICK_WIDTH, BRICK_HEIGHT);
-                        break;
-                    case 4:
-                        brick = new ExplosiveBrick(x, y, BRICK_WIDTH, BRICK_HEIGHT);
-                        break;
+
+                if (type == 5) {
+                    double minX = Math.max(0, startX + (col - 2) * (BRICK_WIDTH + 3));
+                    double maxX = Math.min(screenWidth - BRICK_WIDTH, startX + (col + 2) * (BRICK_WIDTH + 3));
+                    brick = BrickFactory.createMonsterBrickFromCode(5, x, y, BRICK_WIDTH, BRICK_HEIGHT, minX, maxX);
+                } else {
+                    brick = BrickFactory.createBrickFromCode(type, x, y, BRICK_WIDTH, BRICK_HEIGHT);
                 }
                 if (brick != null) {
                     bricks.add(brick);
