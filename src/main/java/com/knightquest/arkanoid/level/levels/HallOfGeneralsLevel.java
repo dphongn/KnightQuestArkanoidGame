@@ -37,7 +37,12 @@ public class HallOfGeneralsLevel extends BaseLevel {
         PowerUpType[] powerUps = {
                 PowerUpType.FIRE_BALL,
                 PowerUpType.PIERCE_BALL,
-                PowerUpType.MULTI_BALL
+                PowerUpType.MULTI_BALL,
+                PowerUpType.EXPAND_PADDLE,
+                PowerUpType.FAST_BALL,
+                PowerUpType.SLOW_BALL,
+                PowerUpType.GUN_PADDLE,
+                PowerUpType.MAGNET_PADDLE
         };
         int powerUpIndex = 0;
         int powerUpBrickCount = 0;
@@ -62,6 +67,12 @@ public class HallOfGeneralsLevel extends BaseLevel {
                     brick = BrickFactory.createMonsterBrickFromCode(5, x, y, BRICK_WIDTH, BRICK_HEIGHT, minX, maxX);
                 } else {
                     brick = BrickFactory.createBrickFromCode(type, x, y, BRICK_WIDTH, BRICK_HEIGHT);
+                }
+                if (brick instanceof PrisonerBrick) {
+                    PowerUpType nextPowerUp = powerUps[powerUpIndex % powerUps.length];
+                    ((PrisonerBrick) brick).setGuaranteedPowerUp(nextPowerUp);
+                    powerUpIndex++;
+                    powerUpBrickCount++;
                 }
                 if (brick != null) {
                     bricks.add(brick);

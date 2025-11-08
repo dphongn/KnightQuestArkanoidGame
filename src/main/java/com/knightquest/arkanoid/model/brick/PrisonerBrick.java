@@ -3,7 +3,6 @@ package com.knightquest.arkanoid.model.brick;
 import com.knightquest.arkanoid.model.powerup.PowerUpType;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
-import org.jetbrains.annotations.NotNull;
 
 public class PrisonerBrick extends Brick {
     private boolean powerUpDropped = false;
@@ -11,6 +10,7 @@ public class PrisonerBrick extends Brick {
     private final Color chainColor = Color.DARKGRAY;
     private static int nextPowerUpIndex = 0;
     private static final String imagePath = "/images/sprites/bricks/prisonerbrick.gif";
+    private PowerUpType guaranteedPowerUp = null;
 
     public PrisonerBrick(double x, double y, double width, double height) {
         super(x, y, width, height, 1);
@@ -31,7 +31,7 @@ public class PrisonerBrick extends Brick {
     }
 
     @Override
-    protected void renderFallback(@NotNull GraphicsContext gc) {
+    protected void renderFallback(GraphicsContext gc) {
         gc.setFill(color);
         gc.fillRect(x, y, width, height);
 
@@ -64,15 +64,13 @@ public class PrisonerBrick extends Brick {
     @Override
     public PowerUpType getPowerUpDrop() {
         if (powerUpDropped) {
-            PowerUpType[] allTypes = PowerUpType.values();
-            PowerUpType typeToDrop = allTypes[nextPowerUpIndex];
-            nextPowerUpIndex++;
-            if (nextPowerUpIndex >= allTypes.length) {
-                nextPowerUpIndex = 0; // Quay vòng lại từ đầu
-            }
             powerUpDropped = false;
-            return typeToDrop;
+            return this.guaranteedPowerUp;
         }
         return null;
+    }
+
+    public void setGuaranteedPowerUp(PowerUpType type) {
+        this.guaranteedPowerUp = type;
     }
 }
