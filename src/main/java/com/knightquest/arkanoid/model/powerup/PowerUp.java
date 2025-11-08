@@ -3,7 +3,11 @@ package com.knightquest.arkanoid.model.powerup;
 import com.knightquest.arkanoid.model.GameObject;
 import com.knightquest.arkanoid.model.Paddle;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Base class for all PowerUps in the game.
@@ -16,12 +20,29 @@ public abstract class PowerUp extends GameObject {
     protected double fallSpeed = 150.0;
     protected double dy;
 
+    private static final Map<PowerUpType, Image> imageCache = new HashMap<>();
+
     public PowerUp(double x, double y, PowerUpType type, double duration) {
         super(x, y, 30, 30);
         this.type = type;
         this.duration = duration;
         this.permanent = false;
         this.dy = fallSpeed;
+        loadImageIfNeeded();
+    }
+
+    private void loadImageIfNeeded() {
+        if (!imageCache.containsKey(type)) {
+            String fileName = type.name().toLowerCase() + ".gif";
+            String path = "/images/sprites/powerups/" + fileName;
+            try {
+                Image img = new Image(PowerUp.class.getResourceAsStream(path));
+                if (img.isError()) img = null;
+                imageCache.put(type, img);
+            } catch (Exception e) {
+                imageCache.put(type, null);
+            }
+        }
     }
 
     @Override
@@ -53,14 +74,19 @@ public abstract class PowerUp extends GameObject {
     public void render(GraphicsContext gc) {
         if (!active) return;
 
-        gc.setFill(getColorForType());
-        gc.fillOval(x, y, width, height);
+        Image img = imageCache.get(type);
+        if (img != null) {
+            gc.drawImage(img, x, y, width, height);
+        } else {
+            gc.setFill(getColorForType());
+            gc.fillOval(x, y, width, height);
 
-        gc.setStroke(Color.WHITE);
-        gc.setLineWidth(2);
-        gc.strokeOval(x, y, width, height);
+            gc.setStroke(Color.WHITE);
+            gc.setLineWidth(2);
+            gc.strokeOval(x, y, width, height);
 
-        renderIcon(gc);
+            renderIcon(gc);
+        }
     }
 
     /**
