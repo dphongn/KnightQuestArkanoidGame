@@ -148,6 +148,7 @@ public class GameManager {
                 if (bullet.isActive() && bullet.getBounds().intersects(brick.getBounds())) {
                     brick.takeHit();
                     bullet.setActive(false);
+                    collisionHandler.processBrickDestruction(brick, bricks);
                     break;
                 }
             }

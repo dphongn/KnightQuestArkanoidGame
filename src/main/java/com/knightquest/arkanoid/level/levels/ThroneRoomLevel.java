@@ -77,10 +77,6 @@ public class ThroneRoomLevel extends BaseLevel {
                         break;
                     case 3:
                         brick = new PrisonerBrick(x, y, BRICK_WIDTH, BRICK_HEIGHT);
-                        brick.setPowerUpDrop(powerUps[powerUpIndex % powerUps.length]);
-                        brick.setDropChance(1.0);
-                        powerUpIndex++;
-                        powerUpBrickCount++;
                         break;
                     case 4:
                         brick = new ExplosiveBrick(x, y, BRICK_WIDTH, BRICK_HEIGHT);
