@@ -30,17 +30,23 @@ public class Ball extends MovableObject {
 
     private static final String[] NORMAL_BALL_IMAGES = {
         "/images/sprites/ball/ball1.png",
-        "/images/sprites/ball/ball2.png"
+        "/images/sprites/ball/ball2.png",
+        "/images/sprites/ball/ball3.png",
+        "/images/sprites/ball/ball4.png"
     };
 
     private static final String[] FIRE_BALL_IMAGES = {
         "/images/sprites/ball/fire_ball1.png",
-        "/images/sprites/ball/fire_ball2.png"
+        "/images/sprites/ball/fire_ball2.png",
+        "/images/sprites/ball/fire_ball3.png",
+        "/images/sprites/ball/fire_ball4.png"
     };
 
     private static final String[] PIERCING_BALL_IMAGES = {
         "/images/sprites/ball/piercing_ball1.png",
-        "/images/sprites/ball/piercing_ball2.png"
+        "/images/sprites/ball/piercing_ball2.png",
+        "/images/sprites/ball/piercing_ball3.png",
+        "/images/sprites/ball/piercing_ball4.png"
     };
 
     private int currentImageIndex = 0;

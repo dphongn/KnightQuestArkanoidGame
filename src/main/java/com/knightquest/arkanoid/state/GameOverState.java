@@ -110,12 +110,11 @@ public class GameOverState extends GameState {
 
     @Override
     public void render(GraphicsContext gc) {
-        // Gradient background
+        // Background
         double width = gc.getCanvas().getWidth();
         double height = gc.getCanvas().getHeight();
 
-        // Background (Kept Red/Black theme)
-        gc.setFill(Color.rgb(40, 10, 10));
+        gc.setFill(Color.rgb(15, 15, 25));
         gc.fillRect(0, 0, width, height);
 
         double centerX = width / 2;
@@ -123,29 +122,29 @@ public class GameOverState extends GameState {
 
         // Animated "Game Over" text
         gc.setTextAlign(TextAlignment.CENTER);
-        gc.setFont(cinzelTitle); // <<< CHANGED (Use Cinzel Decorative Bold 56)
+        gc.setFont(cinzelTitle);
 
         // Fade in effect
         double alpha = Math.min(1.0, animationTimer / 1.0);
         gc.setGlobalAlpha(alpha);
-        gc.setFill(Color.RED); // Kept Bright Red
+        gc.setFill(Color.rgb(255, 245, 200));
         gc.fillText("GAME OVER", centerX, centerY - 100);
         gc.setGlobalAlpha(1.0);
 
         // Skull icon
-        gc.setFont(Font.font("Arial", 48)); // Keep Arial for emoji
-        gc.setFill(Color.DARKRED); // Kept Dark Red
+        gc.setFont(Font.font("Arial", 48));
+        gc.setFill(Color.rgb(180, 180, 180));
         gc.fillText("☠", centerX, centerY - 30);
 
         // Statistics
-        gc.setFont(cinzelStats); // <<< CHANGED (Use Cinzel 18)
-        gc.setFill(Color.WHITE);
+        gc.setFont(cinzelStats);
+        gc.setFill(Color.GRAY);
         gc.fillText("Final Score: " + finalScore, centerX, centerY + 20);
         gc.fillText("Levels Completed: " + levelsCompleted, centerX, centerY + 60);
 
         // Instructions
-        gc.setFont(cinzelInstructions); // <<< CHANGED (Use Cinzel 16)
-        gc.setFill(Color.GOLD); // Kept Gold
+        gc.setFont(cinzelInstructions);
+        gc.setFill(Color.GRAY);
         gc.fillText("Press 'R' to Restart or 'M' to return to Main Menu", centerX, centerY + 120);
         gc.fillText("Press 'ESC' to exit", centerX, centerY + 150);
     }
