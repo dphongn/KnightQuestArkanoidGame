@@ -3,6 +3,7 @@ package com.knightquest.arkanoid.level.levels;
 
 import java.util.ArrayList;
 
+import com.knightquest.arkanoid.factory.BrickFactory;
 import com.knightquest.arkanoid.level.BaseLevel;
 import com.knightquest.arkanoid.model.brick.*;
 import com.knightquest.arkanoid.model.powerup.PowerUpType;
@@ -49,7 +50,12 @@ public class ThroneRoomLevel extends BaseLevel {
         PowerUpType[] powerUps = {
                 PowerUpType.FIRE_BALL,
                 PowerUpType.PIERCE_BALL,
-                PowerUpType.MULTI_BALL
+                PowerUpType.MULTI_BALL,
+                PowerUpType.EXPAND_PADDLE,
+                PowerUpType.FAST_BALL,
+                PowerUpType.SLOW_BALL,
+                PowerUpType.GUN_PADDLE,
+                PowerUpType.MAGNET_PADDLE
         };
         int powerUpIndex = 0;
         int powerUpBrickCount = 0;
@@ -68,32 +74,18 @@ public class ThroneRoomLevel extends BaseLevel {
 
                 Brick brick = null;
 
-                switch (type) {
-                    case 1:
-                        brick = new NormalBrick(x, y, BRICK_WIDTH, BRICK_HEIGHT);
-                        break;
-                    case 2:
-                        brick = new StrongBrick(x, y, BRICK_WIDTH, BRICK_HEIGHT);
-                        break;
-                    case 3:
-                        brick = new PrisonerBrick(x, y, BRICK_WIDTH, BRICK_HEIGHT);
-                        brick.setPowerUpDrop(powerUps[powerUpIndex % powerUps.length]);
-                        brick.setDropChance(1.0);
-                        powerUpIndex++;
-                        powerUpBrickCount++;
-                        break;
-                    case 4:
-                        brick = new ExplosiveBrick(x, y, BRICK_WIDTH, BRICK_HEIGHT);
-                        break;
-                    case 5 :
-                        double minX = Math.max(0, startX + (col - 2) * (BRICK_WIDTH + 3));
-                        double maxX = Math.min(screenWidth - BRICK_WIDTH, startX + (col + 2) * (BRICK_WIDTH + 3));
-                        bricks.add(new MonsterBrick(x, y, BRICK_WIDTH, BRICK_HEIGHT, minX, maxX));
-                        break;
-                    case 6:
-                        brick = new UnbreakableBrick(x, y, BRICK_WIDTH, BRICK_HEIGHT);
-                        break;
-
+                if (type == 5) {
+                    double minX = Math.max(0, startX + (col - 2) * (BRICK_WIDTH + 3));
+                    double maxX = Math.min(screenWidth - BRICK_WIDTH, startX + (col + 2) * (BRICK_WIDTH + 3));
+                    brick = BrickFactory.createMonsterBrickFromCode(5, x, y, BRICK_WIDTH, BRICK_HEIGHT, minX, maxX);
+                } else {
+                    brick = BrickFactory.createBrickFromCode(type, x, y, BRICK_WIDTH, BRICK_HEIGHT);
+                }
+                if (brick instanceof PrisonerBrick) {
+                    PowerUpType nextPowerUp = powerUps[powerUpIndex % powerUps.length];
+                    ((PrisonerBrick) brick).setGuaranteedPowerUp(nextPowerUp);
+                    powerUpIndex++;
+                    powerUpBrickCount++;
                 }
                 if (brick != null) {
                     bricks.add(brick);

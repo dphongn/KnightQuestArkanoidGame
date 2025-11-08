@@ -128,7 +128,7 @@ public class CollisionHandler {
         }
     }
 
-    private void processBrickDestruction(Brick initialBrick, List<Brick> allBricks) {
+    public void processBrickDestruction(Brick initialBrick, List<Brick> allBricks) {
         Queue<Brick> destructionQueue = new LinkedList<>();
         Set<Brick> processedSet = new HashSet<>();
 

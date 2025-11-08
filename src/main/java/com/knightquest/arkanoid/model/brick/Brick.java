@@ -108,4 +108,8 @@ public abstract class Brick extends GameObject {
         hitPoints = 0;
         active = false;
     }
+
+    public boolean isBreakable() {
+        return true;
+    }
 }

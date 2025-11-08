@@ -3,7 +3,6 @@ package com.knightquest.arkanoid.factory;
 import java.util.Random;
 
 import com.knightquest.arkanoid.model.powerup.*;
-//import com.knightquest.arkanoid.model.powerup.GunPaddlePowerUp;
 
 /**
  * Factory class to create PowerUp instances based on PowerUpType.

@@ -54,7 +54,7 @@ public class GameManager {
     private PowerUpManager powerUpManager;
 
     // Level system
-    private int currentLevelNumber = 3;
+    private int currentLevelNumber = 1;
     private Level currentLevel;
 
     // State management
@@ -148,6 +148,7 @@ public class GameManager {
                 if (bullet.isActive() && bullet.getBounds().intersects(brick.getBounds())) {
                     brick.takeHit();
                     bullet.setActive(false);
+                    collisionHandler.processBrickDestruction(brick, bricks);
                     break;
                 }
             }
@@ -210,7 +211,8 @@ public class GameManager {
             }
         }
 
-        if (bricks.isEmpty()) {
+        boolean hasBreakableBricks = bricks.stream().anyMatch(Brick::isBreakable);
+        if (!hasBreakableBricks) {
             eventManager.notifyLevelCompleted(currentLevelNumber, score);
         }
 

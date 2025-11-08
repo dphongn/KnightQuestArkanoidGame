@@ -7,7 +7,6 @@ import javafx.scene.image.Image;
 
 public class Paddle extends MovableObject {
     private double speed = PADDLE_SPEED;
-    private double width = PADDLE_WIDTH;
     // Gun power-up properties
     private boolean canShootGun = false;
     private double gunCooldown = 0.3;

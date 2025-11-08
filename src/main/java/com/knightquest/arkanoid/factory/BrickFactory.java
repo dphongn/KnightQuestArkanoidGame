@@ -10,9 +10,7 @@ import com.knightquest.arkanoid.model.brick.UnbreakableBrick;
 import com.knightquest.arkanoid.model.brick.StrongBrick;
 
 
-
-
-public class BrickFactory   {
+public class BrickFactory {
 
     /**
      * Create a brick based on type.
@@ -23,7 +21,7 @@ public class BrickFactory   {
             case UNBREAKABLE -> new UnbreakableBrick(x, y, width, height);
             case EXPLOSIVE -> new ExplosiveBrick(x, y, width, height);
             case PRISONER -> new PrisonerBrick(x, y, width, height);
-            case STRONG ->  new StrongBrick(x, y, width, height);
+            case STRONG -> new StrongBrick(x, y, width, height);
             default -> null;
         };
     }
@@ -31,35 +29,35 @@ public class BrickFactory   {
     /**
      * Create a monster brick with movement boundaries.
      */
-    public static Brick createMonsterBrick(double x, double y, double width, double height, double minX, double maxX, double minY, double maxY) {
+    public static Brick createMonsterBrick(double x, double y, double width, double height, double minX, double maxX) {
         return new MonsterBrick(x, y, width, height, minX, maxX);
     }
 
     /**
-     * Create a brick from character code.
+     * Create a brick from int code.
      */
-    public static Brick createBrickFromCode(char code, double x, double y, double width, double height) {
+    public static Brick createBrickFromCode(int code, double x, double y, double width, double height) {
         return switch (code) {
-            case 'N' -> createBrick(BrickType.NORMAL, x, y, width, height);
-            case 'U' -> createBrick(BrickType.UNBREAKABLE, x, y, width, height);
-            case 'E' -> createBrick(BrickType.EXPLOSIVE, x, y, width, height);
-            case 'P' -> createBrick(BrickType.PRISONER, x, y, width, height);
-            case 'S' -> createBrick(BrickType.STRONG, x, y, width, height);
+            case 1 -> createBrick(BrickType.NORMAL, x, y, width, height);
+            case 6 -> createBrick(BrickType.UNBREAKABLE, x, y, width, height);
+            case 4 -> createBrick(BrickType.EXPLOSIVE, x, y, width, height);
+            case 3 -> createBrick(BrickType.PRISONER, x, y, width, height);
+            case 2 -> createBrick(BrickType.STRONG, x, y, width, height);
             default -> null;
         };
     }
 
-    public static Brick createMonsterBrickFromCode(char code, double x, double y, double width, double height, double minX, double maxX, double minY, double maxY) {
-        if (code == 'M') {
-            return createMonsterBrick(x, y, width, height, minX, maxX, minY, maxY);
+    public static Brick createMonsterBrickFromCode(int code, double x, double y, double width, double height, double minX, double maxX) {
+        if (code == 5) {
+            return createMonsterBrick(x, y, width, height, minX, maxX);
         }
         return null;
     }
 
     /**
-     * Get BrickType from character code.
+     * Get BrickType from int code.
      */
-    public static BrickType getBrickTypeFromCode(char code) {
+    public static BrickType getBrickTypeFromCode(int code) {
         return switch (code) {
             case 'N' -> BrickType.NORMAL;
             case 'U' -> BrickType.UNBREAKABLE;
@@ -70,5 +68,4 @@ public class BrickFactory   {
             default -> null;
         };
     }
-
 }
