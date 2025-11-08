@@ -3,6 +3,7 @@ package com.knightquest.arkanoid.model;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import static com.knightquest.arkanoid.util.Constants.*;
+import javafx.scene.image.Image;
 
 public class Paddle extends MovableObject {
     private double speed = PADDLE_SPEED;
@@ -13,6 +14,23 @@ public class Paddle extends MovableObject {
 
     private boolean isMagnetic = false;
     private Ball attachedBall;
+    private static Image paddleImage;
+
+    static {
+        try {
+            paddleImage = new Image(Paddle.class.getResourceAsStream("/images/sprites/paddle/paddle.png"));
+            if (paddleImage.isError()) {
+                System.err.println("❌ Paddle image has ERROR flag!");
+                paddleImage.getException().printStackTrace();
+                paddleImage = null;
+            } else {
+                System.out.println("✅ Loaded paddle image: " + paddleImage.getWidth() + "x" + paddleImage.getHeight());
+            }
+        } catch (Exception e) {
+            paddleImage = null;
+            System.err.println("Không thể tải ảnh paddle.png, sử dụng hình chữ nhật thay thế.");
+        }
+    }
 
     /**
      * Constructor from GameObject.
@@ -44,10 +62,14 @@ public class Paddle extends MovableObject {
 
     @Override
     public void render(GraphicsContext gc) {
-        gc.setFill(Color.BLUE);
-        gc.fillRect(x, y, width, height);
+        if (paddleImage != null) {
+            gc.drawImage(paddleImage, x, y, width, height);
+        } else {
+            // Fallback: draw a blue rectangle
+            gc.setFill(Color.BLUE);
+            gc.fillRect(x, y, width, height);
+        }
     }
-
     public void moveLeft() {
         dx = -speed;
     }

@@ -126,7 +126,7 @@ public class LevelCompleteState extends GameState {
         double height = gc.getCanvas().getHeight();
 
         // Background
-        gc.setFill(Color.rgb(10, 20, 35));
+        gc.setFill(Color.rgb(15, 15, 25));
         gc.fillRect(0, 0, width, height);
 
         double centerX = width / 2;
@@ -135,33 +135,33 @@ public class LevelCompleteState extends GameState {
         // Draw box background
         double boxWidth = 500;
         double boxHeight = 450;
-        gc.setFill(Color.rgb(30, 40, 55, 0.95));
+        gc.setFill(Color.rgb(40, 45, 55, 0.95));
         gc.fillRect(centerX - boxWidth / 2, centerY - boxHeight / 2, boxWidth, boxHeight);
 
         // Draw box border
-        gc.setStroke(Color.GOLD);
+        gc.setStroke(Color.rgb(140, 150, 160));
         gc.setLineWidth(4);
         gc.strokeRect(centerX - boxWidth / 2, centerY - boxHeight / 2, boxWidth, boxHeight);
 
         // Inner border for effect
-        gc.setStroke(Color.rgb(255, 223, 0, 0.5));
+        gc.setStroke(Color.rgb(100, 110, 120, 0.5));
         gc.setLineWidth(2);
         gc.strokeRect(centerX - boxWidth / 2 + 5, centerY - boxHeight / 2 + 5, boxWidth - 10, boxHeight-10);
 
         // Draw celebration icon
-        gc.setFont(Font.font("Arial", FontWeight.BOLD, 60));
-        gc.setFill(Color.GOLD);
+        gc.setFont(Font.font("Arial", 60));
+        gc.setFill(Color.rgb(180, 200, 220));
         gc.setTextAlign(TextAlignment.CENTER);
         gc.fillText("🎉", centerX, centerY - 140);
 
         // Draw Title
         gc.setFont(cinzelTitle);
-        gc.setFill(Color.GOLD);
+        gc.setFill(Color.rgb(255, 245, 200));
         gc.fillText("LEVEL COMPLETE!", centerX, centerY - 90);
 
         // Draw Level Info
         gc.setFont(cinzelButtonSelected);
-        gc.setFill(Color.LIGHTBLUE);
+        gc.setFill(Color.rgb(180, 200, 220));
         gc.fillText("Level " + completedLevelNumber + ": " + completedLevelName, centerX, centerY - 50);
 
         // Draw Score and Lives
@@ -187,24 +187,24 @@ public class LevelCompleteState extends GameState {
             boolean isSelected = (i == selectedOption);
             
             // Set font for both selected and unselected
-            gc.setFont(isSelected ? cinzelButtonSelected : cinzelButton); // <<< CHANGED (Was Arial 24)
+            gc.setFont(isSelected ? cinzelButtonSelected : cinzelButton);
 
             if (i == selectedOption) {
-                gc.setFill(Color.rgb(255, 215, 0, 0.3)); // Keep Gold glow
-                gc.fillRect(centerX - 220, y - 22, 440, 30); // Adjusted size slightly
+                gc.setFill(Color.rgb(200, 210, 220, 0.25));
+                gc.fillRect(centerX - 220, y - 22, 440, 30);
 
-                gc.setFill(Color.GOLD); // Keep Gold text
+                gc.setFill(Color.WHITE);
                 gc.fillText("> " + menuOptions[i] + " <", centerX, y);
             } else {
-                gc.setFill(Color.LIGHTGRAY); // Keep Light gray text
+                gc.setFill(Color.rgb(210, 215, 220));
                 gc.fillText(menuOptions[i], centerX, y);
             }
         }
 
         // Draw instructions
-        gc.setFont(Font.font("Arial", 10)); // Keep Arial (it's small, readable)
+        gc.setFont(Font.font("Arial", 10));
         gc.setFill(Color.GRAY);
-        gc.fillText("Use UP/DOWN or ↑/↓ to navigate, ENTER/SPACE to select, C to continue, R to replay", centerX, centerY + boxHeight / 2 - 20);
+        gc.fillText("Use W/S or ↑/↓ to navigate, ENTER/SPACE to select, C to continue, R to replay", centerX, centerY + boxHeight / 2 - 20);
     }
 
     @Override

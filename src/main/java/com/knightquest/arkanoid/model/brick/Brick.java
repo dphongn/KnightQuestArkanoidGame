@@ -59,9 +59,9 @@ public abstract class Brick extends GameObject {
 
     protected void renderFallback(GraphicsContext gc) {
         gc.setFill(color);
-        gc.fillRect(x, y, width, height);
+        gc.fillRoundRect(x, y, width, height, 20, 20);
         gc.setStroke(Color.BLACK);
-        gc.strokeRect(x, y, width, height);
+        gc.strokeRoundRect(x, y, width, height, 20, 20);
     }
 
     /**

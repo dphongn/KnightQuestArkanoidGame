@@ -37,7 +37,7 @@ public class PlayingState extends GameState {
         System.out.println("=== GAME STARTED ===");
         // Load background image
         int level = gameManager.getCurrentLevelNumber();
-        String backgroundPath = "/images/backgrounds/level" + level + ".gif";
+        String backgroundPath = "/images/backgrounds/level" + level + ".jpg";
         try {
             backgroundImage = new Image(getClass().getResourceAsStream(backgroundPath));
         } catch (Exception e) {
@@ -167,17 +167,8 @@ public class PlayingState extends GameState {
 
         // Draw paddle
         Paddle paddle = gameManager.getPaddle();
-        gc.setFill(Color.LIGHTBLUE);
-        gc.fillRect(paddle.getX(), paddle.getY(), paddle.getWidth(), paddle.getHeight());
+        paddle.render(gc);
 
-        // Draw ball
-//        Ball ball = gameManager.getBall();
-//        gc.setFill(Color.WHITE);
-//        gc.fillOval(ball.getX() - ball.getRadius(), ball.getY() - ball.getRadius(),
-//                ball.getRadius() * 2, ball.getRadius() * 2);
-//
-//        // Draw score and lives
-//        ball.render(gc);
         List<Ball> balls = gameManager.getBalls();
         if (balls != null) {
             for (Ball b : balls) {
