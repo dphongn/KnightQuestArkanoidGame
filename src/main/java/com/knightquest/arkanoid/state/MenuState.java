@@ -64,45 +64,40 @@ public class MenuState extends GameState {
      * Load custom fonts from resources.
      */
     private void loadFonts() {
-        String UnifrakturMaguntiaPath = "/fonts/UnifrakturMaguntia-Regular.ttf";
+        String unifrakturPath = "/fonts/UnifrakturMaguntia-Regular.ttf";
         String cinzelPath = "/fonts/Cinzel-Regular.ttf";
 
         try {
-            InputStream titleStream1 = getClass().getResourceAsStream(UnifrakturMaguntiaPath);
-            if (titleStream1 != null) {
-                cinzelTitle1 = Font.loadFont(titleStream1, 64);
-            } else {
-                throw new Exception("Font file not found: " + UnifrakturMaguntiaPath);
+            try (InputStream unifrakturStream = getClass().getResourceAsStream(unifrakturPath)) {
+                if (unifrakturStream != null) {
+                    Font baseUnifraktur = Font.loadFont(unifrakturStream, 64);
+                    cinzelTitle1 = Font.font(baseUnifraktur.getFamily(), FontWeight.NORMAL, 64);
+                    cinzelTitle2 = Font.font(baseUnifraktur.getFamily(), FontWeight.NORMAL, 48);
+                } else {
+                    throw new Exception("Font not found: " + unifrakturPath);
+                }
             }
 
-            InputStream titleStream2 = getClass().getResourceAsStream(UnifrakturMaguntiaPath);
-            if (titleStream2 != null) {
-                cinzelTitle2 = Font.loadFont(titleStream2, 48);
-            } else {
-                throw new Exception("Font file not found: " + UnifrakturMaguntiaPath);
+            try (InputStream cinzelStream = getClass().getResourceAsStream(cinzelPath)) {
+                if (cinzelStream != null) {
+                    Font baseCinzel = Font.loadFont(cinzelStream, 16);
+                    cinzelButton = Font.font(baseCinzel.getFamily(), FontWeight.NORMAL, 16);
+                    cinzelButtonSelected = Font.font(baseCinzel.getFamily(), FontWeight.BOLD, 18);
+                } else {
+                    throw new Exception("Font not found: " + cinzelPath);
+                }
             }
 
-            InputStream buttonStream1 = getClass().getResourceAsStream(cinzelPath);
-            if (buttonStream1 != null) {
-                cinzelButton = Font.loadFont(buttonStream1, 16);
-            } else {
-                throw new Exception("Font file not found: " + cinzelPath);
-            }
-
-            InputStream buttonStream2 = getClass().getResourceAsStream(cinzelPath);
-            if (buttonStream2 != null) {
-                cinzelButtonSelected = Font.loadFont(buttonStream2, 18);
-            } else {
-                throw new Exception("Font file not found: " + cinzelPath);
-            }
             System.out.println("✅ Loaded custom fonts for MenuState");
         } catch (Exception e) {
-            System.err.println("Failed to load custom fonts: " + e.getMessage());
-            // Fallback to default fonts if loading fails
-            cinzelTitle1 = Font.font("Papyrus", FontWeight.BOLD, 56);
-            cinzelTitle2 = Font.font("Papyrus", FontWeight.BOLD, 48);
-            cinzelButton = Font.font("Papyrus", FontWeight.BOLD, 16);
-            cinzelButtonSelected = Font.font("Papyrus", FontWeight.BOLD, 18);
+            System.err.println("⚠️ Failed to load fonts: " + e.getMessage());
+            e.printStackTrace();
+            
+            // Fallback
+            cinzelTitle1 = Font.font("Serif", FontWeight.BOLD, 64);
+            cinzelTitle2 = Font.font("Serif", FontWeight.BOLD, 48);
+            cinzelButton = Font.font("Serif", 16);
+            cinzelButtonSelected = Font.font("Serif", FontWeight.BOLD, 18);
         }
     }
     

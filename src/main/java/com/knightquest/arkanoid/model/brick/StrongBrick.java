@@ -12,7 +12,7 @@ public class StrongBrick extends Brick {
     private static final String[] imagePaths = {
             "/images/sprites/bricks/strongbrick1.gif",
             "/images/sprites/bricks/strongbrick2.gif",
-            "/images/sprites/bricks/normalbrick.gif"
+            "/images/sprites/bricks/strongbrick3.gif"
 
     };
 
