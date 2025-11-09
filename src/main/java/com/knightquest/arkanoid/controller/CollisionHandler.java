@@ -9,6 +9,7 @@ import java.util.HashSet;
 
 import com.knightquest.arkanoid.factory.PowerUpFactory;
 import com.knightquest.arkanoid.model.Ball;
+import com.knightquest.arkanoid.model.Boss;
 import com.knightquest.arkanoid.model.GameObject;
 import com.knightquest.arkanoid.model.Paddle;
 import com.knightquest.arkanoid.model.brick.Brick;
@@ -182,6 +183,41 @@ public class CollisionHandler {
         if (ball.getY() <= 0) {
             ball.setY(0);
             ball.bounceVertical();
+        }
+    }
+
+    public void checkBallBossCollision(Ball ball, Boss boss) {
+        if (!isColliding(ball, boss)) {
+            return;
+        }
+
+        boss.takeHit();
+
+        double ballCenterX = ball.getX() + ball.getWidth() / 2;
+        double ballCenterY = ball.getY() + ball.getHeight() / 2;
+        double bossCenterX = boss.getX() + boss.getWidth() / 2;
+        double bossCenterY = boss.getY() + boss.getHeight() / 2;
+
+        double dx = ballCenterX - bossCenterX;
+        double dy = ballCenterY - bossCenterY;
+
+        double overlapX = (boss.getWidth() + ball.getWidth()) / 2 - Math.abs(dx);
+        double overlapY = (boss.getHeight() + ball.getHeight()) / 2 - Math.abs(dy);
+
+        if (overlapX < overlapY) {
+            ball.bounceHorizontal();
+            if (dx > 0) {
+                ball.setX(boss.getX() + boss.getWidth());
+            } else {
+                ball.setX(boss.getX() - ball.getWidth());
+            }
+        } else {
+            ball.bounceVertical();
+            if (dy > 0) {
+                ball.setY(boss.getY() + boss.getHeight());
+            } else {
+                ball.setY(boss.getY() - ball.getHeight());
+            }
         }
     }
 

@@ -9,14 +9,14 @@ import com.knightquest.arkanoid.level.Level;
 import com.knightquest.arkanoid.manager.ExplosionEffectManager;
 import com.knightquest.arkanoid.manager.PowerUpManager;
 import com.knightquest.arkanoid.model.Ball;
+import com.knightquest.arkanoid.model.Boss;
 import com.knightquest.arkanoid.model.Paddle;
 import com.knightquest.arkanoid.model.brick.Brick;
 import com.knightquest.arkanoid.model.brick.MonsterBrick;
 import com.knightquest.arkanoid.model.Bullet;
 import com.knightquest.arkanoid.observer.GameEventListener;
 import com.knightquest.arkanoid.observer.GameEventManager;
-import com.knightquest.arkanoid.state.GameState;
-import com.knightquest.arkanoid.state.GameStateManager;
+import com.knightquest.arkanoid.state.*;
 import com.knightquest.arkanoid.observer.AudioController;
 import com.knightquest.arkanoid.observer.UIController;
 
@@ -38,6 +38,7 @@ public class GameManager {
 
     //    private Ball ball;
     private List<Brick> bricks;
+    private Boss boss;
     private int score, lives;
     private CollisionHandler collisionHandler;
 
@@ -114,6 +115,8 @@ public class GameManager {
         // Get bricks from level
         bricks = currentLevel.getBricks();
 
+        this.boss = currentLevel.getBoss();
+
         //Play music for the level
         //audioController.playLevelMusic(levelNumber);
 
@@ -135,6 +138,10 @@ public class GameManager {
         // Update power-ups system
         powerUpManager.update(deltaTime, paddle);
 
+        if (boss != null) {
+            boss.update(deltaTime);
+        }
+
         // Update and process bullets
         java.util.Iterator<Bullet> bulletIter = bullets.iterator();
         while (bulletIter.hasNext()) {
@@ -153,6 +160,11 @@ public class GameManager {
                 }
             }
 
+            if (boss != null && bullet.isActive() && bullet.getBounds().intersects(boss.getBounds())) {
+                boss.takeHit();
+                bullet.setActive(false); // Hủy viên đạn
+            }
+
             // Remove inactive bullets
             if (!bullet.isActive() || bullet.isOffScreen()) {
                 bulletIter.remove();
@@ -168,6 +180,10 @@ public class GameManager {
             collisionHandler.checkBallWallCollision(b);
             collisionHandler.checkBallPaddleCollision(b, paddle);
             collisionHandler.checkBallBrickCollision(b, bricks);
+
+            if (boss != null) {
+                collisionHandler.checkBallBossCollision(b, boss);
+            }
 
             // Ball out of screen: remove it
             if (b.isFallenOff()) {
@@ -200,6 +216,8 @@ public class GameManager {
             }
         }
 
+        explosionEffectManager.update(deltaTime);
+
         // Ball out
         if (balls.isEmpty()) {
             lives--;
@@ -208,15 +226,30 @@ public class GameManager {
                 resetBall();
             } else {
                 eventManager.notifyGameOver(false, score);
+                if (gameStateManager.getCurrentState() instanceof PlayingState) {
+                    gameStateManager.changeState(new GameOverState(this));
+                }
             }
         }
 
         boolean hasBreakableBricks = bricks.stream().anyMatch(Brick::isBreakable);
-        if (!hasBreakableBricks) {
-            eventManager.notifyLevelCompleted(currentLevelNumber, score);
+        boolean levelCompleted = false;
+        if (this.boss != null) {
+            if (boss.isDefeated()) {
+                levelCompleted = true;
+            }
+        } else {
+            if (!hasBreakableBricks) {
+                levelCompleted = true;
+            }
         }
 
-        explosionEffectManager.update(deltaTime);
+        if (levelCompleted) {
+            eventManager.notifyLevelCompleted(currentLevelNumber, score);
+            if (gameStateManager.getCurrentState() instanceof PlayingState) {
+                gameStateManager.changeState(new LevelCompleteState(this));
+            }
+        }
     }
 
     // Update game state
@@ -289,6 +322,10 @@ public class GameManager {
 
     public List<Brick> getBricks() {
         return bricks;
+    }
+
+    public Boss getBoss() {
+        return boss;
     }
 
     public int getScore() {

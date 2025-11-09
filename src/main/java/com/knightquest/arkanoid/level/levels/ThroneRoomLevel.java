@@ -9,6 +9,8 @@ import com.knightquest.arkanoid.model.brick.*;
 import com.knightquest.arkanoid.model.powerup.PowerUpType;
 import static com.knightquest.arkanoid.util.Constants.BRICK_HEIGHT;
 import static com.knightquest.arkanoid.util.Constants.BRICK_WIDTH;
+import static com.knightquest.arkanoid.util.Constants.SCREEN_WIDTH;
+import com.knightquest.arkanoid.model.Boss;
 
 /**
  * Level 7: Throne of the Dark King - BOSS BATTLE
@@ -92,6 +94,13 @@ public class ThroneRoomLevel extends BaseLevel {
                 }
             }
         }
+        double bossSize = 100;
+        double bossX = (SCREEN_WIDTH / 2.0) - (bossSize / 2.0);
+        double bossY = 150;
+        int bossHealth = 10;
+        double bossSpeed = 150;
+        this.boss = new Boss(bossX, bossY, bossSize, bossHealth, bossSpeed);
+
         System.out.println("✨ Level 6: " + powerUpBrickCount +
                 " PrisonerBricks with guaranteed power-ups created!");
     }
