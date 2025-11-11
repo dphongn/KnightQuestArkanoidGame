@@ -3,6 +3,7 @@ package com.knightquest.arkanoid.level;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.knightquest.arkanoid.model.Boss;
 import com.knightquest.arkanoid.model.brick.Brick;
 
 public class Level {
@@ -63,5 +64,9 @@ public class Level {
 
     public void setCompleted(boolean completed) {
         this.completed = completed;
+    }
+
+    public Boss getBoss() {
+        return null;
     }
 }

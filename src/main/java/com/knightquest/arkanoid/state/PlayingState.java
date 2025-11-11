@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.knightquest.arkanoid.controller.GameManager;
 import com.knightquest.arkanoid.model.Ball;
+import com.knightquest.arkanoid.model.Boss;
 import com.knightquest.arkanoid.model.Paddle;
 import com.knightquest.arkanoid.model.brick.Brick;
 import javafx.scene.canvas.GraphicsContext;
@@ -104,18 +105,6 @@ public class PlayingState extends GameState {
 
         // Update game logic
         gameManager.updateGameLogic(deltaTime);
-
-        // Check for win/loss conditions
-        boolean hasBreakable = gameManager.getBricks().stream().anyMatch(Brick::isBreakable);
-        if (!hasBreakable) {
-            handleLevelComplete();
-            return;
-        }
-
-        if (gameManager.getLives() <= 0) {
-            changeState(new GameOverState(gameManager));
-        }
-
     }
 
 
@@ -193,6 +182,11 @@ public class PlayingState extends GameState {
                     bullet.render(gc);
                 }
             }
+        }
+
+        Boss boss = gameManager.getBoss();
+        if (boss != null) {
+            boss.render(gc);
         }
 
         gameManager.getPowerUpManager().render(gc);

@@ -9,6 +9,7 @@ import java.util.HashSet;
 
 import com.knightquest.arkanoid.factory.PowerUpFactory;
 import com.knightquest.arkanoid.model.Ball;
+import com.knightquest.arkanoid.model.Boss;
 import com.knightquest.arkanoid.model.GameObject;
 import com.knightquest.arkanoid.model.Paddle;
 import com.knightquest.arkanoid.model.brick.Brick;
@@ -183,6 +184,75 @@ public class CollisionHandler {
             ball.setY(0);
             ball.bounceVertical();
         }
+    }
+
+    public void checkBallBossCollision(Ball ball, Boss boss) {
+        if (!isColliding(ball, boss)) {
+            return;
+        }
+
+        boss.takeHit();
+
+        double ballCenterX = ball.getX() + ball.getWidth() / 2;
+        double ballCenterY = ball.getY() + ball.getHeight() / 2;
+        double bossCenterX = boss.getX() + boss.getWidth() / 2;
+        double bossCenterY = boss.getY() + boss.getHeight() / 2;
+
+        double dx = ballCenterX - bossCenterX;
+        double dy = ballCenterY - bossCenterY;
+
+        double overlapX = (boss.getWidth() + ball.getWidth()) / 2 - Math.abs(dx);
+        double overlapY = (boss.getHeight() + ball.getHeight()) / 2 - Math.abs(dy);
+
+        if (overlapX < overlapY) {
+            ball.bounceHorizontal();
+            if (dx > 0) {
+                ball.setX(boss.getX() + boss.getWidth());
+            } else {
+                ball.setX(boss.getX() - ball.getWidth());
+            }
+        } else {
+            ball.bounceVertical();
+            if (dy > 0) {
+                ball.setY(boss.getY() + boss.getHeight());
+            } else {
+                ball.setY(boss.getY() - ball.getHeight());
+            }
+        }
+    }
+
+    public void checkBossBrickCollision(Boss boss, List<Brick> bricks) {
+        if (boss == null) {
+            return;
+        }
+
+        double bossSpeed = boss.getDx();
+
+        for (Brick brick : bricks) {
+            if (!brick.isActive() || !isColliding(boss, brick)) {
+                continue;
+            }
+
+            boss.reverseDirection();
+
+            if (bossSpeed > 0) {
+                boss.setX(brick.getX() - boss.getWidth());
+            } else {
+                boss.setX(brick.getX() + brick.getWidth());
+            }
+            break;
+        }
+    }
+
+    public boolean isSpawnLocationClear(double newX, double newY, double newWidth, double newHeight, List<Brick> existingBricks) {
+        Rectangle2D newBrickBounds = new Rectangle2D(newX, newY, newWidth, newHeight);
+
+        for (Brick brick : existingBricks) {
+            if (brick.isActive() && brick.getBounds().intersects(newBrickBounds)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
