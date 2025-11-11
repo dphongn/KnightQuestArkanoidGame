@@ -3,6 +3,7 @@ package com.knightquest.arkanoid.model;
 import static com.knightquest.arkanoid.util.Constants.SCREEN_WIDTH;
 
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
 public class Boss extends MovableObject {
@@ -14,6 +15,8 @@ public class Boss extends MovableObject {
     private double baseSpeed;
     private double spawnTimer;
     private double prisonerSpawnTimer;
+    private Image normalImage;
+    private Image enragedImage;
 
     public Boss(double x, double y, double size, int initialHealth, double speed) {
         super(x, y, size, size);
@@ -24,6 +27,20 @@ public class Boss extends MovableObject {
         this.baseSpeed = speed;
         this.spawnTimer = 5.0;
         this.prisonerSpawnTimer = 7.0;
+        try {
+            normalImage = new Image(getClass().getResourceAsStream("/images/sprites/bot/skull-laugh.gif"));
+            if (normalImage.isError()) throw new Exception("Lỗi tải ảnh skull-laugh");
+        } catch (Exception e) {
+            System.err.println("Không tải được ảnh 'skull-laugh.gif'. Sẽ dùng hình vuông màu.");
+            normalImage = null;
+        }
+        try {
+            enragedImage = new Image(getClass().getResourceAsStream("/images/sprites/bot/skull-angry.gif"));
+            if (enragedImage.isError()) throw new Exception("Lỗi tải ảnh skull-angry");
+        } catch (Exception e) {
+            System.err.println("Không tải được ảnh 'skull-angry.gif'. Sẽ dùng hình vuông màu.");
+            enragedImage = null;
+        }
     }
 
     public void reverseDirection() {
@@ -48,11 +65,6 @@ public class Boss extends MovableObject {
         }
     }
 
-    /**
-     * Hàm render (vẽ) Boss lên màn hình.
-     *
-     * @param gc GraphicsContext từ JavaFX Canvas.
-     */
     public void render(GraphicsContext gc) {
         boolean shouldDraw = true;
         if (invulnerabilityTimer > 0) {
@@ -62,12 +74,18 @@ public class Boss extends MovableObject {
         }
 
         if (shouldDraw) {
-            if (isEnraged) {
-                gc.setFill(Color.RED);
+            Image imageToDraw = isEnraged ? enragedImage : normalImage;
+
+            if (imageToDraw != null && !imageToDraw.isError()) {
+                gc.drawImage(imageToDraw, x, y, width, height);
             } else {
-                gc.setFill(Color.YELLOW);
+                if (isEnraged) {
+                    gc.setFill(Color.RED);
+                } else {
+                    gc.setFill(Color.YELLOW);
+                }
+                gc.fillRect(x, y, width, height);
             }
-            gc.fillRect(x, y, width, height);
         }
 
         double healthPercentage = health / maxHealth;
