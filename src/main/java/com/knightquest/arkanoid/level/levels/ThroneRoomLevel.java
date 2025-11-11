@@ -96,8 +96,8 @@ public class ThroneRoomLevel extends BaseLevel {
         }
         double bossSize = 100;
         double bossX = (SCREEN_WIDTH / 2.0) - (bossSize / 2.0);
-        double bossY = 150;
-        int bossHealth = 10;
+        double bossY = 250;
+        int bossHealth = 5;
         double bossSpeed = 150;
         this.boss = new Boss(bossX, bossY, bossSize, bossHealth, bossSpeed);
 
