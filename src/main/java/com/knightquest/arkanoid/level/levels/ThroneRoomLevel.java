@@ -7,9 +7,11 @@ import com.knightquest.arkanoid.factory.BrickFactory;
 import com.knightquest.arkanoid.level.BaseLevel;
 import com.knightquest.arkanoid.model.brick.*;
 import com.knightquest.arkanoid.model.powerup.PowerUpType;
+
 import static com.knightquest.arkanoid.util.Constants.BRICK_HEIGHT;
 import static com.knightquest.arkanoid.util.Constants.BRICK_WIDTH;
 import static com.knightquest.arkanoid.util.Constants.SCREEN_WIDTH;
+
 import com.knightquest.arkanoid.model.Boss;
 
 /**
@@ -34,24 +36,24 @@ public class ThroneRoomLevel extends BaseLevel {
     @Override
     protected void buildLevel() {
         int[][] map = {
-                {0,0,0,0,0,0,0,0,0,0,0},
-                {0,0,0,0,0,0,0,0,0,0,0},
-                {0,0,0,0,0,0,0,0,0,0,0},
-                {0,0,0,0,0,0,0,0,0,0,0},
-                {0,0,0,0,0,0,0,0,0,0,0},
-                {0,0,0,0,0,0,0,0,0,0,0},
-                {0,0,0,0,0,0,0,0,0,0,0},
-                {0,0,0,0,0,0,0,0,0,0,0},
-                {0,0,0,0,0,0,0,0,0,0,0},
-                {0,0,0,0,0,0,0,0,0,0,0},
-                {0,0,0,0,0,0,0,0,0,0,0},
-                {1,0,0,0,0,0,0,0,0,0,1},
-                {6,0,0,0,0,0,0,0,0,0,6}
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
         };
 
         PowerUpType[] powerUps = {
                 PowerUpType.FIRE_BALL,
-                PowerUpType.PIERCE_BALL,
+                //PowerUpType.PIERCE_BALL,
                 PowerUpType.MULTI_BALL,
                 PowerUpType.EXPAND_PADDLE,
                 PowerUpType.FAST_BALL,
@@ -96,8 +98,8 @@ public class ThroneRoomLevel extends BaseLevel {
         }
         double bossSize = 100;
         double bossX = (SCREEN_WIDTH / 2.0) - (bossSize / 2.0);
-        double bossY = 250;
-        int bossHealth = 5;
+        double bossY = 100;
+        int bossHealth = 50;
         double bossSpeed = 150;
         this.boss = new Boss(bossX, bossY, bossSize, bossHealth, bossSpeed);
 

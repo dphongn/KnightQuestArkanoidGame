@@ -244,6 +244,17 @@ public class CollisionHandler {
         }
     }
 
+    public boolean isSpawnLocationClear(double newX, double newY, double newWidth, double newHeight, List<Brick> existingBricks) {
+        Rectangle2D newBrickBounds = new Rectangle2D(newX, newY, newWidth, newHeight);
+
+        for (Brick brick : existingBricks) {
+            if (brick.isActive() && brick.getBounds().intersects(newBrickBounds)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     /**
      * Check AABB collision between 2 game objects
      */

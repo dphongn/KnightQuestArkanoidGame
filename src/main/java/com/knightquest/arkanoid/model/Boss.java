@@ -12,6 +12,8 @@ public class Boss extends MovableObject {
     private double invulnerabilityTimer;
     private boolean isEnraged = false;
     private double baseSpeed;
+    private double spawnTimer;
+    private double prisonerSpawnTimer;
 
     public Boss(double x, double y, double size, int initialHealth, double speed) {
         super(x, y, size, size);
@@ -20,6 +22,8 @@ public class Boss extends MovableObject {
         setVelocity(speed, 0);
         this.invulnerabilityTimer = 0;
         this.baseSpeed = speed;
+        this.spawnTimer = 5.0;
+        this.prisonerSpawnTimer = 7.0;
     }
 
     public void reverseDirection() {
@@ -102,5 +106,41 @@ public class Boss extends MovableObject {
 
     public int getHealth() {
         return health;
+    }
+
+    public void updateSpawnTimer(double deltaTime) {
+        if (spawnTimer > 0) {
+            spawnTimer -= deltaTime;
+        }
+    }
+
+    public boolean isReadyToSpawn() {
+        return spawnTimer <= 0;
+    }
+
+    public void resetSpawnTimer() {
+        if (isEnraged) {
+            this.spawnTimer = 2.0;
+        } else {
+            this.spawnTimer = 5.0;
+        }
+    }
+
+    public boolean isEnraged() {
+        return this.isEnraged;
+    }
+
+    public void updatePrisonerSpawnTimer(double deltaTime) {
+        if (prisonerSpawnTimer > 0) {
+            prisonerSpawnTimer -= deltaTime;
+        }
+    }
+
+    public boolean isReadyToSpawnPrisoner() {
+        return prisonerSpawnTimer <= 0;
+    }
+
+    public void resetPrisonerSpawnTimer() {
+        this.prisonerSpawnTimer = 10.0;
     }
 }
