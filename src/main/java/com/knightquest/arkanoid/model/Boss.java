@@ -10,6 +10,8 @@ public class Boss extends MovableObject {
     private int health;
     private double maxHealth;
     private double invulnerabilityTimer;
+    private boolean isEnraged = false;
+    private double baseSpeed;
 
     public Boss(double x, double y, double size, int initialHealth, double speed) {
         super(x, y, size, size);
@@ -17,6 +19,7 @@ public class Boss extends MovableObject {
         this.maxHealth = initialHealth;
         setVelocity(speed, 0);
         this.invulnerabilityTimer = 0;
+        this.baseSpeed = speed;
     }
 
     public void reverseDirection() {
@@ -55,7 +58,11 @@ public class Boss extends MovableObject {
         }
 
         if (shouldDraw) {
-            gc.setFill(Color.YELLOW);
+            if (isEnraged) {
+                gc.setFill(Color.RED);
+            } else {
+                gc.setFill(Color.YELLOW);
+            }
             gc.fillRect(x, y, width, height);
         }
 
@@ -78,6 +85,12 @@ public class Boss extends MovableObject {
 
         if (health > 0) {
             health--;
+        }
+
+        if (!isEnraged && health <= maxHealth / 2) {
+            isEnraged = true;
+            setDx(Math.signum(getDx()) * baseSpeed * 1.5);
+            System.out.println("BOSS IS ENRAGED!");
         }
 
         invulnerabilityTimer = 0.2;
