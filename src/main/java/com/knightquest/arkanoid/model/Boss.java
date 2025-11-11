@@ -19,17 +19,21 @@ public class Boss extends MovableObject {
         this.invulnerabilityTimer = 0;
     }
 
+    public void reverseDirection() {
+        setDx(-getDx());
+    }
+
     public void update(double deltaTime) {
         super.move(deltaTime);
 
         if (x <= 0) {
             x = 0;
-            setDx(Math.abs(dx));
+            reverseDirection();
         }
 
         if (x + width >= SCREEN_WIDTH) {
             x = SCREEN_WIDTH - width;
-            setDx(-Math.abs(dx));
+            reverseDirection();
         }
 
         if (invulnerabilityTimer > 0) {

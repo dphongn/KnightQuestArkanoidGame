@@ -221,6 +221,29 @@ public class CollisionHandler {
         }
     }
 
+    public void checkBossBrickCollision(Boss boss, List<Brick> bricks) {
+        if (boss == null) {
+            return;
+        }
+
+        double bossSpeed = boss.getDx();
+
+        for (Brick brick : bricks) {
+            if (!brick.isActive() || !isColliding(boss, brick)) {
+                continue;
+            }
+
+            boss.reverseDirection();
+
+            if (bossSpeed > 0) {
+                boss.setX(brick.getX() - boss.getWidth());
+            } else {
+                boss.setX(brick.getX() + brick.getWidth());
+            }
+            break;
+        }
+    }
+
     /**
      * Check AABB collision between 2 game objects
      */

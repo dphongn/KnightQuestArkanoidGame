@@ -140,6 +140,7 @@ public class GameManager {
 
         if (boss != null) {
             boss.update(deltaTime);
+            collisionHandler.checkBossBrickCollision(boss, bricks);
         }
 
         // Update and process bullets
