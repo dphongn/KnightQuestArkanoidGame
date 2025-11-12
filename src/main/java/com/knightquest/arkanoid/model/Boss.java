@@ -8,6 +8,10 @@ import javafx.scene.paint.Color;
 
 public class Boss extends MovableObject {
 
+    public interface BossStateListener {
+        void onBossEnraged();
+    }
+
     private int health;
     private double maxHealth;
     private double invulnerabilityTimer;
@@ -17,6 +21,7 @@ public class Boss extends MovableObject {
     private double prisonerSpawnTimer;
     private Image normalImage;
     private Image enragedImage;
+    private BossStateListener stateListener;
 
     public Boss(double x, double y, double size, int initialHealth, double speed) {
         super(x, y, size, size);
@@ -41,6 +46,10 @@ public class Boss extends MovableObject {
             System.err.println("Không tải được ảnh 'skull-angry.gif'. Sẽ dùng hình vuông màu.");
             enragedImage = null;
         }
+    }
+
+    public void setBossStateListener(BossStateListener listener) {
+        this.stateListener = listener;
     }
 
     public void reverseDirection() {
@@ -113,6 +122,10 @@ public class Boss extends MovableObject {
             isEnraged = true;
             setDx(Math.signum(getDx()) * baseSpeed * 1.5);
             System.out.println("BOSS IS ENRAGED!");
+
+            if (stateListener != null) {
+                stateListener.onBossEnraged();
+            }
         }
 
         invulnerabilityTimer = 0.2;

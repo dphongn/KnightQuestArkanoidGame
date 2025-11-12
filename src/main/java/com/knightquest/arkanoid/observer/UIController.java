@@ -136,4 +136,8 @@ public class UIController implements GameEventListener {
     public void onBallPaddleCollision() {
         // Optional: Update UI for ball-paddle collision feedback
     }
+
+    public void onBallBossCollision() {
+        // Optional: Update UI for boss ball collision feedback
+    }
 }
