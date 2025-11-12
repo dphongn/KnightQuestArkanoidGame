@@ -259,7 +259,7 @@ public class MenuState extends GameState {
         switch(selectedOption) {
             case 0:// Start Game
                 gameManager.resetGame();
-                gameManager.changeState(new PlayingState(gameManager));
+                gameManager.changeState(new StoryState(gameManager, gameManager.getCurrentLevelNumber()));
                 break;
             case 1:// Exit
                 System.exit(0);
