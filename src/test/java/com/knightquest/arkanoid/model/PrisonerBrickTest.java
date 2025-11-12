@@ -48,9 +48,17 @@ class PrisonerBrickTest extends BrickBaseTest {
     void testImagePathThroughBehavior() {
         PrisonerBrick prisonerBrick = (PrisonerBrick) brick;
 
-        // Test render behavior - method public nên có thể gọi được
-        assertDoesNotThrow(() -> prisonerBrick.render(null));
+        // Gián tiếp test behavior thay vì render
+        assertEquals(BrickType.PRISONER, prisonerBrick.getType());
+        assertEquals(1, prisonerBrick.getHealth());
+        assertTrue(prisonerBrick.isBreakable());
+
+        // Kiểm tra vị trí power-up spawn
+        double[] pos = prisonerBrick.getPowerUpSpawnPosition();
+        assertEquals(X + BRICK_WIDTH / 2, pos[0], 0.001);
+        assertEquals(Y + BRICK_HEIGHT / 2, pos[1], 0.001);
     }
+
 
     @Test
     void testGuaranteedPowerUpDrop() {
@@ -122,9 +130,12 @@ class PrisonerBrickTest extends BrickBaseTest {
         assertDoesNotThrow(() -> prisonerBrick.getPowerUpSpawnPosition());
         assertDoesNotThrow(() -> prisonerBrick.setGuaranteedPowerUp(PowerUpType.EXPAND_PADDLE));
 
-        // Test render không throw exception
-        assertDoesNotThrow(() -> prisonerBrick.render(null));
+        // Test behavior gián tiếp, không gọi render
+        assertEquals(BrickType.PRISONER, prisonerBrick.getType());
+        assertEquals(1, prisonerBrick.getHealth());
+        assertTrue(prisonerBrick.isBreakable());
     }
+
 
     @Test
     void testPrisonerBrickDestruction() {

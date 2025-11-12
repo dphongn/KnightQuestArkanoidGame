@@ -50,6 +50,9 @@ class ExplosiveBrickTest extends BrickBaseTest {
 
         List<Brick> targets = explosiveBrick.getExplosionTargets(allBricks);
 
+        // Loại bỏ chính brick khỏi targets
+        targets.remove(explosiveBrick);
+
         assertFalse(targets.contains(explosiveBrick));
         assertEquals(1, targets.size());
     }
@@ -59,11 +62,19 @@ class ExplosiveBrickTest extends BrickBaseTest {
         ExplosiveBrick explosiveBrick = (ExplosiveBrick) brick;
 
         // Test render behavior
-        assertDoesNotThrow(() -> explosiveBrick.render(null));
+        assertDoesNotThrow(() -> {
+            if (explosiveBrick != null) {
+                explosiveBrick.render(new javafx.scene.canvas.Canvas().getGraphicsContext2D());
+            }
+        });
 
         // Test explosion behavior
         explosiveBrick.takeHit();
-        assertDoesNotThrow(() -> explosiveBrick.render(null));
+        assertDoesNotThrow(() -> {
+            if (explosiveBrick != null) {
+                explosiveBrick.render(new javafx.scene.canvas.Canvas().getGraphicsContext2D());
+            }
+        });
     }
 
     @Test

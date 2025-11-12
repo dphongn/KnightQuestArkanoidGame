@@ -44,13 +44,18 @@ class MonsterBrickTest extends BrickBaseTest {
     void testImagePathThroughBehavior() {
         MonsterBrick monsterBrick = (MonsterBrick) brick;
 
+        // Tạo Canvas tạm để lấy GraphicsContext
+        javafx.scene.canvas.Canvas canvas = new javafx.scene.canvas.Canvas(1, 1);
+        javafx.scene.canvas.GraphicsContext gc = canvas.getGraphicsContext2D();
+
         // Test render behavior
-        assertDoesNotThrow(() -> monsterBrick.render(null));
+        assertDoesNotThrow(() -> monsterBrick.render(gc));
 
         // Test movement behavior
         List<Brick> emptyList = new ArrayList<>();
         assertDoesNotThrow(() -> monsterBrick.update(0.016, emptyList));
     }
+
 
     @Test
     void testTakeHitDestroysMonster() {

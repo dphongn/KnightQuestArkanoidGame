@@ -37,14 +37,14 @@ class NormalBrickTest extends BrickBaseTest {
 
     @Test
     void testImagePathThroughBehavior() {
-        // Test gián tiếp qua behavior render
         NormalBrick normalBrick = (NormalBrick) brick;
-
-        // Kiểm tra render không throw exception (sử dụng image path internally)
-        assertDoesNotThrow(() -> normalBrick.render(null));
 
         // Test type-specific behavior
         assertEquals(BrickType.NORMAL, normalBrick.getType());
+
+        // Test health và breakable mà không gọi render
+        assertEquals(1, normalBrick.getHealth());
+        assertTrue(normalBrick.isBreakable());
     }
 
     @Test

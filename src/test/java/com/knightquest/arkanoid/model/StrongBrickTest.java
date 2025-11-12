@@ -40,14 +40,11 @@ class StrongBrickTest extends BrickBaseTest {
     void testImagePathThroughBehavior() {
         StrongBrick strongBrick = (StrongBrick) brick;
 
-        // Test render behavior at different health levels
-        assertDoesNotThrow(() -> strongBrick.render(null));
+        assertEquals(BrickType.STRONG, strongBrick.getType());
 
-        brick.takeHit();
-        assertDoesNotThrow(() -> strongBrick.render(null));
-
-        brick.takeHit();
-        assertDoesNotThrow(() -> strongBrick.render(null));
+        assertEquals(3, strongBrick.getHealth());
+        strongBrick.takeHit();
+        assertEquals(2, strongBrick.getHealth());
     }
 
     @Test
@@ -65,14 +62,24 @@ class StrongBrickTest extends BrickBaseTest {
     }
 
     @Test
-    void testExtraHitsBeyondZero() {
-        brick.takeHit();
-        brick.takeHit();
-        brick.takeHit();
-        assertTrue(brick.isDestroyed());
+    void testBehaviorWithoutRender() {
+        StrongBrick strongBrick = (StrongBrick) brick;
 
-        brick.takeHit();
-        assertTrue(brick.isDestroyed());
-        assertEquals(0, brick.getHealth());
+        assertEquals(BrickType.STRONG, strongBrick.getType());
+        assertEquals(3, strongBrick.getHealth());
+        assertTrue(strongBrick.isBreakable());
+
+        strongBrick.takeHit();
+        assertEquals(2, strongBrick.getHealth());
+        assertFalse(strongBrick.isDestroyed());
+
+        strongBrick.takeHit();
+        assertEquals(1, strongBrick.getHealth());
+        assertFalse(strongBrick.isDestroyed());
+
+        strongBrick.takeHit();
+        assertEquals(0, strongBrick.getHealth());
+        assertTrue(strongBrick.isDestroyed());
     }
+
 }

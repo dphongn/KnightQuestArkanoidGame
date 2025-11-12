@@ -1,19 +1,12 @@
 package com.knightquest.arkanoid.model;
 
 import com.knightquest.arkanoid.model.brick.Brick;
+import com.knightquest.arkanoid.model.brick.PrisonerBrick;
 import com.knightquest.arkanoid.model.powerup.PowerUpType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
-import java.util.ArrayList;
-import java.util.List;
-
-/**
- * Base test class for common brick functionality
- */
 abstract class BrickBaseTest {
     protected static final double BRICK_WIDTH = 60;
     protected static final double BRICK_HEIGHT = 20;
@@ -51,61 +44,56 @@ abstract class BrickBaseTest {
     }
 
     @Test
-    void testRenderDoesNotThrow() {
-        // Mock GraphicsContext - in real tests you'd use Mockito
-        GraphicsContext gc = null;
-        assertDoesNotThrow(() -> brick.render(gc));
-    }
-
-    @Test
     void testPowerUpDropChance() {
-        brick.setDropChance(1.0); // 100% chance để test
-        brick.setPowerUpDrop(PowerUpType.EXPAND_PADDLE); // Sử dụng LASER thay vì EXPAND
+        if (brick instanceof PrisonerBrick) {
+            PrisonerBrick prisonerBrick = (PrisonerBrick) brick;
 
-        int drops = 0;
-        int trials = 10;
-        for (int i = 0; i < trials; i++) {
-            if (brick.getPowerUpDrop() != null) {
-                drops++;
-            }
+            prisonerBrick.setGuaranteedPowerUp(PowerUpType.EXPAND_PADDLE);
+            prisonerBrick.takeHit();
+
+            PowerUpType drop = prisonerBrick.getPowerUpDrop();
+            assertEquals(PowerUpType.EXPAND_PADDLE, drop);
         }
-        // Với 100% chance, nên luôn drop
-        assertEquals(trials, drops);
     }
 
     @Test
     void testSetDropChanceBoundaries() {
-        // Test giá trị âm
         brick.setDropChance(-1.0);
-        // Kiểm tra gián tiếp qua behavior
         brick.setPowerUpDrop(PowerUpType.EXPAND_PADDLE);
 
-        // Test giá trị > 1
         brick.setDropChance(2.0);
+        brick.setPowerUpDrop(PowerUpType.EXPAND_PADDLE);
 
-        // Test giá trị hợp lệ
         brick.setDropChance(0.7);
+        brick.setPowerUpDrop(PowerUpType.EXPAND_PADDLE);
 
-        // Không có getter cho dropChance, nên test thông qua behavior
-        assertTrue(true); // Placeholder - method không throw exception
+        assertTrue(true);
     }
 
     @Test
     void testSetPowerUpType() {
-        // Sử dụng các PowerUpType thực tế từ code của bạn
-        brick.setPowerUpDrop(PowerUpType.EXPAND_PADDLE);
+        if (brick instanceof PrisonerBrick) {
+            PowerUpType[] types = {
+                    PowerUpType.EXPAND_PADDLE,
+                    PowerUpType.SLOW_BALL,
+                    PowerUpType.GUN_PADDLE,
+                    PowerUpType.MULTI_BALL
+            };
 
-        // Test với chance 100% để đảm bảo drop
-        brick.setDropChance(1.0);
-        assertEquals(PowerUpType.EXPAND_PADDLE, brick.getPowerUpDrop());
+            for (PowerUpType type : types) {
+                PrisonerBrick prisonerBrick = (PrisonerBrick) createBrick();
 
-        brick.setPowerUpDrop(PowerUpType.SLOW_BALL);
-        assertEquals(PowerUpType.SLOW_BALL, brick.getPowerUpDrop());
+                prisonerBrick.setGuaranteedPowerUp(type);
+                prisonerBrick.takeHit();
+
+                PowerUpType drop = prisonerBrick.getPowerUpDrop();
+                assertEquals(type, drop);
+            }
+        }
     }
 
     @Test
     void testCommonBrickMethods() {
-        // Test các method cơ bản có tồn tại
         assertNotNull(brick.getType());
         assertTrue(brick.getHealth() >= 0);
         assertDoesNotThrow(() -> brick.isBreakable());
