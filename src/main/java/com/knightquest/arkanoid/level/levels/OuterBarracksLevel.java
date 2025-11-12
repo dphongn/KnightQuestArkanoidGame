@@ -37,13 +37,13 @@ public class OuterBarracksLevel extends BaseLevel {
         double startX = 20;
         double startY = 70;
         PowerUpType[] powerUps = {
-                PowerUpType.FIRE_BALL,
-                PowerUpType.PIERCE_BALL,
-                PowerUpType.MULTI_BALL,
+                //PowerUpType.FIRE_BALL,
+                //PowerUpType.PIERCE_BALL,
+                //PowerUpType.MULTI_BALL,
                 PowerUpType.EXPAND_PADDLE,
-                PowerUpType.FAST_BALL,
-                PowerUpType.SLOW_BALL,
-                PowerUpType.GUN_PADDLE,
+                //PowerUpType.FAST_BALL,
+                //PowerUpType.SLOW_BALL,
+                //PowerUpType.GUN_PADDLE,
                 PowerUpType.MAGNET_PADDLE
         };
         int powerUpIndex = 0;

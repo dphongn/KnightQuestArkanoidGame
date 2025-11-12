@@ -35,14 +35,14 @@ public class HallOfGeneralsLevel extends BaseLevel {
         };
 
         PowerUpType[] powerUps = {
-                PowerUpType.FIRE_BALL,
+                //PowerUpType.FIRE_BALL,
                 PowerUpType.PIERCE_BALL,
-                PowerUpType.MULTI_BALL,
-                PowerUpType.EXPAND_PADDLE,
-                PowerUpType.FAST_BALL,
+                //PowerUpType.MULTI_BALL,
+                //PowerUpType.EXPAND_PADDLE,
+                //PowerUpType.FAST_BALL,
                 PowerUpType.SLOW_BALL,
-                PowerUpType.GUN_PADDLE,
-                PowerUpType.MAGNET_PADDLE
+                //PowerUpType.GUN_PADDLE,
+                //PowerUpType.MAGNET_PADDLE
         };
         int powerUpIndex = 0;
         int powerUpBrickCount = 0;

@@ -35,13 +35,13 @@ public class NobleDistrictLevel extends BaseLevel {
         };
         PowerUpType[] powerUps = {
                 PowerUpType.FIRE_BALL,
-                PowerUpType.PIERCE_BALL,
+                //PowerUpType.PIERCE_BALL,
                 PowerUpType.MULTI_BALL,
-                PowerUpType.EXPAND_PADDLE,
-                PowerUpType.FAST_BALL,
-                PowerUpType.SLOW_BALL,
-                PowerUpType.GUN_PADDLE,
-                PowerUpType.MAGNET_PADDLE
+                //PowerUpType.EXPAND_PADDLE,
+                //PowerUpType.FAST_BALL,
+                //PowerUpType.SLOW_BALL,
+                //PowerUpType.GUN_PADDLE,
+                //PowerUpType.MAGNET_PADDLE
         };
         int powerUpIndex = 0;
         int powerUpBrickCount = 0;
