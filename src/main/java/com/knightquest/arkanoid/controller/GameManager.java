@@ -135,12 +135,18 @@ public class GameManager {
 
         this.boss = currentLevel.getBoss();
 
-        //Play music for the level
-        //audioController.playLevelMusic(levelNumber);
-
+        if (this.boss != null) {
+            boss.setBossStateListener(new Boss.BossStateListener() {
+                @Override
+                public void onBossEnraged() {
+                    //Change BGM to boss angry theme
+                    audioController.playBGM("level7_bossangry.mp3");
+                    System.out.println("🎵 BGM changed to BOSS ANGRY theme!");
+                }
+            });
+        }
         // Print level info to console
         System.out.println("Loaded Level " + levelNumber);
-
     }
 
     /**
@@ -322,7 +328,7 @@ public class GameManager {
 
     // Reset game to level 1
     public void resetGame() {
-        currentLevelNumber = 1;
+        currentLevelNumber = 7;
         lives = INITIAL_LIVES;
         score = 0;
         loadLevel(currentLevelNumber);

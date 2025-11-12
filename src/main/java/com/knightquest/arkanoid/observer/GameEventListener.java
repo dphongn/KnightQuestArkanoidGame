@@ -80,4 +80,9 @@ public interface GameEventListener {
      * Called when ball collides with paddle.
      */
     void onBallPaddleCollision();
+
+    /**
+     * Called when ball collides with boss.
+     */
+    void onBallBossCollision();
 }

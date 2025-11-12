@@ -193,6 +193,8 @@ public class CollisionHandler {
 
         boss.takeHit();
 
+        eventManager.notifyBallBossCollision();
+
         double ballCenterX = ball.getX() + ball.getWidth() / 2;
         double ballCenterY = ball.getY() + ball.getHeight() / 2;
         double bossCenterX = boss.getX() + boss.getWidth() / 2;

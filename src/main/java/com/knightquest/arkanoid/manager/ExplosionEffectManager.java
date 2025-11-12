@@ -70,6 +70,9 @@ public class ExplosionEffectManager implements GameEventListener {
 
     public void onBallPaddleCollision() {
     }
+
+    public void onBallBossCollision() {
+    }
 }
 
 class ExplosionEffect {

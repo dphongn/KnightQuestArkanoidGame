@@ -123,4 +123,10 @@ public class GameEventManager {
             listener.onBallPaddleCollision();
         }
     }
+
+    public void notifyBallBossCollision() {
+        for (GameEventListener listener : listeners) {
+            listener.onBallBossCollision();
+        }
+    }
 }

@@ -63,6 +63,15 @@ public class AudioController implements GameEventListener {
     }
 
     @Override
+    public void onBallBossCollision() {
+        if (!soundEnabled) return;
+
+        // Play boss hit sound
+        playSound("boss_hit.wav", masterVolume * 0.4);
+    }
+
+
+    @Override
     public void onPowerUpCollected(PowerUp powerUp) {
         if (!soundEnabled) return;
 
@@ -173,23 +182,13 @@ public class AudioController implements GameEventListener {
         System.err.println("❌ Could not play sound: " + soundFile + " - " + e.getMessage());
     }
     }
-    
+
     /**
-     * Play background music for a level.
+     * Play background music by file name.
+     * This is a generic mehtod that can play any BGM file.
      */
-    public void playLevelMusic(int levelNumber) {
+    public void playBGM(String musicFile) {
         if (!soundEnabled) return;
-        
-        String musicFile = switch (levelNumber) {
-            case 1 -> "level1_forest.mp3";
-            case 2 -> "level2_dungeon.mp3";
-            case 3 -> "level3_bazaar.mp3";
-            case 4 -> "level4_barracks.mp3";
-            case 5 -> "level5_generals.mp3";
-            case 6 -> "level6_nobles.mp3";
-            case 7 -> "level7_boss.mp3";
-            default -> "menu_theme.mp3";
-        };
         
         //Stop old music
         stopBGM();
@@ -212,7 +211,26 @@ public class AudioController implements GameEventListener {
         } catch (Exception e) {
             System.err.println("❌ Could not play music: " + musicFile + " - " + e.getMessage());
         }
+    }
+
+    /**
+     * Play background music for a level.
+     */
+    public void playLevelMusic(int levelNumber) {
+        if (!soundEnabled) return;
         
+        String musicFile = switch (levelNumber) {
+            case 1 -> "level1_forest.mp3";
+            case 2 -> "level2_dungeon.mp3";
+            case 3 -> "level3_bazaar.mp3";
+            case 4 -> "level4_barracks.mp3";
+            case 5 -> "level5_generals.mp3";
+            case 6 -> "level6_nobles.mp3";
+            case 7 -> "level7_boss.mp3";
+            default -> "menu_theme.mp3";
+        };
+        
+        playBGM(musicFile);
     }
 
     /**
