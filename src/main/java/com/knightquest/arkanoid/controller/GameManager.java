@@ -331,6 +331,7 @@ public class GameManager {
     // Advance to next level
     public void nextLevel() {
         if (currentLevelNumber < LevelFactory.getTotalLevels()) {
+            lives = INITIAL_LIVES;
             loadLevel(currentLevelNumber + 1);
             resetBall();
         } else {
