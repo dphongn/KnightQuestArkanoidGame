@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import com.knightquest.arkanoid.factory.BrickFactory;
 import com.knightquest.arkanoid.level.BaseLevel;
 import com.knightquest.arkanoid.model.brick.Brick;
+import com.knightquest.arkanoid.model.brick.PrisonerBrick;
+import com.knightquest.arkanoid.model.powerup.PowerUpType;
+
 import static com.knightquest.arkanoid.util.Constants.BRICK_HEIGHT;
 import static com.knightquest.arkanoid.util.Constants.BRICK_WIDTH;
 
@@ -19,18 +22,30 @@ public class BlackCellsLevel extends BaseLevel {
     @Override
     protected void buildLevel() {
         int[][] map = {
-                {0, 1, 0, 1, 0, 0, 0, 1, 1, 1, 1, 0},
-                {1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0},
-                {1, 1, 1, 1, 1, 1, 1, 2, 1, 2, 1, 0},
-                {2, 1, 1, 1, 1, 2, 2, 0, 1, 0, 1, 1},
-                {0, 1, 2, 1, 2, 0, 0, 0, 1, 0, 1, 1},
-                {0, 1, 0, 1, 0, 0, 0, 0, 1, 1, 1, 2},
-                {0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0},
-                {1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1},
-                {1, 1, 2, 1, 1, 1, 2, 2, 1, 0, 1, 1},
-                {2, 1, 0, 1, 2, 2, 0, 0, 1, 0, 1, 2},
-                {0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0}
+                {2,0,2,0,2,0,0,2,0,2,0,2},
+                {1,2,1,0,1,0,0,1,0,1,2,1},
+                {1,3,1,2,1,0,0,1,2,1,3,1},
+                {1,2,1,3,1,2,2,1,3,1,2,1},
+                {1,0,1,2,1,3,3,1,2,1,0,1},
+                {1,0,1,0,1,2,2,1,0,1,0,1},
+                {1,0,1,2,1,3,3,1,2,1,0,1},
+                {1,2,1,3,1,2,2,1,3,1,2,1},
+                {1,3,1,2,1,0,0,1,2,1,3,1},
+                {1,2,1,0,1,0,0,1,0,1,2,1},
+                {2,0,2,0,2,0,0,2,0,2,0,2}
         };
+        PowerUpType[] powerUps = {
+                //PowerUpType.FIRE_BALL,
+                //PowerUpType.PIERCE_BALL,
+                //PowerUpType.MULTI_BALL,
+                PowerUpType.EXPAND_PADDLE,
+                //PowerUpType.FAST_BALL,
+                //PowerUpType.SLOW_BALL,
+                //PowerUpType.GUN_PADDLE,
+                //PowerUpType.MAGNET_PADDLE
+        };
+        int powerUpIndex = 0;
+        int powerUpBrickCount = 0;
 
         double startX = 25;
         double startY = 70;
@@ -52,6 +67,12 @@ public class BlackCellsLevel extends BaseLevel {
                     brick = BrickFactory.createMonsterBrickFromCode(5, x, y, BRICK_WIDTH, BRICK_HEIGHT, minX, maxX);
                 } else {
                     brick = BrickFactory.createBrickFromCode(type, x, y, BRICK_WIDTH, BRICK_HEIGHT);
+                }
+                if (brick instanceof PrisonerBrick) {
+                    PowerUpType nextPowerUp = powerUps[powerUpIndex % powerUps.length];
+                    ((PrisonerBrick) brick).setGuaranteedPowerUp(nextPowerUp);
+                    powerUpIndex++;
+                    powerUpBrickCount++;
                 }
                 if (brick != null) {
                     bricks.add(brick);
