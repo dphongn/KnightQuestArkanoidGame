@@ -232,13 +232,29 @@ public class LevelCompleteState extends GameState {
 
     void continueToNextLevel() {
         System.out.println("Continuing to next level");
+        
+        // Increase to next level
         gameManager.nextLevel();
-        changeState(new PlayingState(gameManager));
+        
+        // Get the new level number
+        int nextLevelNumber = gameManager.getCurrentLevelNumber();
+        
+        // Transition to StoryState first, which will then transition to PlayingState
+        System.out.println("Transitioning to StoryState for level " + nextLevelNumber);
+        changeState(new StoryState(gameManager, nextLevelNumber));
     }
 
     private void replayLevel() {
         System.out.println("Replaying current level");
+        
+        // Restart the current level
         gameManager.restartLevel();
-        changeState(new PlayingState(gameManager));
+        
+        // Get the current level number (after restart)
+        int currentLevelNumber = gameManager.getCurrentLevelNumber();
+        
+        // Transition to StoryState first, which will then transition to PlayingState
+        System.out.println("Transitioning to StoryState for replaying level " + currentLevelNumber);
+        changeState(new StoryState(gameManager, currentLevelNumber));
     }
 }
