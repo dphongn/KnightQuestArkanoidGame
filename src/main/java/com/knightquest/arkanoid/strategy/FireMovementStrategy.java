@@ -18,11 +18,12 @@ public class FireMovementStrategy implements MovementStrategy {
 
     @Override
     public boolean handleBrickCollision(Ball ball, Brick brick) {
-        // Fire behavior: destroys bricks instantly and bounces
-        while (brick.isActive()) {
-            brick.takeHit();
+        //Check if brick is breakable
+        if (!brick.isBreakable()) {
+            return true; // Ball should bounce off
         }
-        return true;
+        brick.takeHit();
+        return false; // Ball should not bounce off
     }
 
     @Override
