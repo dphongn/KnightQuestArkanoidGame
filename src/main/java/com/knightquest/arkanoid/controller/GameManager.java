@@ -321,7 +321,7 @@ public class GameManager {
 
     // Reset game to level 1
     public void resetGame() {
-        currentLevelNumber = 6;
+        currentLevelNumber = 1;
         lives = INITIAL_LIVES;
         score = 0;
         loadLevel(currentLevelNumber);
@@ -520,9 +520,9 @@ public class GameManager {
             Boss boss = currentLevel.getBoss();
             return boss != null && boss.isDefeated();
         }
-        
+
         // For normal levels
-        return bricks.stream().noneMatch(brick -> 
+        return bricks.stream().noneMatch(brick ->
             brick.isActive() && brick.isBreakable()
         );
     }
