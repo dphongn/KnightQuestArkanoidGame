@@ -7,6 +7,7 @@ import javafx.scene.image.Image;
 
 public class Paddle extends MovableObject {
     private double speed = PADDLE_SPEED;
+    private double originalWidth = PADDLE_WIDTH; // Store original width for expand powerup
     // Gun power-up properties
     private boolean canShootGun = false;
     private double gunCooldown = 0.3;
@@ -143,5 +144,12 @@ public class Paddle extends MovableObject {
         return attachedBall;
     }
 
+    public double getOriginalWidth() {
+        return originalWidth;
+    }
+
+    public void setOriginalWidth(double originalWidth) {
+        this.originalWidth = originalWidth;
+    }
 
 }

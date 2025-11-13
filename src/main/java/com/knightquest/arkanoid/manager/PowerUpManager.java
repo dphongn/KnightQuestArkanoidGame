@@ -145,6 +145,17 @@ public class PowerUpManager {
      * Collect a PowerUp when paddle touches it
      */
     private void collectPowerUp(PowerUp powerUp, Paddle paddle) {
+        PowerUpType type = powerUp.getType();
+        
+        // If EXPAND_PADDLE is already active, just refresh its duration
+        if (type == PowerUpType.EXPAND_PADDLE && activePowerUps.containsKey(PowerUpType.EXPAND_PADDLE)) {
+            PowerUp existing = activePowerUps.get(PowerUpType.EXPAND_PADDLE);
+            existing.setDuration(powerUp.getDuration()); // Refresh duration
+            System.out.println("⏱️ Expand Paddle duration refreshed to " + powerUp.getDuration() + "s");
+            onPowerUpCollected(powerUp);
+            return;
+        }
+        
         //Remove conflicting PowerUps
         removeConflictingPowerUps(powerUp, paddle);
 
