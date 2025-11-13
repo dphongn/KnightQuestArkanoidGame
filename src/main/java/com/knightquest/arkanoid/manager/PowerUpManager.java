@@ -188,6 +188,16 @@ public class PowerUpManager {
         else if (newType == PowerUpType.FIRE_BALL && activePowerUps.containsKey(PowerUpType.PIERCE_BALL)) {
             PowerUp conflicting = activePowerUps.remove(PowerUpType.PIERCE_BALL);
             conflicting.remove(paddle);
+        } 
+
+        //Multi Ball conflicts with Magnet Paddle
+        else if (newType == PowerUpType.MULTI_BALL && activePowerUps.containsKey(PowerUpType.MAGNET_PADDLE)) {
+            PowerUp conflicting = activePowerUps.remove(PowerUpType.MAGNET_PADDLE);
+            conflicting.remove(paddle);
+        }
+        else if (newType == PowerUpType.MAGNET_PADDLE && activePowerUps.containsKey(PowerUpType.MULTI_BALL)) {
+            PowerUp conflicting = activePowerUps.remove(PowerUpType.MAGNET_PADDLE);
+            conflicting.remove(paddle);
         }
     }
 
