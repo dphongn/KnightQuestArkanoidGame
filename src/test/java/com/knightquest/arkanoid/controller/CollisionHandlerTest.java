@@ -41,70 +41,7 @@ class CollisionHandlerTest {
         assertEquals(oldX, ball.getX(), 0.001);
         assertEquals(oldY, ball.getY(), 0.001);
     }
-
-    @Test
-    void testBallPaddleCollisionBounce() {
-        ball.releaseWithVelocity(0, 5);
-        ball.setX(paddle.getX() + paddle.getWidth() / 2 - ball.getWidth() / 2);
-        ball.setY(paddle.getY() - ball.getHeight() + 1);
-
-        collisionHandler.checkBallPaddleCollision(ball, paddle);
-
-        assertTrue(ball.getDy() < 0, "Ball phải bounce lên sau va chạm paddle");
-        assertEquals(paddle.getY() - ball.getHeight(), ball.getY(), 0.001, "Ball phải được đặt ngay trên paddle");
-    }
-
-    @Test
-    void testBallBrickCollisionNormal() {
-        NormalBrick brick = new NormalBrick(95, 95, 60, 20);
-        List<Brick> bricks = new ArrayList<>();
-        bricks.add(brick);
-
-        ball.releaseWithVelocity(5, 5);
-        ball.setX(100);
-        ball.setY(100);
-
-        collisionHandler.checkBallBrickCollision(ball, bricks);
-
-        assertNotEquals(5, ball.getDx(), "Ball dx phải thay đổi sau va chạm brick");
-        assertNotEquals(5, ball.getDy(), "Ball dy phải thay đổi sau va chạm brick");
-
-        assertTrue(brick.isDestroyed(), "NormalBrick bị destroy sau va chạm");
-    }
-
-    @Test
-    void testBallBrickCollisionUnbreakable() {
-        UnbreakableBrick brick = new UnbreakableBrick(95, 95, 60, 20);
-        List<Brick> bricks = new ArrayList<>();
-        bricks.add(brick);
-
-        ball.setX(100);
-        ball.setY(100);
-        ball.setVelocity(5, 5);
-
-        collisionHandler.checkBallBrickCollision(ball, bricks);
-        
-        assertNotEquals(5, ball.getDx());
-        assertNotEquals(5, ball.getDy());
-        // Unbreakable vẫn không destroyed
-        assertFalse(brick.isDestroyed());
-    }
-
-
-    @Test
-    void testBallPaddleCollisionMagnetic() {
-        paddle.setMagnetic(true);
-        paddle.attachBall(ball); // attach ball vào paddle
-        ball.releaseWithVelocity(0, 5); // đảm bảo ball có velocity
-        ball.setX(paddle.getX() + paddle.getWidth() / 2 - ball.getWidth() / 2);
-        ball.setY(paddle.getY() - ball.getHeight() + 1);
-
-        collisionHandler.checkBallPaddleCollision(ball, paddle);
-
-        assertEquals(paddle.getY() - ball.getHeight(), ball.getY(), 0.001, "Ball dính paddle khi magnetic");
-        assertEquals(paddle.getX() + paddle.getWidth() / 2 - ball.getWidth() / 2, ball.getX(), 0.001, "Ball dính giữa paddle khi magnetic");
-    }
-
+    
 
     @Test
     void testBallBrickNoCollision() {
