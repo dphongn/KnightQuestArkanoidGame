@@ -6,7 +6,6 @@ import javafx.scene.paint.Color;
 
 public class ExpandPaddlePowerUp extends PowerUp {
     private static final double EXPANSION_FACTOR = 1.5;
-    private double originalWidth;
 
     public ExpandPaddlePowerUp(double x, double y) {
         // Use a reasonable default duration (seconds) for paddle expansion
@@ -15,13 +14,15 @@ public class ExpandPaddlePowerUp extends PowerUp {
 
     @Override
     public void apply(Paddle paddle) {
-        originalWidth = paddle.getWidth();
-        paddle.setWidth(originalWidth * EXPANSION_FACTOR);
+        // Always use the original width to prevent stacking multiplier
+        double targetWidth = paddle.getOriginalWidth() * EXPANSION_FACTOR;
+        paddle.setWidth(targetWidth);
     }
 
     @Override
     public void remove(Paddle paddle) {
-        paddle.setWidth(originalWidth);
+        // Reset to original width
+        paddle.setWidth(paddle.getOriginalWidth());
     }
 
     @Override
