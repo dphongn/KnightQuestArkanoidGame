@@ -27,6 +27,7 @@ public class PlayingState extends GameState {
     private Image heartImage;
     private Image shieldImage;
     private Font arcadeFont;
+    private boolean bossVictoryTriggered = false;
 
     public PlayingState(GameManager gameManager) {
         super(gameManager);
@@ -35,6 +36,7 @@ public class PlayingState extends GameState {
     @Override
     public void enter() {
         System.out.println("=== GAME STARTED ===");
+        bossVictoryTriggered = false;
         // Load background image
         int level = gameManager.getCurrentLevelNumber();
         String backgroundPath = "/images/backgrounds/level" + level + ".jpg";
@@ -103,6 +105,16 @@ public class PlayingState extends GameState {
 
         // Update game logic
         gameManager.updateGameLogic(deltaTime);
+
+        //Check for level 7 boss defeat
+        if (gameManager.getCurrentLevelNumber() == 7 && !bossVictoryTriggered) {
+            Boss boss = gameManager.getBoss();
+            if (boss != null && boss.isDefeated()) {
+                bossVictoryTriggered = true;
+                handleBossVictory();
+                return;
+            }
+        }
     }
 
 
@@ -195,6 +207,7 @@ public class PlayingState extends GameState {
     public void exit() {
         leftPressed = false;
         rightPressed = false;
+        bossVictoryTriggered = false;
 
         //Stop music when exiting playing state
         AudioController audioController = gameManager.getEventManager().getAudioController();
@@ -228,13 +241,6 @@ public class PlayingState extends GameState {
         gc.strokeText(levelText, gc.getCanvas().getWidth() / 2, 45);
         gc.fillText(levelText, gc.getCanvas().getWidth() / 2, 45);
 
-        // Draw lives
-        //if (heartImage != null) {
-        //double heartSize = 24;
-        //    for (int i = 0; i < gameManager.getLives(); ++i) {
-        //        gc.drawImage(heartImage, 20 + i * (heartSize + 5), 55 - heartSize, heartSize, heartSize);
-        //    }
-        //}
         if (shieldImage != null) {
             double shieldSize = 24;
             for (int i = 0; i < gameManager.getLives(); ++i) {
@@ -254,9 +260,17 @@ public class PlayingState extends GameState {
         gc.fillText("<- Move Left    -> Move Right    ESC - Pause", gc.getCanvas().getWidth() / 2, gc.getCanvas().getHeight() - 20);
     }
 
-    private void handleLevelComplete() {
-        System.out.println("Level Complete");
-        // Transition to LevelCompleteState
-        changeState(new LevelCompleteState(gameManager));
+    /**
+     * Handle boss victory.
+     */
+    private void handleBossVictory() {
+        System.out.println("Boss Defeated - Victory!");
+        // Stop current music
+        AudioController audioController = gameManager.getEventManager().getAudioController();
+        if (audioController != null) {
+            audioController.stopBGM();
+        }
+        // Transition to BossVictoryState
+        changeState(new BossVictoryState(gameManager));
     }
 }

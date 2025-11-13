@@ -3,6 +3,7 @@ module com.knightquest.arkanoid.knightquestarkanoid {
     requires javafx.fxml;
     requires javafx.web;
     requires javafx.media;
+    requires javafx.swing;
 
     requires org.controlsfx.controls;
     requires com.dlsc.formsfx;
@@ -13,6 +14,7 @@ module com.knightquest.arkanoid.knightquestarkanoid {
     requires com.almasb.fxgl.all;
     requires annotations;
     requires javafx.graphics;
+    requires java.desktop;
 
     opens com.knightquest.arkanoid to javafx.fxml;
     exports com.knightquest.arkanoid;

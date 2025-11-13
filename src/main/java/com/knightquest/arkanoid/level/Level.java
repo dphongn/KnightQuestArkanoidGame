@@ -69,4 +69,11 @@ public class Level {
     public Boss getBoss() {
         return null;
     }
+
+    /**
+     * Check if the level has a boss.
+     */
+    public boolean hasBoss() {
+        return getBoss() != null;
+    }
 }

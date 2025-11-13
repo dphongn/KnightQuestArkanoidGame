@@ -26,6 +26,11 @@ public class LevelCompleteState extends GameState {
 
     public LevelCompleteState(GameManager gameManager) {
         super(gameManager);
+
+        //If level 7, go directly to boss victory state
+        if (gameManager.getCurrentLevelNumber() == 7) {
+            System.out.println("Level 7 completed - transitioning to Boss Victory State");
+        }
         this.completedLevelNumber = gameManager.getCurrentLevelNumber();
         this.completedLevelName = gameManager.getCurrentLevelName();
         this.currentScore = gameManager.getScore();

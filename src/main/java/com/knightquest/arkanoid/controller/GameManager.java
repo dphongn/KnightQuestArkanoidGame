@@ -513,4 +513,17 @@ public class GameManager {
             }
         }
     }
+
+    public boolean isLevelComplete() {
+        // For boss level (level 7)
+        if (currentLevel != null && currentLevel.hasBoss()) {
+            Boss boss = currentLevel.getBoss();
+            return boss != null && boss.isDefeated();
+        }
+        
+        // For normal levels
+        return bricks.stream().noneMatch(brick -> 
+            brick.isActive() && brick.isBreakable()
+        );
+    }
 }
