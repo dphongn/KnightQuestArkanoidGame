@@ -321,7 +321,7 @@ public class GameManager {
 
     // Reset game to level 1
     public void resetGame() {
-        currentLevelNumber = 1;
+        currentLevelNumber = 6;
         lives = INITIAL_LIVES;
         score = 0;
         loadLevel(currentLevelNumber);

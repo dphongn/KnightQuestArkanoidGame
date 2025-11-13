@@ -11,9 +11,13 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * StoryState displays the story image before starting each level.
- * The story image is pre-created and loaded from resources.
+ * For level 1, shows a sequence of 10 images.
+ * For other levels, shows a single story image.
  */
 public class StoryState extends GameState {
     private Image storyImage;
@@ -24,6 +28,11 @@ public class StoryState extends GameState {
     private boolean imageFadedIn = false;
 
     private Font instructionFont;
+    
+    // For level 1 multi-image story
+    private final List<Image> storyImages = new ArrayList<>();
+    private int currentImageIndex = 0;
+    private boolean isMultiImageStory = false;
 
     /**
      * Constructor for StoryState
@@ -39,24 +48,55 @@ public class StoryState extends GameState {
 
     /**
      * Load the story image for the current level.
-     * Story images should be placed in: /images/story/level{X}.png
-     * For example: level1.png, level2.png, etc.
+     * For level 1: Load 10 images from lv1 folder (1_1.jpg to 1_10.jpg)
+     * For other levels: Load single story image from /images/story/level{X}.png
      */
     private void loadStoryImage() {
-        String storyImagePath = "/images/story/level" + levelNumber + ".png";
-
-        try {
-            java.net.URL imageURL = getClass().getResource(storyImagePath);
-            if (imageURL != null) {
-                storyImage = new Image(imageURL.toString());
-                System.out.println("✅ Loaded story image for level " + levelNumber);
+        if (levelNumber == 1) {
+            // Load multiple images for level 1
+            isMultiImageStory = true;
+            storyImages.clear();
+            
+            for (int i = 1; i <= 11; i++) {
+                String imagePath = "/images/story/lv1/1_" + i + ".jpg";
+                try {
+                    java.net.URL imageURL = getClass().getResource(imagePath);
+                    if (imageURL != null) {
+                        Image img = new Image(imageURL.toString());
+                        storyImages.add(img);
+                        System.out.println("✅ Loaded story image " + i + "/11 for level 1");
+                    } else {
+                        System.err.println("⚠️ Story image not found: " + imagePath);
+                    }
+                } catch (Exception e) {
+                    System.err.println("❌ Failed to load story image " + i + ": " + e.getMessage());
+                }
+            }
+            
+            if (storyImages.isEmpty()) {
+                System.err.println("⚠️ No story images loaded for level 1");
+                isMultiImageStory = false;
             } else {
-                System.err.println("⚠️ Story image not found: " + storyImagePath);
+                System.out.println("✅ Loaded " + storyImages.size() + " story images for level 1");
+            }
+        } else {
+            // Load single image for other levels
+            isMultiImageStory = false;
+            String storyImagePath = "/images/story/level" + levelNumber + ".png";
+
+            try {
+                java.net.URL imageURL = getClass().getResource(storyImagePath);
+                if (imageURL != null) {
+                    storyImage = new Image(imageURL.toString());
+                    System.out.println("✅ Loaded story image for level " + levelNumber);
+                } else {
+                    System.err.println("⚠️ Story image not found: " + storyImagePath);
+                    storyImage = null;
+                }
+            } catch (Exception e) {
+                System.err.println("❌ Failed to load story image: " + e.getMessage());
                 storyImage = null;
             }
-        } catch (Exception e) {
-            System.err.println("❌ Failed to load story image: " + e.getMessage());
-            storyImage = null;
         }
     }
 
@@ -77,9 +117,13 @@ public class StoryState extends GameState {
         fadeAlpha = 0.0;
         fadeTimer = 0.0;
         imageFadedIn = false;
+        currentImageIndex = 0; // Reset to first image
 
         // If no story image exists, skip directly to playing state
-        if (storyImage == null) {
+        if (isMultiImageStory && storyImages.isEmpty()) {
+            System.out.println("⚠️ No story images found for level 1, skipping to PlayingState");
+            changeState(new PlayingState(gameManager));
+        } else if (!isMultiImageStory && storyImage == null) {
             System.out.println("⚠️ No story image found, skipping to PlayingState");
             changeState(new PlayingState(gameManager));
         }
@@ -110,8 +154,38 @@ public class StoryState extends GameState {
         switch (code) {
             case ENTER:
             case SPACE:
+                if (isMultiImageStory) {
+                    // For level 1, move to next image
+                    if (currentImageIndex < storyImages.size() - 1) {
+                        currentImageIndex++;
+                        // Reset fade animation for next image
+                        fadeAlpha = 0.0;
+                        fadeTimer = 0.0;
+                        imageFadedIn = false;
+                        
+                        if (eventManager != null) {
+                            eventManager.notifyMenuOptionSelected();
+                        }
+                        System.out.println("📖 Story image " + (currentImageIndex + 1) + "/" + storyImages.size());
+                    } else {
+                        // Last image, start the level
+                        if (eventManager != null) {
+                            eventManager.notifyMenuOptionSelected();
+                        }
+                        System.out.println("Story completed, starting level " + levelNumber);
+                        changeState(new PlayingState(gameManager));
+                    }
+                } else {
+                    // For other levels, skip to playing state
+                    if (eventManager != null) {
+                        eventManager.notifyMenuOptionSelected();
+                    }
+                    System.out.println("Story skipped, starting level " + levelNumber);
+                    changeState(new PlayingState(gameManager));
+                }
+                break;
             case ESCAPE:
-                // Skip to playing state
+                // Skip entire story sequence
                 if (eventManager != null) {
                     eventManager.notifyMenuOptionSelected();
                 }
@@ -133,10 +207,18 @@ public class StoryState extends GameState {
         gc.setFill(Color.BLACK);
         gc.fillRect(0, 0, width, height);
 
-        if (storyImage != null) {
+        // Get current image to display
+        Image currentImage = null;
+        if (isMultiImageStory && !storyImages.isEmpty() && currentImageIndex < storyImages.size()) {
+            currentImage = storyImages.get(currentImageIndex);
+        } else if (!isMultiImageStory) {
+            currentImage = storyImage;
+        }
+
+        if (currentImage != null) {
             // Calculate image dimensions to fit screen while maintaining aspect ratio
-            double imageWidth = storyImage.getWidth();
-            double imageHeight = storyImage.getHeight();
+            double imageWidth = currentImage.getWidth();
+            double imageHeight = currentImage.getHeight();
 
             double scaleX = width / imageWidth;
             double scaleY = height / imageHeight;
@@ -150,7 +232,7 @@ public class StoryState extends GameState {
 
             // Apply fade effect
             gc.setGlobalAlpha(fadeAlpha);
-            gc.drawImage(storyImage, x, y, scaledWidth, scaledHeight);
+            gc.drawImage(currentImage, x, y, scaledWidth, scaledHeight);
             gc.setGlobalAlpha(1.0); // Reset alpha
         } else {
             // Fallback: show text message if image not found
@@ -174,13 +256,25 @@ public class StoryState extends GameState {
         gc.setFill(Color.rgb(0, 0, 0, 0.7));
         gc.fillRect(0, instructionY - 25, width, 60);
 
+        // Different instructions for multi-image vs single image
+        String instructionText;
+        if (isMultiImageStory && currentImageIndex < storyImages.size() - 1) {
+            instructionText = String.format("Press ENTER/SPACE for next (%d/%d) | ESC to skip story", 
+                                          currentImageIndex + 1, storyImages.size());
+        } else if (isMultiImageStory) {
+            instructionText = String.format("Press ENTER/SPACE to start level (%d/%d) | ESC to skip", 
+                                          currentImageIndex + 1, storyImages.size());
+        } else {
+            instructionText = "Press ENTER, SPACE or ESC to start level";
+        }
+
         // Draw instruction text with glow effect
         gc.setStroke(Color.rgb(255, 215, 0, 0.8));
         gc.setLineWidth(3);
-        gc.strokeText("Press ENTER, SPACE or ESC to start level", centerX, instructionY);
+        gc.strokeText(instructionText, centerX, instructionY);
 
         gc.setFill(Color.WHITE);
-        gc.fillText("Press ENTER, SPACE or ESC to start level", centerX, instructionY);
+        gc.fillText(instructionText, centerX, instructionY);
 
         gc.setGlobalAlpha(1.0); // Reset alpha
     }

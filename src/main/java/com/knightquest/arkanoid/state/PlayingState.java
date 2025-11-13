@@ -62,16 +62,20 @@ public class PlayingState extends GameState {
             shieldImage = null;
             System.err.println("Không tìm thấy shield.gif");
         }
-        // Load Arcade Classic font
+        // Load custom font (try Cinzel or fallback to Arial)
         try {
-            arcadeFont = Font.loadFont(getClass().getResourceAsStream("/fonts/arcadeclassic.ttf"), 28);
+            arcadeFont = Font.loadFont(getClass().getResourceAsStream("/fonts/Cinzel-Regular.ttf"), 28);
             if (arcadeFont == null) {
+                System.err.println("Không thể tải Cinzel-Regular.ttf, dùng Arial thay thế.");
                 arcadeFont = Font.font("Arial", 20);
-                System.err.println("Không thể tải arcadeclassic.ttf, dùng Arial thay thế.");
             }
         } catch (Exception e) {
+            System.err.println("Không thể tải font từ file, fallback Arial: " + e.getMessage());
             arcadeFont = Font.font("Arial", 20);
-            System.err.println("Không thể tải arcadeclassic.ttf, fallback Arial.");
+        }
+        // Ensure arcadeFont is never null
+        if (arcadeFont == null) {
+            arcadeFont = Font.font("Arial", 20);
         }
 
         //Start background music
@@ -220,6 +224,11 @@ public class PlayingState extends GameState {
         gc.setTextAlign(TextAlignment.LEFT);
         gc.setFont(Font.font("Arial", 20));
         gc.setFill(Color.WHITE);
+
+        // Ensure arcadeFont is initialized (fallback if enter() not called yet)
+        if (arcadeFont == null) {
+            arcadeFont = Font.font("Arial", 20);
+        }
 
         // === SCORE ===
         gc.setFont(Font.font(arcadeFont.getFamily(), 22));
