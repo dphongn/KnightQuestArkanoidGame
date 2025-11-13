@@ -272,15 +272,10 @@ public class PowerUpManager {
     //Event callbacks <can be connected to Observer pattern later)
     private void onPowerUpCollected(PowerUp powerUp) {
         System.out.println("PowerUp collected: " + powerUp.getType().getDisplayName());
-        // TODO: Play sound effect
-        // TODO: Show notification
-        // TODO: Trigger GameEventManager
     }
 
     private void onPowerUpExpired(PowerUp powerUp) {
         System.out.println("PowerUp expired: " + powerUp.getType().getDisplayName());
-        // TODO: Play sound effect
-        // TODO: Show notification
     }
 
     /**

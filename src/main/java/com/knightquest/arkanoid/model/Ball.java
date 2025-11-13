@@ -3,10 +3,8 @@ package com.knightquest.arkanoid.model;
 import static com.knightquest.arkanoid.util.Constants.BALL_RADIUS;
 import static com.knightquest.arkanoid.util.Constants.BALL_SPEED;
 import static com.knightquest.arkanoid.util.Constants.SCREEN_HEIGHT;
-
 import com.knightquest.arkanoid.strategy.MovementStrategy;
 import com.knightquest.arkanoid.strategy.NormalMovementStrategy;
-import com.knightquest.arkanoid.strategy.PierceMovementStratrgy;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.image.Image;
@@ -17,7 +15,6 @@ public class Ball extends MovableObject {
 
 
     private boolean onFire = false;
-    private boolean fallenOff;
     private boolean piercing = false;
 
     // Sticky ball state

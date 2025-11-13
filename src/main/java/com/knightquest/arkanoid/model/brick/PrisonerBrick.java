@@ -8,7 +8,6 @@ public class PrisonerBrick extends Brick {
     private boolean powerUpDropped = false;
     private final Color prisonerColor = Color.PURPLE;
     private final Color chainColor = Color.DARKGRAY;
-    private static int nextPowerUpIndex = 0;
     private static final String imagePath = "/images/sprites/bricks/prisonerbrick.gif";
     private PowerUpType guaranteedPowerUp = null;
 

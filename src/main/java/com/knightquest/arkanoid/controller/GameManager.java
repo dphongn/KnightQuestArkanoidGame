@@ -18,7 +18,6 @@ import com.knightquest.arkanoid.model.brick.BrickType;
 import com.knightquest.arkanoid.model.Bullet;
 import com.knightquest.arkanoid.model.brick.PrisonerBrick;
 import com.knightquest.arkanoid.model.powerup.PowerUpType;
-import com.knightquest.arkanoid.observer.GameEventListener;
 import com.knightquest.arkanoid.observer.GameEventManager;
 import com.knightquest.arkanoid.state.*;
 import com.knightquest.arkanoid.observer.AudioController;
@@ -226,10 +225,6 @@ public class GameManager {
                 System.out.println("Life: a ball has fallen off. Remaining balls: " + balls.size());
             }
         }
-        // Check collisions
-//        collisionHandler.checkBallWallCollision(ball);
-//        collisionHandler.checkBallPaddleCollision(ball, paddle);
-//        collisionHandler.checkBallBrickCollision(ball, bricks);
 
         // Remove destroyed bricks and update score
 

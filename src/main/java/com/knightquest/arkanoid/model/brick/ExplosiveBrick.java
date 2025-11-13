@@ -1,17 +1,12 @@
 package com.knightquest.arkanoid.model.brick;
 
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class ExplosiveBrick extends Brick {
     private static final double EXPLOSION_RADIUS = 65.0;
     private boolean hasExploded = false;
-    private static Image explosiveBrickImage;
-    private static boolean imageLoaded = false;
     private static final String imagePath = "/images/sprites/bricks/explosivebrick.gif";
 
     public ExplosiveBrick(double x, double y, double width, double height) {

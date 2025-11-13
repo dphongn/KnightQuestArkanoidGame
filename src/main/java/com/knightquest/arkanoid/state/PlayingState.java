@@ -16,8 +16,6 @@ import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 import com.knightquest.arkanoid.observer.AudioController;
 
-import static com.knightquest.arkanoid.util.Constants.*;
-
 /**
  * PlayingState handles the main gameplay.
  */

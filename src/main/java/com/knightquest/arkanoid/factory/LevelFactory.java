@@ -8,7 +8,6 @@ import com.knightquest.arkanoid.level.levels.NobleDistrictLevel;
 import com.knightquest.arkanoid.level.levels.OuterBarracksLevel;
 import com.knightquest.arkanoid.level.levels.ThroneRoomLevel;
 import com.knightquest.arkanoid.level.levels.*;
-import com.knightquest.arkanoid.model.brick.StrongBrick;
 
 
 /**

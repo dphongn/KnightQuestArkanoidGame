@@ -5,9 +5,6 @@ import java.util.ArrayList;
 import com.knightquest.arkanoid.factory.BrickFactory;
 import com.knightquest.arkanoid.level.BaseLevel;
 import com.knightquest.arkanoid.model.brick.Brick;
-import com.knightquest.arkanoid.model.brick.NormalBrick;
-import com.knightquest.arkanoid.model.brick.StrongBrick;
-
 import static com.knightquest.arkanoid.util.Constants.BRICK_HEIGHT;
 import static com.knightquest.arkanoid.util.Constants.BRICK_WIDTH;
 

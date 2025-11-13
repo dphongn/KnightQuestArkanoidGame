@@ -4,10 +4,8 @@ import com.knightquest.arkanoid.model.brick.Brick;
 import com.knightquest.arkanoid.model.powerup.PowerUp;
 import javafx.scene.media.AudioClip;
 import javafx.scene.media.MediaPlayer;
-import javafx.scene.paint.Stop;
 import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
-import javafx.util.Duration;
+
 
 /**
  * Audio Controller - Observes game events and plays corresponding sounds.
