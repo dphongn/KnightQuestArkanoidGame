@@ -23,13 +23,6 @@ public class FireBallPowerUp extends PowerUp {
             ball.setMovementStrategy(new FireMovementStrategy());
             ball.setOnFire(true);
         }
-
-        //Apply to all balls if multi-ball is active
-//        if (gm.getBalls() != null) {
-//            for (Ball b : gm.getBalls()) {
-//                b.setOnFire(true);
-//            }
-//        }
         System.out.println("Fire Ball PowerUp");
     }
 
@@ -41,13 +34,6 @@ public class FireBallPowerUp extends PowerUp {
             ball.setMovementStrategy(new NormalMovementStrategy());
             ball.setOnFire(false);
         }
-
-        //Remove from all balls
-//        if (gm.getBalls() != null) {
-//            for (Ball b : gm.getBalls()) {
-//                b.setOnFire(false);
-//            }
-//        }
         System.out.println("Fire Ball PowerUp removed");
     }
 

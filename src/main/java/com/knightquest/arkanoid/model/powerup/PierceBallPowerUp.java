@@ -25,12 +25,6 @@ public class PierceBallPowerUp extends PowerUp {
         }
 
         System.out.println("PierceBallPowerUp apply");
-//        //Apply to all balls if multi-ball is active
-//        if (gm.getBalls() != null) {
-//            for (Ball b : gm.getBalls()) {
-//                b.setPiercing(true);
-//            }
-//        }
     }
 
     @Override
@@ -41,13 +35,6 @@ public class PierceBallPowerUp extends PowerUp {
             ball.setMovementStrategy(new NormalMovementStrategy());
             ball.setPiercing(false);
         }
-
-        //Remove from all balls
-//        if (gm.getBalls() != null) {
-//            for (Ball b : gm.getBalls()) {
-//                b.setPiercing(false);
-//            }
-//        }
         System.out.println("PierceBallPowerUp remove");
     }
 

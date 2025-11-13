@@ -34,12 +34,6 @@ public class MultiBallPowerUp extends PowerUp {
             double angleOffset = (i + 1) * 30;
             double currentAngle = Math.atan2(-originalBall.getDy(), -originalBall.getDx());
             double newAngle = currentAngle + Math.toRadians(angleOffset * (i % 2 == 0 ? 1 : -1));
-//            double speed = originalBall.getSpeed();
-//
-//            newBall.setVelocity(
-//                    speed * Math.cos(newAngle),
-//                    speed * Math.sin(newAngle)
-//            );
 
             // Always use BALL_SPEED for consistency - all spawned balls have same speed
             double speed = BALL_SPEED;
