@@ -6,10 +6,6 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-/**
- * Game loop thread chạy riêng biệt để xử lý game logic
- * Đây là implementation đơn giản cho multithreading
- */
 public class GameLoop extends Thread {
     private final GameManager gameManager;
     private final AtomicBoolean running = new AtomicBoolean(true);
