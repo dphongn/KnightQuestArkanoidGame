@@ -3,6 +3,7 @@ package com.knightquest.arkanoid.level;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.knightquest.arkanoid.model.Boss;
 import com.knightquest.arkanoid.model.brick.Brick;
 
 public class Level {
@@ -11,20 +12,18 @@ public class Level {
     private String description;
     protected List<Brick> bricks;
     private boolean completed;
-    private boolean isBossLevel;
 
     public Level(int levelNumber, String levelName, List<Brick> bricks) {
-        this(levelNumber, levelName, "", bricks, false);
+        this(levelNumber, levelName, "", bricks);
     }
 
     public Level(int levelNumber, String levelName, String description,
-                 List<Brick> bricks, boolean isBossLevel) {
+                 List<Brick> bricks) {
         this.levelNumber = levelNumber;
         this.levelName = levelName;
         this.description = description;
         this.bricks = new ArrayList<>(bricks);
         this.completed = false;
-        this.isBossLevel = isBossLevel;
     }
 
     public boolean isCompleted() {
@@ -63,11 +62,18 @@ public class Level {
         return bricks;
     }
 
-    public boolean isBossLevel() {
-        return isBossLevel;
-    }
-
     public void setCompleted(boolean completed) {
         this.completed = completed;
+    }
+
+    public Boss getBoss() {
+        return null;
+    }
+
+    /**
+     * Check if the level has a boss.
+     */
+    public boolean hasBoss() {
+        return getBoss() != null;
     }
 }

@@ -2,20 +2,33 @@ package com.knightquest.arkanoid.controller;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Set;
+import java.util.HashSet;
 
+import com.knightquest.arkanoid.factory.PowerUpFactory;
 import com.knightquest.arkanoid.model.Ball;
+import com.knightquest.arkanoid.model.Boss;
 import com.knightquest.arkanoid.model.GameObject;
 import com.knightquest.arkanoid.model.Paddle;
 import com.knightquest.arkanoid.model.brick.Brick;
+import com.knightquest.arkanoid.model.brick.ExplosiveBrick;
+import com.knightquest.arkanoid.model.powerup.PowerUp;
+import com.knightquest.arkanoid.model.powerup.PowerUpType;
+import com.knightquest.arkanoid.observer.GameEventManager;
+
 import static com.knightquest.arkanoid.util.Constants.SCREEN_WIDTH;
 
 import javafx.geometry.Rectangle2D;
 
 public class CollisionHandler {
     private GameManager gameManager;
+    private GameEventManager eventManager;
 
-    public CollisionHandler(GameManager gameManger) {
+    public CollisionHandler(GameManager gameManager, GameEventManager eventManager) {
         this.gameManager = gameManager;
+        this.eventManager = eventManager;
     }
 
     /**
@@ -26,8 +39,19 @@ public class CollisionHandler {
             return;
         }
 
+        //Notify paddle collision
+        eventManager.notifyBallPaddleCollision();
+
         // Position ball above paddle to prevent sticking
         ball.setY(paddle.getY() - ball.getHeight());
+
+
+        // If paddle is magnetic, catch the ball
+        if (paddle.isMagnetic() && !ball.isStuckToPaddle()) {
+            ball.resetToStuck(); // Use existing method to set stuck state
+            System.out.println("🧲 Ball caught by magnetic paddle!");
+            return; // Don't bounce, just stick
+        }
 
         // Calculate where ball hit the paddle (0 = left edge, 1 = right edge)
         double ballCenterX = ball.getX() + ball.getWidth() / 2;
@@ -52,6 +76,7 @@ public class CollisionHandler {
 
         //SoundManager.play("paddle_hit");
     }
+
     /**
      * Check and handle collisions between the ball and the bricks
      */
@@ -76,25 +101,68 @@ public class CollisionHandler {
             double overlapX = (brick.getWidth() + ball.getWidth()) / 2 - Math.abs(dx);
             double overlapY = (brick.getHeight() + ball.getHeight()) / 2 - Math.abs(dy);
 
-            if (overlapX < overlapY) {
-                ball.bounceHorizontal();
-                if (dx > 0) {
-                    ball.setX(brickCenterX + brick.getWidth() / 2);
+            boolean shouldBounce = ball.getMovementStrategy().handleBrickCollision(ball, brick);
+
+            eventManager.notifyBrickHit(brick);
+
+            processBrickDestruction(brick, bricks);
+
+            if (shouldBounce) {
+                if (overlapX < overlapY) {
+                    ball.bounceHorizontal();
+                    if (dx > 0) {
+                        ball.setX(brickCenterX + brick.getWidth() / 2);
+                    } else {
+                        ball.setX(brickCenterX - brick.getWidth() / 2 - ball.getWidth());
+                    }
                 } else {
-                    ball.setX(brickCenterX - brick.getWidth() / 2 - ball.getWidth());
+                    ball.bounceVertical();
+                    if (dy > 0) {
+                        ball.setY(brickCenterY + brick.getHeight() / 2);
+                    } else {
+                        ball.setY(brickCenterY - brick.getHeight() / 2 - ball.getHeight());
+                    }
                 }
-            } else {
-                ball.bounceVertical();
-                if (dy > 0) {
-                    ball.setY(brickCenterY + brick.getHeight() / 2);
-                } else {
-                    ball.setY(brickCenterY - brick.getHeight() / 2 - ball.getHeight());
+                break;
+            }
+            break;
+        }
+    }
+
+    public void processBrickDestruction(Brick initialBrick, List<Brick> allBricks) {
+        Queue<Brick> destructionQueue = new LinkedList<>();
+        Set<Brick> processedSet = new HashSet<>();
+
+        if (initialBrick.isDestroyed()) {
+            destructionQueue.add(initialBrick);
+        }
+
+        while (!destructionQueue.isEmpty()) {
+            Brick currentBrick = destructionQueue.poll();
+
+            if (processedSet.contains(currentBrick)) {
+                continue;
+            }
+            processedSet.add(currentBrick);
+            handleBrickDestruction(currentBrick);
+
+            if (currentBrick instanceof ExplosiveBrick) {
+                ExplosiveBrick explosiveBrick = (ExplosiveBrick) currentBrick;
+                if (explosiveBrick.hasExploded()) {
+                    System.out.println("💣 Kích hoạt vụ nổ tại (" + explosiveBrick.getX() + ", " + explosiveBrick.getY() + ")");
+                    double cx = explosiveBrick.getX() + explosiveBrick.getWidth() / 2.0;
+                    double cy = explosiveBrick.getY() + explosiveBrick.getHeight() / 2.0;
+                    eventManager.notifyExplosion(cx, cy, explosiveBrick.getExplosionRadius());
+                    List<Brick> targets = explosiveBrick.getExplosionTargets(allBricks);
+
+                    for (Brick target : targets) {
+                        if (target.isActive()) {
+                            target.takeHit();
+                            destructionQueue.add(target);
+                        }
+                    }
                 }
             }
-            handleBrickDestruction(brick);
-            //SoundManager.play("brick_hit");
-
-            break;
         }
     }
 
@@ -118,6 +186,76 @@ public class CollisionHandler {
         }
     }
 
+    public void checkBallBossCollision(Ball ball, Boss boss) {
+        if (!isColliding(ball, boss)) {
+            return;
+        }
+
+        boss.takeHit();
+
+        eventManager.notifyBallBossCollision();
+
+        double ballCenterX = ball.getX() + ball.getWidth() / 2;
+        double ballCenterY = ball.getY() + ball.getHeight() / 2;
+        double bossCenterX = boss.getX() + boss.getWidth() / 2;
+        double bossCenterY = boss.getY() + boss.getHeight() / 2;
+
+        double dx = ballCenterX - bossCenterX;
+        double dy = ballCenterY - bossCenterY;
+
+        double overlapX = (boss.getWidth() + ball.getWidth()) / 2 - Math.abs(dx);
+        double overlapY = (boss.getHeight() + ball.getHeight()) / 2 - Math.abs(dy);
+
+        if (overlapX < overlapY) {
+            ball.bounceHorizontal();
+            if (dx > 0) {
+                ball.setX(boss.getX() + boss.getWidth());
+            } else {
+                ball.setX(boss.getX() - ball.getWidth());
+            }
+        } else {
+            ball.bounceVertical();
+            if (dy > 0) {
+                ball.setY(boss.getY() + boss.getHeight());
+            } else {
+                ball.setY(boss.getY() - ball.getHeight());
+            }
+        }
+    }
+
+    public void checkBossBrickCollision(Boss boss, List<Brick> bricks) {
+        if (boss == null) {
+            return;
+        }
+
+        double bossSpeed = boss.getDx();
+
+        for (Brick brick : bricks) {
+            if (!brick.isActive() || !isColliding(boss, brick)) {
+                continue;
+            }
+
+            boss.reverseDirection();
+
+            if (bossSpeed > 0) {
+                boss.setX(brick.getX() - boss.getWidth());
+            } else {
+                boss.setX(brick.getX() + brick.getWidth());
+            }
+            break;
+        }
+    }
+
+    public boolean isSpawnLocationClear(double newX, double newY, double newWidth, double newHeight, List<Brick> existingBricks) {
+        Rectangle2D newBrickBounds = new Rectangle2D(newX, newY, newWidth, newHeight);
+
+        for (Brick brick : existingBricks) {
+            if (brick.isActive() && brick.getBounds().intersects(newBrickBounds)) {
+                return false;
+            }
+        }
+        return true;
+    }
 
     /**
      * Check AABB collision between 2 game objects
@@ -132,12 +270,23 @@ public class CollisionHandler {
      * Handling when bricks are destroyed
      */
     private void handleBrickDestruction(Brick brick) {
-        brick.takeHit();
-
-        /*if (brick.isDestroyed()) {
-            gameManager.addScore(10);
-            SoundManager.play("brick_break");
-        }*/
+        if (brick.isDestroyed()) {
+            int points = 10; //  point value
+            PowerUpType powerUpType = brick.getPowerUpDrop();
+            if (powerUpType != null) {
+                double powerUpX = brick.getX() + (brick.getWidth() - 30) / 2;
+                double powerUpY = brick.getY();
+                System.out.println("Brick dropped power-up at (" + powerUpX + ", " + powerUpY + ")");
+                PowerUp newPowerUp = PowerUpFactory.createPowerUp(powerUpType, powerUpX, powerUpY);
+                if (newPowerUp != null) {
+                    gameManager.getPowerUpManager().spawnPowerUp(powerUpType, powerUpX, powerUpY);
+                    System.out.println("Power-up successfully created and added to manager.");
+                } else {
+                    System.err.println("Failed to create PowerUp object for type: " + powerUpType);
+                }
+            }
+            eventManager.notifyBrickDestroyed(brick, points);
+        }
     }
 }
 
