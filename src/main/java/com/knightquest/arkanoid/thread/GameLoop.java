@@ -63,9 +63,7 @@ public class GameLoop extends Thread {
         System.out.println("🛑 GameLoop thread stopped");
     }
 
-    /**
-     * Xử lý tất cả input events trong queue
-     */
+    //xử lý events
     private void processInputEvents() {
         KeyEvent event;
         while ((event = inputQueue.poll()) != null) {
@@ -77,27 +75,22 @@ public class GameLoop extends Thread {
         }
     }
 
-    /**
-     * Thêm input event vào queue (được gọi từ JavaFX thread)
-     */
+
+    //Thêm input event vào queue (từ JavaFX thread)
     public void addInputEvent(KeyEvent event) {
         if (running.get()) {
             inputQueue.offer(event);
         }
     }
 
-    /**
-     * Dừng game loop một cách an toàn
-     */
+    //Dừng game loop một cách an toàn
     public void shutdown() {
         System.out.println("🛑 Shutting down GameLoop thread...");
         running.set(false);
         interrupt(); // Wake up nếu đang sleep
     }
 
-    /**
-     * Kiểm tra xem thread có đang chạy không
-     */
+    //Kiểm tra xem thread có đang chạy không
     public boolean isRunning() {
         return running.get() && isAlive();
     }
